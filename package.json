@@ -1,0 +1,8 @@
+{
+  "name": "closer-ai",
+  "version": "1.0.0",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@vercel/kv": "^2.0.0"
+  }
+}
