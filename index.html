@@ -483,6 +483,9 @@ async function loadAvaliacoes() {
       return;
     }
     el.innerHTML = renderEvalCards(evaluations);
+  } catch(e) {
+    el.innerHTML = '<div class="empty">Erro ao carregar avaliações</div>';
+  }
 }
 
 function renderEvalCards(evaluations) {
