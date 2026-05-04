@@ -9,17 +9,17 @@ function getKV() {
 
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
-async function firefliesRequest(query, variables) {
+async function firefliesPost(body) {
   const res = await fetch(FIREFLIES_API, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}`
     },
-    body: JSON.stringify({ query, variables })
+    body: JSON.stringify(body)
   });
   const data = await res.json();
-  console.log("Fireflies response:", JSON.stringify(data));
+  console.log("Fireflies:", JSON.stringify(data));
   return data;
 }
 
@@ -38,46 +38,30 @@ module.exports = async function handler(req, res) {
   const title = `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}`;
 
   let firefliesMeetingId = null;
+  let botStatus = null;
   let botError = null;
 
   if (process.env.FIREFLIES_API_KEY) {
     try {
-      // Tenta entrar na reunião ao vivo (com subcampos corretos)
-      const liveData = await firefliesRequest(
-        `mutation AddToLiveMeeting($meeting_link: String!, $title: String!) {
+      // Campos corretos: retorna { message success }
+      const data = await firefliesPost({
+        query: `mutation AddToLiveMeeting($meeting_link: String!, $title: String!) {
           addToLiveMeeting(meeting_link: $meeting_link, title: $title) {
-            id
-            title
-            date
+            success
+            message
           }
         }`,
-        { meeting_link: fullLink, title }
-      );
+        variables: { meeting_link: fullLink, title }
+      });
 
-      if (liveData?.data?.addToLiveMeeting?.id) {
-        firefliesMeetingId = liveData.data.addToLiveMeeting.id;
-        console.log("✅ Bot entrou! ID:", firefliesMeetingId);
+      const result = data?.data?.addToLiveMeeting;
+      if (result?.success === true) {
+        firefliesMeetingId = `ff_${Date.now()}`;
+        botStatus = result.message || "Bot entrou com sucesso!";
+        console.log("✅ Bot entrou:", botStatus);
       } else {
-        // Tenta agendar para reunião futura
-        const schedTime = scheduledAt ? new Date(scheduledAt).getTime() : (Date.now() + 300000);
-        const schedData = await firefliesRequest(
-          `mutation ScheduleNotetaker($meeting_link: String!, $title: String!, $start_time: Long!) {
-            scheduleNotetaker(meeting_link: $meeting_link, title: $title, start_time: $start_time) {
-              id
-              title
-            }
-          }`,
-          { meeting_link: fullLink, title, start_time: schedTime }
-        );
-
-        if (schedData?.data?.scheduleNotetaker?.id) {
-          firefliesMeetingId = schedData.data.scheduleNotetaker.id;
-          console.log("✅ Bot agendado! ID:", firefliesMeetingId);
-        } else {
-          const err = liveData?.errors?.[0]?.message || schedData?.errors?.[0]?.message || "Erro desconhecido";
-          botError = err;
-          console.log("❌ Erro:", err);
-        }
+        botError = result?.message || data?.errors?.[0]?.message || "Reunião não está ao vivo ainda";
+        console.log("❌ Bot não entrou:", botError);
       }
     } catch(e) {
       botError = e.message;
@@ -94,7 +78,7 @@ module.exports = async function handler(req, res) {
     meetLink: fullLink,
     scheduledAt: scheduledAt || new Date().toISOString(),
     status: firefliesMeetingId ? "bot_joined" : "scheduled",
-    firefliesMeetingId, botError,
+    firefliesMeetingId, botStatus, botError,
     createdAt: new Date().toISOString()
   };
 
