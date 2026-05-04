@@ -3,7 +3,7 @@ const { Redis } = require("@upstash/redis");
 function getKV() {
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
-  if (!url || !token) throw new Error("Banco de dados não configurado. Conecte o Upstash no painel da Vercel.");
+  if (!url || !token) throw new Error("Banco não configurado.");
   return new Redis({ url, token });
 }
 
@@ -16,8 +16,11 @@ async function firefliesRequest(query, variables) {
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}` },
       body: JSON.stringify({ query, variables })
     });
-    return res.json();
+    const data = await res.json();
+    console.log("Fireflies response:", JSON.stringify(data));
+    return data;
   } catch(e) {
+    console.log("Fireflies error:", e.message);
     return { errors: [{ message: e.message }] };
   }
 }
@@ -35,31 +38,43 @@ module.exports = async function handler(req, res) {
   const fullLink = meetLink.startsWith("http") ? meetLink : `https://${meetLink}`;
   const meetingId = `meeting_${Date.now()}`;
 
-  // Tenta enviar o bot (sem bloquear se falhar)
+  console.log("FIREFLIES_API_KEY presente:", !!process.env.FIREFLIES_API_KEY);
+  console.log("Tentando entrar em:", fullLink);
+
   let firefliesMeetingId = null;
   let botError = null;
 
   if (process.env.FIREFLIES_API_KEY) {
+    // Tenta entrar ao vivo
     const liveData = await firefliesRequest(
-      `mutation AddToLiveMeeting($url: String!, $title: String!) { addToLiveMeeting(url: $url, title: $title) { id } }`,
+      `mutation AddToLiveMeeting($url: String!, $title: String!) { addToLiveMeeting(url: $url, title: $title) { id title } }`,
       { url: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}` }
     );
+
     if (liveData?.data?.addToLiveMeeting?.id) {
       firefliesMeetingId = liveData.data.addToLiveMeeting.id;
+      console.log("Bot entrou! ID:", firefliesMeetingId);
     } else {
+      // Tenta agendar
       const schedTime = scheduledAt ? new Date(scheduledAt).getTime() : (Date.now() + 300000);
       const schedData = await firefliesRequest(
-        `mutation ScheduleNotetaker($url: String!, $title: String!, $startTime: Long!) { scheduleNotetaker(url: $url, title: $title, start_time: $startTime) { id } }`,
+        `mutation ScheduleNotetaker($url: String!, $title: String!, $startTime: Long!) { scheduleNotetaker(url: $url, title: $title, start_time: $startTime) { id title } }`,
         { url: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}`, startTime: schedTime }
       );
-      firefliesMeetingId = schedData?.data?.scheduleNotetaker?.id || null;
-      botError = !firefliesMeetingId ? (liveData?.errors?.[0]?.message || "Reunião não está ao vivo ainda") : null;
+
+      if (schedData?.data?.scheduleNotetaker?.id) {
+        firefliesMeetingId = schedData.data.scheduleNotetaker.id;
+        console.log("Bot agendado! ID:", firefliesMeetingId);
+      } else {
+        botError = liveData?.errors?.[0]?.message || schedData?.errors?.[0]?.message || "Reunião não está ao vivo. Abra o Meet e tente novamente.";
+        console.log("Bot não entrou. Erro:", botError);
+      }
     }
   } else {
-    botError = "FIREFLIES_API_KEY não configurada";
+    botError = "FIREFLIES_API_KEY não configurada na Vercel";
+    console.log("Sem FIREFLIES_API_KEY");
   }
 
-  // Salva a reunião no banco
   const meeting = {
     id: meetingId, closer: closer || "", closerId: closerId || "",
     scriptId: scriptId || "", scriptName: scriptName || "",
