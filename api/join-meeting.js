@@ -19,7 +19,7 @@ async function firefliesRequest(query, variables) {
     body: JSON.stringify({ query, variables })
   });
   const data = await res.json();
-  console.log("Fireflies:", JSON.stringify(data));
+  console.log("Fireflies response:", JSON.stringify(data));
   return data;
 }
 
@@ -35,46 +35,53 @@ module.exports = async function handler(req, res) {
 
   const fullLink = meetLink.startsWith("http") ? meetLink : `https://${meetLink}`;
   const meetingId = `meeting_${Date.now()}`;
+  const title = `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}`;
 
   let firefliesMeetingId = null;
   let botError = null;
 
   if (process.env.FIREFLIES_API_KEY) {
     try {
-      // Corrigido: campo correto é meeting_link (não url)
+      // Tenta entrar na reunião ao vivo (com subcampos corretos)
       const liveData = await firefliesRequest(
         `mutation AddToLiveMeeting($meeting_link: String!, $title: String!) {
-          addToLiveMeeting(meeting_link: $meeting_link, title: $title)
+          addToLiveMeeting(meeting_link: $meeting_link, title: $title) {
+            id
+            title
+            date
+          }
         }`,
-        { meeting_link: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}` }
+        { meeting_link: fullLink, title }
       );
 
-      if (liveData?.data?.addToLiveMeeting === true || liveData?.data?.addToLiveMeeting) {
-        firefliesMeetingId = `live_${Date.now()}`;
-        console.log("Bot entrou na reunião ao vivo!");
+      if (liveData?.data?.addToLiveMeeting?.id) {
+        firefliesMeetingId = liveData.data.addToLiveMeeting.id;
+        console.log("✅ Bot entrou! ID:", firefliesMeetingId);
       } else {
-        // Tenta agendar para reuniões futuras
+        // Tenta agendar para reunião futura
         const schedTime = scheduledAt ? new Date(scheduledAt).getTime() : (Date.now() + 300000);
         const schedData = await firefliesRequest(
           `mutation ScheduleNotetaker($meeting_link: String!, $title: String!, $start_time: Long!) {
             scheduleNotetaker(meeting_link: $meeting_link, title: $title, start_time: $start_time) {
               id
+              title
             }
           }`,
-          { meeting_link: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}`, start_time: schedTime }
+          { meeting_link: fullLink, title, start_time: schedTime }
         );
 
         if (schedData?.data?.scheduleNotetaker?.id) {
           firefliesMeetingId = schedData.data.scheduleNotetaker.id;
-          console.log("Bot agendado:", firefliesMeetingId);
+          console.log("✅ Bot agendado! ID:", firefliesMeetingId);
         } else {
-          botError = liveData?.errors?.[0]?.message || schedData?.errors?.[0]?.message || "Reunião não está ao vivo";
-          console.log("Erro bot:", botError);
+          const err = liveData?.errors?.[0]?.message || schedData?.errors?.[0]?.message || "Erro desconhecido";
+          botError = err;
+          console.log("❌ Erro:", err);
         }
       }
     } catch(e) {
       botError = e.message;
-      console.log("Exceção:", e.message);
+      console.log("❌ Exceção:", e.message);
     }
   } else {
     botError = "FIREFLIES_API_KEY não configurada";
