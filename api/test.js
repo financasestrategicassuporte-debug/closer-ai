@@ -5,17 +5,47 @@ module.exports = async function handler(req, res) {
   const key = process.env.FIREFLIES_API_KEY;
   if (!key) return res.json({ error: "FIREFLIES_API_KEY não encontrada" });
 
+  // Descobre os campos do tipo AddToLiveMeeting via introspecção
   const r = await fetch(FIREFLIES_API, {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
     body: JSON.stringify({
-      query: `mutation {
-        addToLiveMeeting(meeting_link: "https://meet.google.com/test-xxxx-test", title: "Teste CloserAI") {
-          id title date
+      query: `{
+        __type(name: "AddToLiveMeeting") {
+          name
+          kind
+          fields { name type { name kind } }
         }
       }`
     })
   });
-  const data = await r.json();
-  return res.json({ result: data });
+  const schema = await r.json();
+
+  // Também descobre os argumentos da mutation
+  const r2 = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+    body: JSON.stringify({
+      query: `{
+        __schema {
+          mutationType {
+            fields {
+              name
+              args { name type { name kind ofType { name kind } } }
+              type { name kind fields { name type { name kind } } }
+            }
+          }
+        }
+      }`
+    })
+  });
+  const mutations = await r2.json();
+  const addToLive = mutations?.data?.__schema?.mutationType?.fields?.find(f => f.name === "addToLiveMeeting");
+  const scheduleNotetaker = mutations?.data?.__schema?.mutationType?.fields?.find(f => f.name === "scheduleNotetaker");
+
+  return res.json({
+    addToLiveMeetingType: schema.data?.__type,
+    addToLiveMeetingMutation: addToLive,
+    scheduleNotetakerMutation: scheduleNotetaker
+  });
 };
