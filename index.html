@@ -443,7 +443,23 @@ function loadAvaliacoes() {
           feedback:'O closer conduziu a reunião com boa energia e seguiu as etapas do script de forma consistente. A apresentação da proposta foi clara e objetiva. Ponto de atenção: a etapa de diagnóstico poderia ter sido mais aprofundada — o cliente sinalizou algumas dores que não foram exploradas. Na quebra de objeções, o closer respondeu bem ao questionamento de preço, mas poderia ter reforçado mais o valor do produto. O fechamento foi conduzido com segurança.',
           criteria_scores:{'Seguiu as etapas do script':88,'Diagnóstico do cliente':70,'Apresentação de valor':85,'Quebra de objeções':78,'Condução do fechamento':90},
           highlights:['Boa energia e rapport com o cliente','Fechamento conduzido com segurança'],
-          improvements:['Aprofundar mais o diagnóstico','Explorar melhor as dores sinalizadas pelo cliente']
+          improvements:['Aprofundar mais o diagnóstico','Explorar melhor as dores sinalizadas pelo cliente'],
+          closer_analysis:{
+            melhor_etapa:'Fechamento — o closer foi direto e conduziu o cliente para a decisão com segurança, sem hesitar ao apresentar o investimento.',
+            etapa_critica:'Diagnóstico — ficou apenas 4 minutos nesta etapa (recomendado: 10 min). O cliente mencionou dificuldade com retenção de alunos mas o closer não aprofundou. Perguntas como "quanto você perde por mês com isso?" teriam aumentado a percepção de urgência.',
+            tecnicas_usadas:['Rapport inicial','Prova social','Ancoragem de preço'],
+            oportunidades_perdidas:['Não explorou a dor de retenção de alunos mencionada pelo lead','Não perguntou sobre tentativas anteriores de solução'],
+            postura_geral:'Postura confiante e tom profissional durante toda a reunião. Boa fluência, sem pausas longas. Poderia ter sido mais consultivo na fase de diagnóstico.'
+          },
+          lead_info:{
+            segmento:'Academia de musculação — rede com 2 unidades',
+            situacao_atual:'Dono de 2 academias com faturamento atual de R$35 mil/mês, buscando escalar para R$60 mil. Equipe de 3 vendedores internos sem processo estruturado.',
+            principais_dores:['Alta taxa de cancelamento de matrículas (churn)','Vendedores sem script e sem métricas','Dificuldade de fechar planos anuais'],
+            objecoes_levantadas:['Preço acima do esperado','Quer consultar o sócio antes de decidir'],
+            nivel_interesse:'Alto — lead engajado, fez perguntas sobre resultados e pediu referências de outros clientes do mesmo segmento.',
+            detalhes_negocio:'2 unidades em São Paulo, ~400 alunos ativos, ticket médio R$89/mês, 3 vendedores. Meta de chegar a 600 alunos em 12 meses.',
+            proximo_passo:'Ligação de follow-up na quinta-feira às 14h com o sócio presente para apresentação final da proposta.'
+          }
         }
       }];
       el.innerHTML = '<div class="info-box info-box-amber">📋 <strong>Demonstração:</strong> esta é uma avaliação de exemplo. As avaliações reais aparecem automaticamente após cada reunião.</div>' + renderEvalCards(fake);
@@ -462,14 +478,68 @@ function renderEvalCards(evaluations) {
     var cs = ev.criteria_scores || {};
     var highlights = ev.highlights || [];
     var improvements = ev.improvements || [];
+    var ca = ev.closer_analysis || {};
+    var li = ev.lead_info || {};
     var badge = score>=75?'badge-green':score>=60?'badge-amber':'badge-red';
     var label = score>=75?'Aprovado':score>=60?'Precisa melhorar':'Crítico';
+
+    // Barras de critérios
     var bars = Object.keys(cs).map(function(k){
       return '<div class="score-bar-container"><div class="score-label">'+k+'</div><div class="score-track"><div class="score-fill" style="width:'+cs[k]+'%;background:'+barColor(cs[k])+'"></div></div><div class="score-num">'+cs[k]+'%</div></div>';
     }).join('');
+
+    // Destaques e melhorias
     var hi = highlights.length ? '<div style="margin-top:8px;font-size:12px;color:#27500A"><strong>✅ Destaques:</strong> '+highlights.join(' · ')+'</div>' : '';
     var im = improvements.length ? '<div style="margin-top:4px;font-size:12px;color:#633806"><strong>⚠️ Melhorias:</strong> '+improvements.join(' · ')+'</div>' : '';
-    return '<div class="eval-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="closer-row"><div class="avatar" style="width:40px;height:40px;font-size:13px">'+initials(a.closer||'?')+'</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a">'+a.closer+'</div><div style="font-size:12px;color:#aaa">'+a.scriptName+' · '+fmtDate(a.createdAt)+'</div></div></div><div style="text-align:right"><div style="font-size:28px;font-weight:700;color:'+scoreColor(score)+'">'+score+'%</div><span class="badge '+badge+'" style="font-size:10px">'+label+'</span></div></div><div style="border-top:1px solid #f0efeb;padding-top:12px">'+bars+'</div>'+(ev.feedback?'<div class="feedback-box"><strong>Feedback da IA:</strong> '+ev.feedback+'</div>':'')+hi+im+'</div>';
+
+    // Análise profunda do closer
+    var closerAnalysis = '';
+    if (ca.melhor_etapa || ca.etapa_critica || ca.postura_geral) {
+      var tecnicas = (ca.tecnicas_usadas||[]).length ? '<div style="margin-top:6px;font-size:12px;color:#555"><strong>Técnicas identificadas:</strong> '+ca.tecnicas_usadas.join(', ')+'</div>' : '';
+      var oportunidades = (ca.oportunidades_perdidas||[]).length ? '<div style="margin-top:4px;font-size:12px;color:#791F1F"><strong>⚡ Oportunidades perdidas:</strong> '+(ca.oportunidades_perdidas||[]).join(' · ')+'</div>' : '';
+      closerAnalysis = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">'+
+        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">📊 Análise do Closer</div>'+
+        (ca.postura_geral ? '<div style="font-size:12px;color:#555;margin-bottom:8px;line-height:1.6"><strong>Postura geral:</strong> '+ca.postura_geral+'</div>' : '')+
+        (ca.melhor_etapa ? '<div style="background:#EAF3DE;border-radius:6px;padding:8px 10px;font-size:12px;color:#27500A;margin-bottom:6px"><strong>✅ Melhor etapa:</strong> '+ca.melhor_etapa+'</div>' : '')+
+        (ca.etapa_critica ? '<div style="background:#FCEBEB;border-radius:6px;padding:8px 10px;font-size:12px;color:#791F1F;margin-bottom:6px"><strong>🎯 Etapa crítica a melhorar:</strong> '+ca.etapa_critica+'</div>' : '')+
+        tecnicas + oportunidades +
+        '</div>';
+    }
+
+    // Informações do Lead / ICP
+    var leadInfo = '';
+    if (li.situacao_atual || li.principais_dores || li.segmento) {
+      var dores = (li.principais_dores||[]).length ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#633806">🔥 Principais dores:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">'+(li.principais_dores||[]).map(function(d){return '<li>'+d+'</li>';}).join('')+'</ul></div>' : '';
+      var objecoes = (li.objecoes_levantadas||[]).length ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#791F1F">❌ Objeções levantadas:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">'+(li.objecoes_levantadas||[]).map(function(o){return '<li>'+o+'</li>';}).join('')+'</ul></div>' : '';
+      var nivelBg = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto')>=0 ? '#EAF3DE' : li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('baixo')>=0 ? '#FCEBEB' : '#FAEEDA';
+      var nivelColor = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto')>=0 ? '#27500A' : li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('baixo')>=0 ? '#791F1F' : '#633806';
+      leadInfo = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">'+
+        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">👤 Informações do Lead (ICP)</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'+
+          (li.segmento ? '<div style="background:#f5f4f0;border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Segmento</div><div style="font-size:12px;color:#1a1a1a">'+li.segmento+'</div></div>' : '')+
+          (li.nivel_interesse ? '<div style="background:'+nivelBg+';border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Nível de interesse</div><div style="font-size:12px;color:'+nivelColor+'">'+li.nivel_interesse+'</div></div>' : '')+
+        '</div>'+
+        (li.situacao_atual ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Situação atual:</strong> '+li.situacao_atual+'</div>' : '')+
+        (li.detalhes_negocio ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Detalhes do negócio:</strong> '+li.detalhes_negocio+'</div>' : '')+
+        dores + objecoes +
+        (li.proximo_passo ? '<div style="margin-top:8px;background:#EEEDFE;border-radius:6px;padding:8px 10px;font-size:12px;color:#3C3489"><strong>📅 Próximo passo:</strong> '+li.proximo_passo+'</div>' : '')+
+        '</div>';
+    }
+
+    return '<div class="eval-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
+        '<div class="closer-row"><div class="avatar" style="width:40px;height:40px;font-size:13px">'+initials(a.closer||'?')+'</div>'+
+          '<div><div style="font-size:14px;font-weight:600;color:#1a1a1a">'+a.closer+'</div>'+
+          '<div style="font-size:12px;color:#aaa">'+a.scriptName+' · '+fmtDate(a.createdAt)+'</div></div></div>'+
+        '<div style="text-align:right"><div style="font-size:28px;font-weight:700;color:'+scoreColor(score)+'">'+score+'%</div>'+
+          '<span class="badge '+badge+'" style="font-size:10px">'+label+'</span></div>'+
+      '</div>'+
+      '<div style="border-top:1px solid #f0efeb;padding-top:12px">'+bars+'</div>'+
+      (ev.feedback?'<div class="feedback-box"><strong>Feedback da IA:</strong> '+ev.feedback+'</div>':'')+
+      hi + im +
+      closerAnalysis +
+      leadInfo +
+    '</div>';
   }).join('');
 }
 
