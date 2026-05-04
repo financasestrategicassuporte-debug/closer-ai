@@ -157,7 +157,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       </div>
       <div class="card">
         <table class="table">
-          <thead><tr><th>Closer</th><th>Script</th><th>Google Meet</th><th>Bot IA</th><th>Data</th></tr></thead>
+          <thead><tr><th>Closer</th><th>Script</th><th>Google Meet</th><th>Bot IA</th><th>Data</th><th>Ações</th></tr></thead>
           <tbody id="reunioes-table"><tr><td colspan="5" class="empty">Carregando...</td></tr></tbody>
         </table>
       </div>
@@ -459,10 +459,34 @@ async function loadAvaliacoes() {
     const res = await fetch('/api/evaluations');
     const { evaluations } = await res.json();
     if (!evaluations || !evaluations.length) {
-      el.innerHTML = '<div class="empty">Nenhuma avaliação gerada ainda.<br>As avaliações aparecem automaticamente após as reuniões.</div>';
+      // Mostra avaliação demonstrativa
+      const fake = [{
+        closer: 'Ives Silva',
+        initials: 'IS',
+        scriptName: 'Script (Validado) até 40 mil',
+        createdAt: new Date().toISOString(),
+        evaluation: {
+          score: 82,
+          feedback: 'O closer conduziu a reunião com boa energia e seguiu as etapas do script de forma consistente. A apresentação da proposta foi clara e objetiva. Ponto de atenção: a etapa de diagnóstico poderia ter sido mais aprofundada — o cliente sinalizou algumas dores que não foram exploradas. Na quebra de objeções, o closer respondeu bem ao questionamento de preço, mas poderia ter reforçado mais o valor do produto. O fechamento foi conduzido com segurança.',
+          criteria_scores: {
+            'Seguiu as etapas do script': 88,
+            'Diagnóstico do cliente': 70,
+            'Apresentação de valor': 85,
+            'Quebra de objeções': 78,
+            'Condução do fechamento': 90
+          },
+          highlights: ['Boa energia e rapport com o cliente', 'Fechamento conduzido com segurança'],
+          improvements: ['Aprofundar mais o diagnóstico', 'Explorar melhor as dores sinalizadas pelo cliente']
+        }
+      }];
+      el.innerHTML = '<div style="background:#FAEEDA;border:1px solid #F5C97A;border-radius:8px;padding:10px 14px;font-size:12px;color:#633806;margin-bottom:12px">📋 <strong>Demonstração:</strong> esta é uma avaliação de exemplo. As avaliações reais aparecem automaticamente após cada reunião.</div>' + renderEvalCards(fake);
       return;
     }
-    el.innerHTML = evaluations.map(a => {
+    el.innerHTML = renderEvalCards(evaluations);
+}
+
+function renderEvalCards(evaluations) {
+  return evaluations.map(a => {
       const ev = a.evaluation || {};
       const score = ev.score || 0;
       const criteriaScores = ev.criteria_scores || {};
@@ -531,6 +555,19 @@ async function loadDashboard() {
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+async function deleteMeeting(id) {
+  if (!confirm('Excluir esta reunião?')) return;
+  try {
+    await fetch('/api/delete-meeting', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ id })
+    });
+  } catch(e) {}
+  loadMeetings();
+  toast('Reunião excluída!', 'success');
+}
 
 // Init
 loadDashboard();
