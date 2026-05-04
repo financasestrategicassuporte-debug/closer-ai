@@ -10,19 +10,17 @@ function getKV() {
 const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
 async function firefliesRequest(query, variables) {
-  try {
-    const res = await fetch(FIREFLIES_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}` },
-      body: JSON.stringify({ query, variables })
-    });
-    const data = await res.json();
-    console.log("Fireflies response:", JSON.stringify(data));
-    return data;
-  } catch(e) {
-    console.log("Fireflies error:", e.message);
-    return { errors: [{ message: e.message }] };
-  }
+  const res = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}`
+    },
+    body: JSON.stringify({ query, variables })
+  });
+  const data = await res.json();
+  console.log("Fireflies:", JSON.stringify(data));
+  return data;
 }
 
 module.exports = async function handler(req, res) {
@@ -38,41 +36,48 @@ module.exports = async function handler(req, res) {
   const fullLink = meetLink.startsWith("http") ? meetLink : `https://${meetLink}`;
   const meetingId = `meeting_${Date.now()}`;
 
-  console.log("FIREFLIES_API_KEY presente:", !!process.env.FIREFLIES_API_KEY);
-  console.log("Tentando entrar em:", fullLink);
-
   let firefliesMeetingId = null;
   let botError = null;
 
   if (process.env.FIREFLIES_API_KEY) {
-    // Tenta entrar ao vivo
-    const liveData = await firefliesRequest(
-      `mutation AddToLiveMeeting($url: String!, $title: String!) { addToLiveMeeting(url: $url, title: $title) { id title } }`,
-      { url: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}` }
-    );
-
-    if (liveData?.data?.addToLiveMeeting?.id) {
-      firefliesMeetingId = liveData.data.addToLiveMeeting.id;
-      console.log("Bot entrou! ID:", firefliesMeetingId);
-    } else {
-      // Tenta agendar
-      const schedTime = scheduledAt ? new Date(scheduledAt).getTime() : (Date.now() + 300000);
-      const schedData = await firefliesRequest(
-        `mutation ScheduleNotetaker($url: String!, $title: String!, $startTime: Long!) { scheduleNotetaker(url: $url, title: $title, start_time: $startTime) { id title } }`,
-        { url: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}`, startTime: schedTime }
+    try {
+      // Corrigido: campo correto é meeting_link (não url)
+      const liveData = await firefliesRequest(
+        `mutation AddToLiveMeeting($meeting_link: String!, $title: String!) {
+          addToLiveMeeting(meeting_link: $meeting_link, title: $title)
+        }`,
+        { meeting_link: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}` }
       );
 
-      if (schedData?.data?.scheduleNotetaker?.id) {
-        firefliesMeetingId = schedData.data.scheduleNotetaker.id;
-        console.log("Bot agendado! ID:", firefliesMeetingId);
+      if (liveData?.data?.addToLiveMeeting === true || liveData?.data?.addToLiveMeeting) {
+        firefliesMeetingId = `live_${Date.now()}`;
+        console.log("Bot entrou na reunião ao vivo!");
       } else {
-        botError = liveData?.errors?.[0]?.message || schedData?.errors?.[0]?.message || "Reunião não está ao vivo. Abra o Meet e tente novamente.";
-        console.log("Bot não entrou. Erro:", botError);
+        // Tenta agendar para reuniões futuras
+        const schedTime = scheduledAt ? new Date(scheduledAt).getTime() : (Date.now() + 300000);
+        const schedData = await firefliesRequest(
+          `mutation ScheduleNotetaker($meeting_link: String!, $title: String!, $start_time: Long!) {
+            scheduleNotetaker(meeting_link: $meeting_link, title: $title, start_time: $start_time) {
+              id
+            }
+          }`,
+          { meeting_link: fullLink, title: `CloserAI - ${closer || "Closer"} - ${scriptName || "Reunião"}`, start_time: schedTime }
+        );
+
+        if (schedData?.data?.scheduleNotetaker?.id) {
+          firefliesMeetingId = schedData.data.scheduleNotetaker.id;
+          console.log("Bot agendado:", firefliesMeetingId);
+        } else {
+          botError = liveData?.errors?.[0]?.message || schedData?.errors?.[0]?.message || "Reunião não está ao vivo";
+          console.log("Erro bot:", botError);
+        }
       }
+    } catch(e) {
+      botError = e.message;
+      console.log("Exceção:", e.message);
     }
   } else {
-    botError = "FIREFLIES_API_KEY não configurada na Vercel";
-    console.log("Sem FIREFLIES_API_KEY");
+    botError = "FIREFLIES_API_KEY não configurada";
   }
 
   const meeting = {
