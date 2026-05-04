@@ -437,7 +437,7 @@ async function addMeeting() {
       resultEl.innerHTML = `<div class="info-box info-box-green">✅ <strong>Bot entrou na reunião!</strong> ID: ${data.meeting.recallBotId.slice(0,16)}... A avaliação será gerada automaticamente ao final.</div>`;
       toast('Bot CloserAI entrou na reunião!', 'success');
     } else {
-      const errMsg = data.meeting?.recallError || 'Configure RECALL_API_KEY nas variáveis de ambiente da Vercel';
+      const errMsg = data.meeting?.botError || 'Verifique se o link do Meet está ativo e acessível';
       resultEl.innerHTML = `<div class="info-box info-box-red">⚠️ Reunião salva, mas o bot não entrou: ${errMsg}</div>`;
     }
     resultEl.style.display = 'block';
