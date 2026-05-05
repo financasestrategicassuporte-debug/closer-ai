@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CloserAI — Plataforma de Avaliação de Reuniões</title>
+<title>CloserAI</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;min-height:100vh;display:flex;flex-direction:column}
@@ -12,8 +12,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .logo-dot{width:8px;height:8px;border-radius:50%;background:#534AB7}
 .layout{display:flex;height:calc(100vh - 52px)}
 .sidebar{width:210px;background:#fff;border-right:1px solid #e5e4e0;padding:1rem 0;flex-shrink:0;overflow-y:auto}
-.nav-section{padding:0 0.75rem 0.5rem;font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-top:1rem}
-.nav-item{padding:8px 1rem;font-size:13px;color:#666;cursor:pointer;display:flex;align-items:center;gap:10px;border-left:2px solid transparent;transition:all 0.12s}
+.nav-section{padding:0 .75rem .5rem;font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-top:1rem}
+.nav-item{padding:8px 1rem;font-size:13px;color:#666;cursor:pointer;display:flex;align-items:center;gap:10px;border-left:2px solid transparent;transition:all .12s}
 .nav-item:hover{background:#f5f4f0;color:#1a1a1a}
 .nav-item.active{background:#f0effe;color:#3C3489;border-left:2px solid #534AB7;font-weight:500}
 .main{flex:1;overflow-y:auto;padding:2rem}
@@ -21,8 +21,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
 .page-title{font-size:20px;font-weight:600;color:#1a1a1a}
 .page-subtitle{font-size:13px;color:#888;margin-top:2px}
-.btn{padding:8px 16px;font-size:13px;border-radius:8px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#1a1a1a;font-family:inherit;transition:all 0.12s;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{background:#f5f4f0}.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn{padding:8px 16px;font-size:13px;border-radius:8px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#1a1a1a;font-family:inherit;transition:all .12s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#f5f4f0}.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:#534AB7;color:#fff;border-color:#3C3489}.btn-primary:hover{background:#3C3489}
 .btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
 .btn-danger{color:#A32D2D;border-color:#F7C1C1;background:#FCEBEB}.btn-danger:hover{background:#F7C1C1}
@@ -31,27 +31,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .metric-label{font-size:12px;color:#888;margin-bottom:6px;font-weight:500}
 .metric-val{font-size:26px;font-weight:600;color:#1a1a1a}
 .card{background:#fff;border-radius:12px;border:1px solid #e5e4e0;overflow:hidden;margin-bottom:1rem}
-.card-header{padding:1rem 1.25rem;border-bottom:1px solid #f0efeb;display:flex;align-items:center;justify-content:space-between}
-.card-title{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em}
 .table{width:100%;border-collapse:collapse;font-size:13px}
-.table th{text-align:left;font-weight:600;font-size:11px;color:#aaa;padding:10px 16px;border-bottom:1px solid #f0efeb;text-transform:uppercase;letter-spacing:0.05em;background:#fafaf8}
+.table th{text-align:left;font-weight:600;font-size:11px;color:#aaa;padding:10px 16px;border-bottom:1px solid #f0efeb;text-transform:uppercase;letter-spacing:.05em;background:#fafaf8}
 .table td{padding:12px 16px;border-bottom:1px solid #f7f6f2;color:#1a1a1a;vertical-align:middle}
 .table tr:last-child td{border-bottom:none}.table tr:hover td{background:#fafaf8}
 .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
 .badge-purple{background:#EEEDFE;color:#3C3489}.badge-green{background:#EAF3DE;color:#27500A}
 .badge-amber{background:#FAEEDA;color:#633806}.badge-red{background:#FCEBEB;color:#791F1F}
-.badge-gray{background:#f0efeb;color:#666;border:1px solid #e5e4e0}.badge-blue{background:#E6F1FB;color:#0C447C}
+.badge-gray{background:#f0efeb;color:#666}.badge-blue{background:#E6F1FB;color:#0C447C}
 .avatar{width:32px;height:32px;border-radius:50%;background:#EEEDFE;color:#3C3489;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
 .closer-row{display:flex;align-items:center;gap:10px}
-.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
-.modal{background:#fff;border-radius:14px;border:1px solid #e5e4e0;padding:1.5rem;width:440px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
+.modal{background:#fff;border-radius:14px;border:1px solid #e5e4e0;padding:1.5rem;width:440px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
 .modal-title{font-size:16px;font-weight:600;margin-bottom:1.25rem;color:#1a1a1a}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid #f0efeb}
 .form-group{margin-bottom:1rem}
 .form-label{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500}
 .form-hint{font-size:11px;color:#aaa;margin-top:3px}
-input[type=text],input[type=datetime-local],textarea,select{width:100%;font-family:inherit;font-size:13px;padding:9px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;transition:border 0.12s}
-input:focus,textarea:focus,select:focus{border-color:#534AB7;box-shadow:0 0 0 3px rgba(83,74,183,0.1)}
+input[type=text],input[type=datetime-local],textarea,select{width:100%;font-family:inherit;font-size:13px;padding:9px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;transition:border .12s}
+input:focus,textarea:focus,select:focus{border-color:#534AB7;box-shadow:0 0 0 3px rgba(83,74,183,.1)}
 textarea{resize:vertical;min-height:90px;line-height:1.6}
 .form-row{display:flex;gap:10px}.form-row .form-group{flex:1}
 .input-group{display:flex;gap:6px}.input-group input{flex:1}
@@ -59,8 +57,8 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 .info-box{border-radius:8px;padding:12px;font-size:12px;line-height:1.6;display:flex;gap:8px;align-items:flex-start;margin-bottom:1rem}
 .info-box-purple{background:#f0effe;border:1px solid #AFA9EC;color:#3C3489}
 .info-box-green{background:#EAF3DE;border:1px solid #C0DD97;color:#27500A}
-.info-box-red{background:#FCEBEB;border:1px solid #F7C1C1;color:#791F1F}
 .info-box-amber{background:#FAEEDA;border:1px solid #F5C97A;color:#633806}
+.info-box-red{background:#FCEBEB;border:1px solid #F7C1C1;color:#791F1F}
 .score-bar-container{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .score-label{font-size:12px;color:#888;width:180px;flex-shrink:0}
 .score-track{flex:1;height:6px;border-radius:3px;background:#f0efeb;overflow:hidden}
@@ -73,21 +71,22 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 .status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
 .dot-green{background:#639922}.dot-amber{background:#BA7517}.dot-gray{background:#bbb}.dot-blue{background:#185FA5}.dot-purple{background:#534AB7}
 .empty{text-align:center;padding:3rem;color:#aaa;font-size:13px}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top-color:#534AB7;border-radius:50%;animation:spin 0.8s linear infinite}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top-color:#534AB7;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.3s;max-width:320px;line-height:1.5;pointer-events:none}
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:opacity .3s;max-width:320px;line-height:1.5;pointer-events:none}
 .toast.show{opacity:1}
 .tag{display:inline-flex;align-items:center;gap:4px;background:#f0efeb;color:#555;font-size:11px;padding:3px 8px;border-radius:5px}
-.fchip{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid #e5e4e0;background:#f5f4f0;color:#888;cursor:pointer;transition:all 0.12s;white-space:nowrap;font-family:inherit}
+.fchip{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid #e5e4e0;background:#f5f4f0;color:#888;cursor:pointer;transition:all .12s;white-space:nowrap;font-family:inherit}
 .fchip:hover{background:#e5e4e0;color:#1a1a1a}
 .fchip-active{background:#534AB7!important;color:#fff!important;border-color:#3C3489!important}
 .fchip-green.fchip-active{background:#27500A!important;border-color:#27500A!important}
 .fchip-amber.fchip-active{background:#633806!important;border-color:#633806!important}
 .fchip-red.fchip-active{background:#791F1F!important;border-color:#791F1F!important}
+.closer-perf-card{background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s}
+.closer-perf-card:hover{box-shadow:0 4px 16px rgba(83,74,183,.12)}
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <div class="logo"><div class="logo-dot"></div>CloserAI</div>
   <div style="display:flex;align-items:center;gap:10px">
@@ -95,25 +94,23 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
     <button class="btn btn-primary btn-sm" onclick="navigate('reunioes');openNewMeeting()">+ Nova Reunião</button>
   </div>
 </div>
-
 <div class="layout">
   <div class="sidebar">
-    <div style="padding:0 1rem 1rem;border-bottom:1px solid #f0efeb;margin-bottom:0.5rem">
+    <div style="padding:0 1rem 1rem;border-bottom:1px solid #f0efeb;margin-bottom:.5rem">
       <div style="font-size:12px;color:#aaa">Workspace</div>
       <div style="font-size:13px;font-weight:600;color:#1a1a1a">Minha Empresa</div>
     </div>
     <div class="nav-section">Principal</div>
     <div class="nav-item active" onclick="navigate('dashboard')">▦ Dashboard</div>
     <div class="nav-item" onclick="navigate('closers')">◉ Closers</div>
-    <div class="nav-section">Configuração</div>
-    <div class="nav-item" onclick="navigate('scripts')">☰ Scripts</div>
     <div class="nav-section">Time</div>
     <div class="nav-item" onclick="navigate('performance')">📈 Performance</div>
+    <div class="nav-section">Configuração</div>
+    <div class="nav-item" onclick="navigate('scripts')">☰ Scripts</div>
     <div class="nav-section">Reuniões</div>
     <div class="nav-item" onclick="navigate('reunioes')">◈ Reuniões</div>
     <div class="nav-item" onclick="navigate('avaliacoes')">★ Avaliações da IA</div>
   </div>
-
   <div class="main">
 
     <!-- DASHBOARD -->
@@ -128,11 +125,12 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div class="metric-card"><div class="metric-label">Score médio</div><div class="metric-val" id="dash-score">—</div></div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">Últimas avaliações</span><button class="btn btn-sm" onclick="navigate('avaliacoes')">Ver todas →</button></div>
-        <table class="table">
-          <thead><tr><th>Closer</th><th>Script</th><th>Score IA</th><th>Data</th><th>Resultado</th></tr></thead>
-          <tbody id="dash-evals-table"><tr><td colspan="5" class="empty">Carregando...</td></tr></tbody>
-        </table>
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid #f0efeb;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em">Últimas avaliações</span>
+          <button class="btn btn-sm" onclick="navigate('avaliacoes')">Ver todas →</button>
+        </div>
+        <table class="table"><thead><tr><th>Closer</th><th>Script</th><th>Score IA</th><th>Data</th><th>Resultado</th></tr></thead>
+        <tbody id="dash-evals-table"><tr><td colspan="5" class="empty">Carregando...</td></tr></tbody></table>
       </div>
     </div>
 
@@ -143,11 +141,23 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <button class="btn btn-primary" onclick="openCloserModal()">+ Novo closer</button>
       </div>
       <div class="card">
-        <table class="table">
-          <thead><tr><th>Closer</th><th>Reuniões</th><th>Score médio</th><th>Ações</th></tr></thead>
-          <tbody id="closers-table"><tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr></tbody>
-        </table>
+        <table class="table"><thead><tr><th>Closer</th><th>Reuniões</th><th>Score médio</th><th>Ações</th></tr></thead>
+        <tbody id="closers-table"><tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr></tbody></table>
       </div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div class="page" id="page-performance">
+      <div class="page-header">
+        <div><div class="page-title">Performance do Time</div><div class="page-subtitle">Monitoramento em tempo real — clique no card para ver o relatório</div></div>
+        <select id="perf-period" onchange="loadPerformance()" style="font-size:12px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a">
+          <option value="all">Todo período</option>
+          <option value="month">Este mês</option>
+          <option value="week">Esta semana</option>
+        </select>
+      </div>
+      <div class="cards-grid" id="perf-summary-cards"></div>
+      <div id="perf-closers-list"></div>
     </div>
 
     <!-- SCRIPTS -->
@@ -166,29 +176,9 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <button class="btn btn-primary" onclick="openNewMeeting()">+ Agendar reunião</button>
       </div>
       <div class="card">
-        <table class="table">
-          <thead><tr><th>Closer</th><th>Script</th><th>Google Meet</th><th>Bot IA</th><th>Data</th><th>Ações</th></tr></thead>
-          <tbody id="reunioes-table"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody>
-        </table>
+        <table class="table"><thead><tr><th>Closer</th><th>Script</th><th>Google Meet</th><th>Bot IA</th><th>Data</th><th>Ações</th></tr></thead>
+        <tbody id="reunioes-table"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody></table>
       </div>
-    </div>
-
-    <!-- PERFORMANCE -->
-    <div class="page" id="page-performance">
-      <div class="page-header">
-        <div><div class="page-title">Performance do Time</div><div class="page-subtitle">Monitoramento em tempo real por closer</div></div>
-        <div style="display:flex;gap:8px">
-          <select id="perf-period" onchange="loadPerformance()" style="font-size:12px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a">
-            <option value="all">Todo período</option>
-            <option value="month">Este mês</option>
-            <option value="week">Esta semana</option>
-          </select>
-        </div>
-      </div>
-      <!-- Cards de resumo rápido -->
-      <div class="cards-grid" id="perf-summary-cards" style="margin-bottom:1.5rem"></div>
-      <!-- Lista de closers com barras -->
-      <div id="perf-closers-list"></div>
     </div>
 
     <!-- AVALIAÇÕES -->
@@ -196,52 +186,37 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <div class="page-header">
         <div><div class="page-title">Avaliações da IA</div><div class="page-subtitle">Análise detalhada de cada reunião pelo Claude</div></div>
       </div>
-      <!-- Barra de filtros compacta -->
       <div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:12px 16px;margin-bottom:1.25rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-
-        <!-- Closer -->
-        <div style="display:flex;align-items:center;gap:8px;min-width:0">
-          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap">Closer</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Closer</span>
           <div id="filter-closer-chips" style="display:flex;gap:5px;flex-wrap:wrap">
-            <button class="fchip fchip-active" data-filter="closer" data-val="" onclick="setChip(this,'closer')">Todos</button>
+            <button class="fchip fchip-active" data-val="" onclick="setChip(this,'closer')">Todos</button>
           </div>
         </div>
-
         <div style="width:1px;height:28px;background:#e5e4e0;flex-shrink:0"></div>
-
-        <!-- Período -->
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap">Período</span>
+          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Período</span>
           <div style="display:flex;gap:5px">
-            <button class="fchip fchip-active" data-filter="date" data-val="" onclick="setChip(this,'date')">Tudo</button>
-            <button class="fchip" data-filter="date" data-val="today" onclick="setChip(this,'date')">Hoje</button>
-            <button class="fchip" data-filter="date" data-val="week" onclick="setChip(this,'date')">Semana</button>
-            <button class="fchip" data-filter="date" data-val="month" onclick="setChip(this,'date')">Mês</button>
+            <button class="fchip fchip-active" data-group="date" data-val="" onclick="setChip(this,'date')">Tudo</button>
+            <button class="fchip" data-group="date" data-val="today" onclick="setChip(this,'date')">Hoje</button>
+            <button class="fchip" data-group="date" data-val="week" onclick="setChip(this,'date')">Semana</button>
+            <button class="fchip" data-group="date" data-val="month" onclick="setChip(this,'date')">Mês</button>
           </div>
         </div>
-
         <div style="width:1px;height:28px;background:#e5e4e0;flex-shrink:0"></div>
-
-        <!-- Score -->
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap">Score</span>
+          <span style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Score</span>
           <div style="display:flex;gap:5px">
-            <button class="fchip fchip-active" data-filter="score" data-val="" onclick="setChip(this,'score')">Todos</button>
-            <button class="fchip fchip-green" data-filter="score" data-val="approved" onclick="setChip(this,'score')">✅ Aprovado</button>
-            <button class="fchip fchip-amber" data-filter="score" data-val="improve" onclick="setChip(this,'score')">⚠️ Melhorar</button>
-            <button class="fchip fchip-red" data-filter="score" data-val="critical" onclick="setChip(this,'score')">🔴 Crítico</button>
+            <button class="fchip fchip-active" data-group="score" data-val="" onclick="setChip(this,'score')">Todos</button>
+            <button class="fchip fchip-green" data-group="score" data-val="approved" onclick="setChip(this,'score')">✅ Aprovado</button>
+            <button class="fchip fchip-amber" data-group="score" data-val="improve" onclick="setChip(this,'score')">⚠️ Melhorar</button>
+            <button class="fchip fchip-red" data-group="score" data-val="critical" onclick="setChip(this,'score')">🔴 Crítico</button>
           </div>
         </div>
-
         <div style="margin-left:auto">
           <button onclick="clearFilters()" style="font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseover="this.style.background='#f5f4f0'" onmouseout="this.style.background='none'">✕ Limpar</button>
         </div>
       </div>
-
-      <!-- Esconde os selects antigos (mantidos para compatibilidade com applyFilters) -->
-      <select id="filter-closer" onchange="applyFilters()" style="display:none"><option value="">Todos</option></select>
-      <select id="filter-date" onchange="applyFilters()" style="display:none"><option value="">Tudo</option><option value="today">Hoje</option><option value="week">Semana</option><option value="month">Mês</option></select>
-      <select id="filter-score" onchange="applyFilters()" style="display:none"><option value="">Todos</option><option value="approved">Aprovado</option><option value="improve">Melhorar</option><option value="critical">Crítico</option></select>
       <div id="avaliacoes-list"><div class="empty">Carregando...</div></div>
     </div>
 
@@ -270,7 +245,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <div class="form-hint">A IA verificará se cada etapa foi seguida</div>
     </div>
     <div class="form-group"><label class="form-label">Critérios de avaliação da IA</label>
-      <textarea id="script-criteria" rows="4" placeholder="- Fez perguntas de diagnóstico?&#10;- Apresentou proposta de valor clara?&#10;- Conduziu ativamente o fechamento?&#10;- Tratou todas as objeções?"></textarea>
+      <textarea id="script-criteria" rows="4" placeholder="- Fez perguntas de diagnóstico?&#10;- Apresentou proposta de valor clara?&#10;- Conduziu ativamente o fechamento?"></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('modal-script')">Cancelar</button>
@@ -308,8 +283,20 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
+<!-- MODAL EXCLUIR REUNIÃO -->
+<div class="overlay" id="modal-delete" style="display:none" onclick="if(event.target===this)closeModal('modal-delete')">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-title" style="color:#A32D2D">⚠️ Excluir reunião?</div>
+    <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:1rem">Esta ação é permanente e também removerá a avaliação vinculada.</p>
+    <div class="info-box info-box-red" id="delete-meeting-info" style="margin-bottom:0"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-delete')">Cancelar</button>
+      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">Sim, excluir</button>
+    </div>
+  </div>
+</div>
 
-<!-- MODAL RELATÓRIO MENSAL DO CLOSER -->
+<!-- MODAL RELATÓRIO CLOSER -->
 <div class="overlay" id="modal-closer-report" style="display:none" onclick="if(event.target===this)closeModal('modal-closer-report')">
   <div class="modal" style="width:520px;max-width:95vw">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
@@ -325,28 +312,10 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div style="font-size:11px;color:#aaa">score médio</div>
       </div>
     </div>
-
-    <!-- Progresso do mês -->
     <div id="cr-trend" style="margin-bottom:1rem"></div>
-
-    <!-- Seções -->
     <div id="cr-sections"></div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid #f0efeb">
-      <button class="btn" onclick="closeModal('modal-closer-report')">Fechar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL CONFIRMAR EXCLUSÃO -->
-<div class="overlay" id="modal-delete" style="display:none" onclick="if(event.target===this)closeModal('modal-delete')">
-  <div class="modal" style="max-width:360px">
-    <div class="modal-title" style="color:#A32D2D">⚠️ Excluir reunião?</div>
-    <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:1rem">Esta ação é permanente e também removerá a avaliação vinculada a esta reunião.</p>
-    <div style="background:#FCEBEB;border-radius:8px;padding:10px 12px;font-size:12px;color:#791F1F;margin-bottom:1rem" id="delete-meeting-info"></div>
     <div class="modal-footer">
-      <button class="btn" onclick="closeModal('modal-delete')">Cancelar</button>
-      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">Sim, excluir</button>
+      <button class="btn" onclick="closeModal('modal-closer-report')">Fechar</button>
     </div>
   </div>
 </div>
@@ -357,29 +326,38 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 // Estado local
 var closers = JSON.parse(localStorage.getItem('closers') || '[]');
 var scripts = JSON.parse(localStorage.getItem('scripts') || '[]');
+var _allEvaluations = [];
+var _deleteId = null;
+var _filterCloser = '';
+var _filterDate = '';
+var _filterScore = '';
 
 function saveLocal() {
   localStorage.setItem('closers', JSON.stringify(closers));
   localStorage.setItem('scripts', JSON.stringify(scripts));
 }
 
-// Toast
 function toast(msg, type) {
   var el = document.getElementById('toast');
   el.textContent = msg;
-  el.style.background = type==='error' ? '#A32D2D' : type==='success' ? '#27500A' : '#1a1a1a';
+  el.style.background = type === 'error' ? '#A32D2D' : type === 'success' ? '#27500A' : '#1a1a1a';
   el.classList.add('show');
-  setTimeout(function(){ el.classList.remove('show'); }, 4000);
+  setTimeout(function() { el.classList.remove('show'); }, 4000);
 }
 
-// Navegação
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
 function navigate(page) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
-  document.getElementById('page-' + page).classList.add('active');
-  var labels = {dashboard:'Dashboard',closers:'Closers',scripts:'Scripts',reunioes:'Reuniões',avaliacoes:'Avaliações',performance:'Performance'};
-  document.querySelectorAll('.nav-item').forEach(function(n){
-    if (labels[page] && n.textContent.indexOf(labels[page].slice(0,5)) >= 0) n.classList.add('active');
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  var el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  var labels = { dashboard: 'Dashboard', closers: 'Closers', performance: 'Performance', scripts: 'Scripts', reunioes: 'Reuniões', avaliacoes: 'Avaliações' };
+  var label = labels[page] || '';
+  document.querySelectorAll('.nav-item').forEach(function(n) {
+    if (label && n.textContent.indexOf(label.slice(0, 5)) >= 0) n.classList.add('active');
   });
   if (page === 'closers') renderClosers();
   if (page === 'scripts') renderScripts();
@@ -389,22 +367,25 @@ function navigate(page) {
   if (page === 'dashboard') loadDashboard();
 }
 
-// Helpers
-function scoreColor(s){ return s>=75?'#27500A':s>=60?'#633806':'#791F1F'; }
-function barColor(s){ return s>=75?'#639922':s>=60?'#BA7517':'#E24B4A'; }
-function initials(name){ return (name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase(); }
-function fmtDate(iso){
-  try { return new Date(iso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
-  catch(e){ return iso; }
+function scoreColor(s) { return s >= 75 ? '#27500A' : s >= 60 ? '#633806' : '#791F1F'; }
+function barColor(s) { return s >= 75 ? '#639922' : s >= 60 ? '#BA7517' : '#E24B4A'; }
+function initials(name) { return (name || '?').split(' ').map(function(w) { return w[0]; }).join('').slice(0, 2).toUpperCase(); }
+function fmtDate(iso) {
+  try { return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+  catch(e) { return iso || ''; }
 }
 
 // CLOSERS
 function renderClosers() {
   var tb = document.getElementById('closers-table');
-  if (!closers.length) { tb.innerHTML='<tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr>'; return; }
-  tb.innerHTML = closers.map(function(c){
-    return '<tr><td><div class="closer-row"><div class="avatar">'+initials(c.name)+'</div>'+c.name+'</div></td><td>—</td><td>—</td><td><button class="btn btn-sm btn-danger" onclick=\"removeCloser(''"+c.id+"'')\"">Remover</button></td></tr>';
-  }).join('');
+  if (!closers.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr>'; return; }
+  var html = '';
+  for (var i = 0; i < closers.length; i++) {
+    var c = closers[i];
+    html += '<tr><td><div class="closer-row"><div class="avatar">' + initials(c.name) + '</div>' + c.name + '</div></td><td>—</td><td>—</td>';
+    html += '<td><button class="btn btn-sm btn-danger" data-closer-id="' + c.id + '" onclick="removeCloser(this)">Remover</button></td></tr>';
+  }
+  tb.innerHTML = html;
 }
 
 function openCloserModal() {
@@ -420,9 +401,9 @@ function addCloser() {
   renderClosers();
   toast('Closer adicionado!', 'success');
 }
-function removeCloser(el) {
-  var id = el.dataset.id;
-  closers = closers.filter(function(c){ return c.id !== id; });
+function removeCloser(btn) {
+  var id = btn.getAttribute('data-closer-id');
+  closers = closers.filter(function(c) { return c.id !== id; });
   saveLocal();
   renderClosers();
 }
@@ -430,10 +411,18 @@ function removeCloser(el) {
 // SCRIPTS
 function renderScripts() {
   var el = document.getElementById('scripts-list');
-  if (!scripts.length) { el.innerHTML='<div class="empty">Nenhum script criado</div>'; return; }
-  el.innerHTML = scripts.map(function(s){
-    return '<div class="script-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px">'+s.name+'</div><span class="badge badge-purple">'+s.steps.split('\n').length+' etapas</span></div><button class="btn btn-sm btn-danger" data-id="'+s.id+'" onclick="removeScript(this)">Remover</button></div><div class="script-steps">'+s.steps+'</div></div>';
-  }).join('');
+  if (!scripts.length) { el.innerHTML = '<div class="empty">Nenhum script criado</div>'; return; }
+  var html = '';
+  for (var i = 0; i < scripts.length; i++) {
+    var s = scripts[i];
+    var steps = s.steps.split('\n').length;
+    html += '<div class="script-card"><div style="display:flex;justify-content:space-between;align-items:flex-start">';
+    html += '<div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px">' + s.name + '</div>';
+    html += '<span class="badge badge-purple">' + steps + ' etapas</span></div>';
+    html += '<button class="btn btn-sm btn-danger" data-script-id="' + s.id + '" onclick="removeScript(this)">Remover</button>';
+    html += '</div><div class="script-steps">' + s.steps + '</div></div>';
+  }
+  el.innerHTML = html;
 }
 
 function openScriptModal() {
@@ -453,9 +442,9 @@ function addScript() {
   renderScripts();
   toast('Script salvo!', 'success');
 }
-function removeScript(el) {
-  var id = el.dataset.id;
-  scripts = scripts.filter(function(s){ return s.id !== id; });
+function removeScript(btn) {
+  var id = btn.getAttribute('data-script-id');
+  scripts = scripts.filter(function(s) { return s.id !== id; });
   saveLocal();
   renderScripts();
 }
@@ -464,68 +453,58 @@ function removeScript(el) {
 function loadMeetings() {
   var tb = document.getElementById('reunioes-table');
   tb.innerHTML = '<tr><td colspan="6" class="empty"><span class="spinner"></span> Carregando...</td></tr>';
-  fetch('/api/meetings').then(function(r){ return r.json(); }).then(function(data){
+  fetch('/api/meetings').then(function(r) { return r.json(); }).then(function(data) {
     var meetings = data.meetings || [];
-    if (!meetings.length) { tb.innerHTML='<tr><td colspan="6" class="empty">Nenhuma reunião ainda</td></tr>'; return; }
-    tb.innerHTML = meetings.map(function(m){
+    if (!meetings.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma reunião ainda</td></tr>'; return; }
+    var html = '';
+    for (var i = 0; i < meetings.length; i++) {
+      var m = meetings[i];
       var s = m.status;
-      var badge = s==='evaluated'?'badge-green':s==='bot_joined'?'badge-amber':s==='scheduled'?'badge-blue':'badge-gray';
-      var dot = s==='evaluated'?'dot-green':s==='bot_joined'?'dot-purple':s==='scheduled'?'dot-blue':'dot-gray';
-      var label = s==='evaluated'?'Avaliado':s==='bot_joined'?'Bot na call':s==='scheduled'?'Agendado':'—';
-      var av = initials(m.closer||'?');
-      var lnk = (m.meetLink||'').replace('https://','');
-      return '<tr><td><div class="closer-row"><div class="avatar">'+av+'</div>'+m.closer+'</div></td><td><span class="tag">'+m.scriptName+'</span></td><td><span class="meet-link">'+lnk+'</span></td><td><span class="badge '+badge+'"><span class="status-dot '+dot+'"></span>'+label+'</span></td><td style="color:#888;font-size:12px">'+fmtDate(m.scheduledAt)+'</td><td><button class="btn btn-sm btn-danger" data-id="'+m.id+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
-    }).join('');
-  }).catch(function(){
+      var badge = s === 'evaluated' ? 'badge-green' : s === 'bot_joined' ? 'badge-amber' : s === 'scheduled' ? 'badge-blue' : 'badge-gray';
+      var dot = s === 'evaluated' ? 'dot-green' : s === 'bot_joined' ? 'dot-purple' : s === 'scheduled' ? 'dot-blue' : 'dot-gray';
+      var label = s === 'evaluated' ? 'Avaliado' : s === 'bot_joined' ? 'Bot na call' : s === 'scheduled' ? 'Agendado' : '—';
+      var av = initials(m.closer || '?');
+      var lnk = (m.meetLink || '').replace('https://', '');
+      html += '<tr>';
+      html += '<td><div class="closer-row"><div class="avatar">' + av + '</div>' + (m.closer || '') + '</div></td>';
+      html += '<td><span class="tag">' + (m.scriptName || '') + '</span></td>';
+      html += '<td><span class="meet-link">' + lnk + '</span></td>';
+      html += '<td><span class="badge ' + badge + '"><span class="status-dot ' + dot + '"></span>' + label + '</span></td>';
+      html += '<td style="color:#888;font-size:12px">' + fmtDate(m.scheduledAt) + '</td>';
+      html += '<td><button class="btn btn-sm btn-danger" data-meeting-id="' + m.id + '" data-meeting-closer="' + (m.closer||'') + '" data-meeting-script="' + (m.scriptName||'') + '" data-meeting-date="' + fmtDate(m.scheduledAt) + '" onclick="deleteMeeting(this)">Excluir</button></td>';
+      html += '</tr>';
+    }
+    tb.innerHTML = html;
+  }).catch(function() {
     tb.innerHTML = '<tr><td colspan="6" class="empty">Erro ao carregar reuniões</td></tr>';
   });
 }
 
-var _deleteId = null;
-var _deleteMeeting = null;
-
-function deleteMeeting(id) {
-  // Encontra a reunião na tabela para mostrar info
-  _deleteId = id;
+function deleteMeeting(btn) {
+  _deleteId = btn.getAttribute('data-meeting-id');
+  var closer = btn.getAttribute('data-meeting-closer');
+  var script = btn.getAttribute('data-meeting-script');
+  var date = btn.getAttribute('data-meeting-date');
+  document.getElementById('delete-meeting-info').innerHTML = '<strong>Closer:</strong> ' + closer + ' &nbsp;|&nbsp; <strong>Script:</strong> ' + script + '<br><strong>Data:</strong> ' + date;
   document.getElementById('modal-delete').style.display = 'flex';
-  // Busca info da reunião
-  fetch('/api/meetings').then(function(r){ return r.json(); }).then(function(data){
-    var m = (data.meetings||[]).find(function(x){ return x.id === id; });
-    if (m) {
-      _deleteMeeting = m;
-      document.getElementById('delete-meeting-info').innerHTML =
-        '<strong>Closer:</strong> '+m.closer+' &nbsp;|&nbsp; <strong>Script:</strong> '+m.scriptName+'<br>'+
-        '<strong>Data:</strong> '+fmtDate(m.scheduledAt)+' &nbsp;|&nbsp; <strong>Link:</strong> '+(m.meetLink||'').replace('https://','');
-    }
-  }).catch(function(){});
 }
-
 function confirmDelete() {
   if (!_deleteId) return;
   var btn = document.getElementById('btn-confirm-delete');
   btn.disabled = true;
   btn.textContent = 'Excluindo...';
-  fetch('/api/delete-meeting', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:_deleteId}) })
-    .then(function(){
-      closeModal('modal-delete');
-      loadMeetings();
-      toast('Reunião excluída com sucesso!', 'success');
-      btn.disabled = false;
-      btn.textContent = 'Sim, excluir';
-      _deleteId = null;
-    })
-    .catch(function(){
-      toast('Erro ao excluir reunião', 'error');
-      btn.disabled = false;
-      btn.textContent = 'Sim, excluir';
-    });
+  fetch('/api/delete-meeting', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: _deleteId }) })
+    .then(function() { closeModal('modal-delete'); loadMeetings(); toast('Reunião excluída!', 'success'); btn.disabled = false; btn.textContent = 'Sim, excluir'; _deleteId = null; })
+    .catch(function() { toast('Erro ao excluir', 'error'); btn.disabled = false; btn.textContent = 'Sim, excluir'; });
 }
 
 function openNewMeeting() {
   var cs = document.getElementById('meet-closer');
   var ss = document.getElementById('meet-script');
-  cs.innerHTML = '<option value="">Selecione</option>' + closers.map(function(c){ return '<option value="'+c.id+'">'+c.name+'</option>'; }).join('');
-  ss.innerHTML = '<option value="">Selecione</option>' + scripts.map(function(s){ return '<option value="'+s.id+'">'+s.name+'</option>'; }).join('');
+  cs.innerHTML = '<option value="">Selecione</option>';
+  for (var i = 0; i < closers.length; i++) cs.innerHTML += '<option value="' + closers[i].id + '">' + closers[i].name + '</option>';
+  ss.innerHTML = '<option value="">Selecione</option>';
+  for (var j = 0; j < scripts.length; j++) ss.innerHTML += '<option value="' + scripts[j].id + '">' + scripts[j].name + '</option>';
   document.getElementById('meet-link').value = '';
   document.getElementById('meet-datetime').value = '';
   document.getElementById('meeting-result').style.display = 'none';
@@ -535,173 +514,114 @@ function openNewMeeting() {
   btn.onclick = addMeeting;
   document.getElementById('modal-meeting').style.display = 'flex';
 }
-
 function generateMeetLink() {
   var chars = 'abcdefghijklmnopqrstuvwxyz';
-  function seg(n){ var s=''; for(var i=0;i<n;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s; }
-  document.getElementById('meet-link').value = 'https://meet.google.com/'+seg(3)+'-'+seg(4)+'-'+seg(3);
+  function seg(n) { var s = ''; for (var i = 0; i < n; i++) s += chars[Math.floor(Math.random() * chars.length)]; return s; }
+  document.getElementById('meet-link').value = 'https://meet.google.com/' + seg(3) + '-' + seg(4) + '-' + seg(3);
 }
-
 function addMeeting() {
   var closerId = document.getElementById('meet-closer').value;
   var scriptId = document.getElementById('meet-script').value;
   var meetLink = document.getElementById('meet-link').value.trim();
   var dt = document.getElementById('meet-datetime').value;
   if (!closerId || !scriptId || !meetLink) { toast('Preencha closer, script e link', 'error'); return; }
-  var closer = closers.find(function(c){ return c.id===closerId; });
-  var script = scripts.find(function(s){ return s.id===scriptId; });
+  var closer = null, script = null;
+  for (var i = 0; i < closers.length; i++) if (closers[i].id === closerId) { closer = closers[i]; break; }
+  for (var j = 0; j < scripts.length; j++) if (scripts[j].id === scriptId) { script = scripts[j]; break; }
   if (!closer || !script) { toast('Closer ou script inválido', 'error'); return; }
   var btn = document.getElementById('btn-create-meeting');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Enviando bot...';
   fetch('/api/join-meeting', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ closer:closer.name, closerId:closer.id, scriptId:script.id, scriptName:script.name, scriptSteps:script.steps, scriptCriteria:script.criteria, meetLink:meetLink, scheduledAt:dt?new Date(dt).toISOString():new Date().toISOString() })
-  }).then(function(r){ return r.json(); }).then(function(data){
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ closer: closer.name, closerId: closer.id, scriptId: script.id, scriptName: script.name, scriptSteps: script.steps, scriptCriteria: script.criteria, meetLink: meetLink, scheduledAt: dt ? new Date(dt).toISOString() : new Date().toISOString() })
+  }).then(function(r) { return r.json(); }).then(function(data) {
     var resultEl = document.getElementById('meeting-result');
     if (data.success && data.meeting && data.meeting.firefliesMeetingId) {
-      resultEl.innerHTML = '<div class="info-box info-box-green">✅ <strong>Bot entrou na reunião!</strong> Admita o participante "Fireflies" no Google Meet. A avaliação será gerada automaticamente ao final.</div>';
+      resultEl.innerHTML = '<div class="info-box info-box-green">✅ <strong>Bot entrou na reunião!</strong> Admita o participante "Fireflies" no Google Meet.</div>';
       toast('Bot CloserAI enviado!', 'success');
     } else {
       var err = (data.meeting && data.meeting.botError) || 'Verifique se a reunião está ativa';
-      resultEl.innerHTML = '<div class="info-box info-box-amber">⚠️ Reunião salva, mas o bot não entrou: '+err+'</div>';
+      resultEl.innerHTML = '<div class="info-box info-box-amber">⚠️ Reunião salva, mas o bot não entrou: ' + err + '</div>';
     }
     resultEl.style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Fechar';
-    btn.onclick = function(){ closeModal('modal-meeting'); loadMeetings(); };
-  }).catch(function(){
-    toast('Erro ao criar reunião', 'error');
-    btn.disabled = false;
-    btn.textContent = 'Criar reunião + enviar bot';
-    btn.onclick = addMeeting;
-  });
+    btn.onclick = function() { closeModal('modal-meeting'); loadMeetings(); };
+  }).catch(function() { toast('Erro ao criar reunião', 'error'); btn.disabled = false; btn.textContent = 'Criar reunião + enviar bot'; btn.onclick = addMeeting; });
 }
 
 // AVALIAÇÕES
-var _allEvaluations = [];
-
-function loadAvaliacoes() {
-  var el = document.getElementById('avaliacoes-list');
-  el.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando avaliações...</div>';
-  fetch('/api/evaluations').then(function(r){ return r.json(); }).then(function(data){
-    var evaluations = data.evaluations || [];
-    _allEvaluations = evaluations;
-    // Popula chips de closers
-    var currentCloser = document.getElementById('filter-closer').value;
-    var uniqueClosers = [];
-    evaluations.forEach(function(e){ if (e.closer && uniqueClosers.indexOf(e.closer)<0) uniqueClosers.push(e.closer); });
-    var chipsContainer = document.getElementById('filter-closer-chips');
-    if (chipsContainer) {
-      chipsContainer.innerHTML = '<button class="fchip'+(currentCloser===''?' fchip-active':'')+'" data-filter="closer" data-val="" onclick="setChip(this,'closer')">Todos</button>' +
-        uniqueClosers.map(function(c){ return '<button class="fchip'+(currentCloser===c?' fchip-active':'')+'" data-filter="closer" data-val="'+c+'" onclick="setChip(this,'closer')">'+c+'</button>'; }).join('');
-    }
-    // Mantém select atualizado (oculto)
-    var closerSel = document.getElementById('filter-closer');
-    closerSel.innerHTML = '<option value="">Todos</option>' + uniqueClosers.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
-    closerSel.value = currentCloser;
-    if (!evaluations.length) {
-      var fake = [{
-        closer:'Ives Silva', initials:'IS',
-        scriptName:'Script (Validado) até 40 mil',
-        createdAt: new Date().toISOString(),
-        evaluation:{
-          score:82,
-          feedback:'O closer conduziu a reunião com boa energia e seguiu as etapas do script de forma consistente. A apresentação da proposta foi clara e objetiva. Ponto de atenção: a etapa de diagnóstico poderia ter sido mais aprofundada — o cliente sinalizou algumas dores que não foram exploradas. Na quebra de objeções, o closer respondeu bem ao questionamento de preço, mas poderia ter reforçado mais o valor do produto. O fechamento foi conduzido com segurança.',
-          criteria_scores:{'Seguiu as etapas do script':88,'Diagnóstico do cliente':70,'Apresentação de valor':85,'Quebra de objeções':78,'Condução do fechamento':90},
-          highlights:['Boa energia e rapport com o cliente','Fechamento conduzido com segurança'],
-          improvements:['Aprofundar mais o diagnóstico','Explorar melhor as dores sinalizadas pelo cliente'],
-          closer_analysis:{
-            melhor_etapa:'Fechamento — o closer foi direto e conduziu o cliente para a decisão com segurança, sem hesitar ao apresentar o investimento.',
-            etapa_critica:'Diagnóstico — ficou apenas 4 minutos nesta etapa (recomendado: 10 min). O cliente mencionou dificuldade com retenção de alunos mas o closer não aprofundou. Perguntas como "quanto você perde por mês com isso?" teriam aumentado a percepção de urgência.',
-            tecnicas_usadas:['Rapport inicial','Prova social','Ancoragem de preço'],
-            oportunidades_perdidas:['Não explorou a dor de retenção de alunos mencionada pelo lead','Não perguntou sobre tentativas anteriores de solução'],
-            postura_geral:'Postura confiante e tom profissional durante toda a reunião. Boa fluência, sem pausas longas. Poderia ter sido mais consultivo na fase de diagnóstico.'
-          },
-          lead_info:{
-            segmento:'Academia de musculação — rede com 2 unidades',
-            situacao_atual:'Dono de 2 academias com faturamento atual de R$35 mil/mês, buscando escalar para R$60 mil. Equipe de 3 vendedores internos sem processo estruturado.',
-            principais_dores:['Alta taxa de cancelamento de matrículas (churn)','Vendedores sem script e sem métricas','Dificuldade de fechar planos anuais'],
-            objecoes_levantadas:['Preço acima do esperado','Quer consultar o sócio antes de decidir'],
-            nivel_interesse:'Alto — lead engajado, fez perguntas sobre resultados e pediu referências de outros clientes do mesmo segmento.',
-            detalhes_negocio:'2 unidades em São Paulo, ~400 alunos ativos, ticket médio R$89/mês, 3 vendedores. Meta de chegar a 600 alunos em 12 meses.',
-            proximo_passo:'Ligação de follow-up na quinta-feira às 14h com o sócio presente para apresentação final da proposta.'
-          }
-        }
-      }];
-      el.innerHTML = '<div class="info-box info-box-amber">📋 <strong>Demonstração:</strong> esta é uma avaliação de exemplo. As avaliações reais aparecem automaticamente após cada reunião.</div>' + renderEvalCards(fake);
-      return;
-    }
-    el.innerHTML = renderEvalCards(evaluations);
-  }).catch(function(){
-    el.innerHTML = '<div class="empty">Erro ao carregar avaliações</div>';
-  });
-}
-
-function setChip(el, filterType) {
-  // Desativa todos chips do grupo
+function setChipCloser(el) { setChip(el, "closer"); }
+function setChip(el, group) {
   var val = el.getAttribute('data-val');
-  if (filterType === 'closer') {
-    document.querySelectorAll('#filter-closer-chips .fchip').forEach(function(c){ c.classList.remove('fchip-active'); });
-    el.classList.add('fchip-active');
-    document.getElementById('filter-closer').value = val;
-  } else {
-    document.querySelectorAll('[data-filter="'+filterType+'"]').forEach(function(c){ c.classList.remove('fchip-active'); });
-    el.classList.add('fchip-active');
-    document.getElementById('filter-'+filterType).value = val;
+  if (group === 'closer') {
+    document.querySelectorAll('#filter-closer-chips .fchip').forEach(function(c) { c.classList.remove('fchip-active'); });
+    _filterCloser = val;
+  } else if (group === 'date') {
+    document.querySelectorAll('[data-group="date"]').forEach(function(c) { c.classList.remove('fchip-active'); });
+    _filterDate = val;
+  } else if (group === 'score') {
+    document.querySelectorAll('[data-group="score"]').forEach(function(c) { c.classList.remove('fchip-active'); });
+    _filterScore = val;
   }
+  el.classList.add('fchip-active');
   applyFilters();
 }
-
 function applyFilters() {
-  var closer = document.getElementById('filter-closer').value;
-  var date = document.getElementById('filter-date').value;
-  var score = document.getElementById('filter-score').value;
   var filtered = _allEvaluations.filter(function(a) {
-    if (closer && a.closer !== closer) return false;
-    if (date) {
-      var d = new Date(a.createdAt);
-      var now = new Date();
-      if (date === 'today') {
-        if (d.toDateString() !== now.toDateString()) return false;
-      } else if (date === 'week') {
-        var weekAgo = new Date(now); weekAgo.setDate(now.getDate()-7);
-        if (d < weekAgo) return false;
-      } else if (date === 'month') {
-        if (d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear()) return false;
-      }
+    if (_filterCloser && a.closer !== _filterCloser) return false;
+    if (_filterDate) {
+      var d = new Date(a.createdAt), now = new Date();
+      if (_filterDate === 'today' && d.toDateString() !== now.toDateString()) return false;
+      if (_filterDate === 'week') { var w = new Date(now); w.setDate(now.getDate() - 7); if (d < w) return false; }
+      if (_filterDate === 'month' && (d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear())) return false;
     }
-    if (score) {
+    if (_filterScore) {
       var s = (a.evaluation && a.evaluation.score) || 0;
-      if (score === 'approved' && s < 75) return false;
-      if (score === 'improve' && (s < 60 || s >= 75)) return false;
-      if (score === 'critical' && s >= 60) return false;
+      if (_filterScore === 'approved' && s < 75) return false;
+      if (_filterScore === 'improve' && (s < 60 || s >= 75)) return false;
+      if (_filterScore === 'critical' && s >= 60) return false;
     }
     return true;
   });
   var el = document.getElementById('avaliacoes-list');
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty">Nenhuma avaliação encontrada com esses filtros</div>';
-  } else {
-    el.innerHTML = renderEvalCards(filtered);
-  }
+  el.innerHTML = filtered.length ? renderEvalCards(filtered) : '<div class="empty">Nenhuma avaliação encontrada com esses filtros</div>';
 }
-
 function clearFilters() {
-  document.getElementById('filter-closer').value = '';
-  document.getElementById('filter-date').value = '';
-  document.getElementById('filter-score').value = '';
-  // Reset visual dos chips
-  document.querySelectorAll('.fchip').forEach(function(c){ c.classList.remove('fchip-active'); });
-  document.querySelectorAll('.fchip[data-val=""]').forEach(function(c){ c.classList.add('fchip-active'); });
+  _filterCloser = ''; _filterDate = ''; _filterScore = '';
+  document.querySelectorAll('.fchip').forEach(function(c) { c.classList.remove('fchip-active'); });
+  document.querySelectorAll('.fchip[data-val=""]').forEach(function(c) { c.classList.add('fchip-active'); });
   var el = document.getElementById('avaliacoes-list');
-  if (_allEvaluations.length) {
-    el.innerHTML = renderEvalCards(_allEvaluations);
-  }
+  el.innerHTML = _allEvaluations.length ? renderEvalCards(_allEvaluations) : '<div class="empty">Nenhuma avaliação ainda</div>';
+}
+function loadAvaliacoes() {
+  var el = document.getElementById('avaliacoes-list');
+  el.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando avaliações...</div>';
+  fetch('/api/evaluations').then(function(r) { return r.json(); }).then(function(data) {
+    var evaluations = data.evaluations || [];
+    _allEvaluations = evaluations;
+    // Popula chips de closers
+    var unique = [];
+    for (var i = 0; i < evaluations.length; i++) { if (evaluations[i].closer && unique.indexOf(evaluations[i].closer) < 0) unique.push(evaluations[i].closer); }
+    var chips = '<button class="fchip' + (_filterCloser === '' ? ' fchip-active' : '') + '" data-val="" data-closer-chip onclick="setChipCloser(this)">Todos</button>';
+    for (var j = 0; j < unique.length; j++) chips += '<button class="fchip' + (_filterCloser === unique[j] ? ' fchip-active' : '') + '" data-val="' + unique[j] + '" data-closer-chip onclick="setChipCloser(this)">' + unique[j] + '</button>';
+    var cc = document.getElementById('filter-closer-chips');
+    if (cc) cc.innerHTML = chips;
+    if (!evaluations.length) {
+      // Demo
+      var fake = [{ closer: 'Ives Silva', scriptName: 'Script (Validado) até 40 mil', createdAt: new Date().toISOString(), evaluation: { score: 82, feedback: 'O closer conduziu a reunião com boa energia e seguiu as etapas do script de forma consistente. A apresentação da proposta foi clara e objetiva. Ponto de atenção: a etapa de diagnóstico poderia ter sido mais aprofundada.', criteria_scores: { 'Seguiu as etapas do script': 88, 'Diagnóstico do cliente': 70, 'Apresentação de valor': 85, 'Quebra de objeções': 78, 'Condução do fechamento': 90 }, highlights: ['Boa energia e rapport com o cliente', 'Fechamento conduzido com segurança'], improvements: ['Aprofundar mais o diagnóstico'], closer_analysis: { melhor_etapa: 'Fechamento — direto e seguro ao apresentar o investimento.', etapa_critica: 'Diagnóstico — apenas 4 min dos 10 recomendados. Não explorou dores mencionadas.', tecnicas_usadas: ['Rapport', 'Prova social', 'Ancoragem de preço'], oportunidades_perdidas: ['Não explorou a dor de retenção', 'Não perguntou sobre tentativas anteriores'], postura_geral: 'Confiante e profissional. Poderia ser mais consultivo no diagnóstico.' }, lead_info: { segmento: 'Academia de musculação — 2 unidades', situacao_atual: 'Faturamento de R$35k/mês, meta R$60k', principais_dores: ['Alta taxa de cancelamento', 'Vendedores sem script'], objecoes_levantadas: ['Preço acima do esperado', 'Quer consultar o sócio'], nivel_interesse: 'Alto — fez perguntas e pediu referências', detalhes_negocio: '2 unidades, ~400 alunos, 3 vendedores', proximo_passo: 'Ligação quinta-feira 14h com sócio presente' } } }];
+      el.innerHTML = '<div class="info-box info-box-amber">📋 <strong>Demonstração:</strong> avaliação de exemplo. As reais aparecem automaticamente após cada reunião.</div>' + renderEvalCards(fake);
+      return;
+    }
+    el.innerHTML = renderEvalCards(evaluations);
+  }).catch(function() { el.innerHTML = '<div class="empty">Erro ao carregar avaliações</div>'; });
 }
 
 function renderEvalCards(evaluations) {
-  return evaluations.map(function(a){
+  var html = '';
+  for (var i = 0; i < evaluations.length; i++) {
+    var a = evaluations[i];
     var ev = a.evaluation || {};
     var score = ev.score || 0;
     var cs = ev.criteria_scores || {};
@@ -709,365 +629,224 @@ function renderEvalCards(evaluations) {
     var improvements = ev.improvements || [];
     var ca = ev.closer_analysis || {};
     var li = ev.lead_info || {};
-    var badge = score>=75?'badge-green':score>=60?'badge-amber':'badge-red';
-    var label = score>=75?'Aprovado':score>=60?'Precisa melhorar':'Crítico';
-
-    // Barras de critérios
-    var bars = Object.keys(cs).map(function(k){
-      return '<div class="score-bar-container"><div class="score-label">'+k+'</div><div class="score-track"><div class="score-fill" style="width:'+cs[k]+'%;background:'+barColor(cs[k])+'"></div></div><div class="score-num">'+cs[k]+'%</div></div>';
-    }).join('');
-
-    // Destaques e melhorias
-    var hi = highlights.length ? '<div style="margin-top:8px;font-size:12px;color:#27500A"><strong>✅ Destaques:</strong> '+highlights.join(' · ')+'</div>' : '';
-    var im = improvements.length ? '<div style="margin-top:4px;font-size:12px;color:#633806"><strong>⚠️ Melhorias:</strong> '+improvements.join(' · ')+'</div>' : '';
-
-    // Análise profunda do closer
+    var badge = score >= 75 ? 'badge-green' : score >= 60 ? 'badge-amber' : 'badge-red';
+    var label = score >= 75 ? 'Aprovado' : score >= 60 ? 'Precisa melhorar' : 'Crítico';
+    var bars = '';
+    var keys = Object.keys(cs);
+    for (var k = 0; k < keys.length; k++) {
+      var kk = keys[k], vv = cs[kk];
+      bars += '<div class="score-bar-container"><div class="score-label">' + kk + '</div><div class="score-track"><div class="score-fill" style="width:' + vv + '%;background:' + barColor(vv) + '"></div></div><div class="score-num">' + vv + '%</div></div>';
+    }
+    var hi = highlights.length ? '<div style="margin-top:8px;font-size:12px;color:#27500A"><strong>✅ Destaques:</strong> ' + highlights.join(' · ') + '</div>' : '';
+    var im = improvements.length ? '<div style="margin-top:4px;font-size:12px;color:#633806"><strong>⚠️ Melhorias:</strong> ' + improvements.join(' · ') + '</div>' : '';
     var closerAnalysis = '';
     if (ca.melhor_etapa || ca.etapa_critica || ca.postura_geral) {
-      var tecnicas = (ca.tecnicas_usadas||[]).length ? '<div style="margin-top:6px;font-size:12px;color:#555"><strong>Técnicas identificadas:</strong> '+ca.tecnicas_usadas.join(', ')+'</div>' : '';
-      var oportunidades = (ca.oportunidades_perdidas||[]).length ? '<div style="margin-top:4px;font-size:12px;color:#791F1F"><strong>⚡ Oportunidades perdidas:</strong> '+(ca.oportunidades_perdidas||[]).join(' · ')+'</div>' : '';
-      closerAnalysis = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">'+
-        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">📊 Análise do Closer</div>'+
-        (ca.postura_geral ? '<div style="font-size:12px;color:#555;margin-bottom:8px;line-height:1.6"><strong>Postura geral:</strong> '+ca.postura_geral+'</div>' : '')+
-        (ca.melhor_etapa ? '<div style="background:#EAF3DE;border-radius:6px;padding:8px 10px;font-size:12px;color:#27500A;margin-bottom:6px"><strong>✅ Melhor etapa:</strong> '+ca.melhor_etapa+'</div>' : '')+
-        (ca.etapa_critica ? '<div style="background:#FCEBEB;border-radius:6px;padding:8px 10px;font-size:12px;color:#791F1F;margin-bottom:6px"><strong>🎯 Etapa crítica a melhorar:</strong> '+ca.etapa_critica+'</div>' : '')+
-        tecnicas + oportunidades +
+      closerAnalysis = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">' +
+        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📊 Análise do Closer</div>' +
+        (ca.postura_geral ? '<div style="font-size:12px;color:#555;margin-bottom:8px;line-height:1.6"><strong>Postura geral:</strong> ' + ca.postura_geral + '</div>' : '') +
+        (ca.melhor_etapa ? '<div style="background:#EAF3DE;border-radius:6px;padding:8px 10px;font-size:12px;color:#27500A;margin-bottom:6px"><strong>✅ Melhor etapa:</strong> ' + ca.melhor_etapa + '</div>' : '') +
+        (ca.etapa_critica ? '<div style="background:#FCEBEB;border-radius:6px;padding:8px 10px;font-size:12px;color:#791F1F;margin-bottom:6px"><strong>🎯 Etapa crítica:</strong> ' + ca.etapa_critica + '</div>' : '') +
+        ((ca.tecnicas_usadas && ca.tecnicas_usadas.length) ? '<div style="margin-top:4px;font-size:12px;color:#555"><strong>Técnicas:</strong> ' + ca.tecnicas_usadas.join(', ') + '</div>' : '') +
+        ((ca.oportunidades_perdidas && ca.oportunidades_perdidas.length) ? '<div style="margin-top:4px;font-size:12px;color:#791F1F"><strong>⚡ Oportunidades perdidas:</strong> ' + ca.oportunidades_perdidas.join(' · ') + '</div>' : '') +
         '</div>';
     }
-
-    // Informações do Lead / ICP
     var leadInfo = '';
     if (li.situacao_atual || li.principais_dores || li.segmento) {
-      var dores = (li.principais_dores||[]).length ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#633806">🔥 Principais dores:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">'+(li.principais_dores||[]).map(function(d){return '<li>'+d+'</li>';}).join('')+'</ul></div>' : '';
-      var objecoes = (li.objecoes_levantadas||[]).length ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#791F1F">❌ Objeções levantadas:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">'+(li.objecoes_levantadas||[]).map(function(o){return '<li>'+o+'</li>';}).join('')+'</ul></div>' : '';
-      var nivelBg = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto')>=0 ? '#EAF3DE' : li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('baixo')>=0 ? '#FCEBEB' : '#FAEEDA';
-      var nivelColor = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto')>=0 ? '#27500A' : li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('baixo')>=0 ? '#791F1F' : '#633806';
-      leadInfo = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">'+
-        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">👤 Informações do Lead (ICP)</div>'+
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'+
-          (li.segmento ? '<div style="background:#f5f4f0;border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Segmento</div><div style="font-size:12px;color:#1a1a1a">'+li.segmento+'</div></div>' : '')+
-          (li.nivel_interesse ? '<div style="background:'+nivelBg+';border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Nível de interesse</div><div style="font-size:12px;color:'+nivelColor+'">'+li.nivel_interesse+'</div></div>' : '')+
-        '</div>'+
-        (li.situacao_atual ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Situação atual:</strong> '+li.situacao_atual+'</div>' : '')+
-        (li.detalhes_negocio ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Detalhes do negócio:</strong> '+li.detalhes_negocio+'</div>' : '')+
+      var dores = (li.principais_dores && li.principais_dores.length) ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#633806">🔥 Dores:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">' + li.principais_dores.map(function(d) { return '<li>' + d + '</li>'; }).join('') + '</ul></div>' : '';
+      var objecoes = (li.objecoes_levantadas && li.objecoes_levantadas.length) ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#791F1F">❌ Objeções:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">' + li.objecoes_levantadas.map(function(o) { return '<li>' + o + '</li>'; }).join('') + '</ul></div>' : '';
+      var niBg = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto') >= 0 ? '#EAF3DE' : '#FAEEDA';
+      var niColor = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto') >= 0 ? '#27500A' : '#633806';
+      leadInfo = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">' +
+        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">👤 Informações do Lead</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">' +
+        (li.segmento ? '<div style="background:#f5f4f0;border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Segmento</div><div style="font-size:12px;color:#1a1a1a">' + li.segmento + '</div></div>' : '') +
+        (li.nivel_interesse ? '<div style="background:' + niBg + ';border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Interesse</div><div style="font-size:12px;color:' + niColor + '">' + li.nivel_interesse + '</div></div>' : '') +
+        '</div>' +
+        (li.situacao_atual ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Situação:</strong> ' + li.situacao_atual + '</div>' : '') +
+        (li.detalhes_negocio ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Negócio:</strong> ' + li.detalhes_negocio + '</div>' : '') +
         dores + objecoes +
-        (li.proximo_passo ? '<div style="margin-top:8px;background:#EEEDFE;border-radius:6px;padding:8px 10px;font-size:12px;color:#3C3489"><strong>📅 Próximo passo:</strong> '+li.proximo_passo+'</div>' : '')+
+        (li.proximo_passo ? '<div style="margin-top:8px;background:#EEEDFE;border-radius:6px;padding:8px 10px;font-size:12px;color:#3C3489"><strong>📅 Próximo passo:</strong> ' + li.proximo_passo + '</div>' : '') +
         '</div>';
     }
-
-    var meetName = a.meetingTitle || a.scriptName || 'Reunião';
-    return '<div class="eval-card">'+
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">'+
-        '<div class="closer-row"><div class="avatar" style="width:40px;height:40px;font-size:13px">'+initials(a.closer||'?')+'</div>'+
-          '<div>'+
-            '<div style="font-size:14px;font-weight:600;color:#1a1a1a">'+a.closer+'</div>'+
-            '<div style="font-size:12px;color:#aaa;margin-top:1px">'+fmtDate(a.createdAt)+'</div>'+
-            '<div style="margin-top:4px"><span style="background:#EEEDFE;color:#3C3489;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px">☰ '+a.scriptName+'</span></div>'+
-          '</div></div>'+
-        '<div style="text-align:right"><div style="font-size:28px;font-weight:700;color:'+scoreColor(score)+'">'+score+'%</div>'+
-          '<span class="badge '+badge+'" style="font-size:10px">'+label+'</span></div>'+
-      '</div>'+
-      '<div style="border-top:1px solid #f0efeb;padding-top:12px">'+bars+'</div>'+
-      (ev.feedback?'<div class="feedback-box"><strong>Feedback da IA:</strong> '+ev.feedback+'</div>':'')+
-      hi + im +
-      closerAnalysis +
-      leadInfo +
-    '</div>';
-  }).join('');
+    html += '<div class="eval-card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">' +
+      '<div class="closer-row"><div class="avatar" style="width:40px;height:40px;font-size:13px">' + initials(a.closer || '?') + '</div>' +
+      '<div><div style="font-size:14px;font-weight:600;color:#1a1a1a">' + (a.closer || '') + '</div>' +
+      '<div style="font-size:12px;color:#aaa;margin-top:1px">' + fmtDate(a.createdAt) + '</div>' +
+      '<div style="margin-top:4px"><span class="badge badge-purple">☰ ' + (a.scriptName || '') + '</span></div></div></div>' +
+      '<div style="text-align:right"><div style="font-size:28px;font-weight:700;color:' + scoreColor(score) + '">' + score + '%</div><span class="badge ' + badge + '" style="font-size:10px">' + label + '</span></div>' +
+      '</div>' +
+      '<div style="border-top:1px solid #f0efeb;padding-top:12px">' + bars + '</div>' +
+      (ev.feedback ? '<div class="feedback-box"><strong>Feedback da IA:</strong> ' + ev.feedback + '</div>' : '') +
+      hi + im + closerAnalysis + leadInfo +
+      '</div>';
+  }
+  return html;
 }
 
-// DASHBOARD
-function loadDashboard() {
-  document.getElementById('dash-closers').textContent = closers.length;
-  Promise.all([fetch('/api/meetings').then(function(r){return r.json();}), fetch('/api/evaluations').then(function(r){return r.json();})]).then(function(results){
-    var meetings = results[0].meetings || [];
-    var evaluations = results[1].evaluations || [];
-    document.getElementById('dash-meetings').textContent = meetings.length;
-    document.getElementById('dash-evals').textContent = evaluations.length;
-    var scores = evaluations.map(function(e){ return e.evaluation && e.evaluation.score; }).filter(Boolean);
-    document.getElementById('dash-score').textContent = scores.length ? Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length)+'%' : '—';
-    var tb = document.getElementById('dash-evals-table');
-    if (!evaluations.length) { tb.innerHTML='<tr><td colspan="5" class="empty">Nenhuma avaliação ainda</td></tr>'; return; }
-    tb.innerHTML = evaluations.slice(0,5).map(function(a){
-      var score = (a.evaluation && a.evaluation.score) || 0;
-      var badge = score>=75?'badge-green':score>=60?'badge-amber':'badge-red';
-      var label = score>=75?'Aprovado':score>=60?'Precisa melhorar':'Crítico';
-      return '<tr><td><div class="closer-row"><div class="avatar">'+initials(a.closer||'?')+'</div>'+a.closer+'</div></td><td>'+a.scriptName+'</td><td><span style="font-weight:600;color:'+scoreColor(score)+'">'+score+'%</span></td><td style="font-size:12px;color:#aaa">'+fmtDate(a.createdAt)+'</td><td><span class="badge '+badge+'">'+label+'</span></td></tr>';
-    }).join('');
-  }).catch(function(){});
-}
-
+// PERFORMANCE
 function loadPerformance() {
   var period = document.getElementById('perf-period') ? document.getElementById('perf-period').value : 'all';
   var summaryEl = document.getElementById('perf-summary-cards');
   var listEl = document.getElementById('perf-closers-list');
   if (!summaryEl || !listEl) return;
   listEl.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando...</div>';
-
-  Promise.all([
-    fetch('/api/meetings').then(function(r){ return r.json(); }),
-    fetch('/api/evaluations').then(function(r){ return r.json(); })
-  ]).then(function(results) {
+  Promise.all([fetch('/api/meetings').then(function(r) { return r.json(); }), fetch('/api/evaluations').then(function(r) { return r.json(); })]).then(function(results) {
     var meetings = results[0].meetings || [];
     var evaluations = results[1].evaluations || [];
-
-    // Filtra por período
     var now = new Date();
     function inPeriod(iso) {
       if (period === 'all') return true;
       var d = new Date(iso);
-      if (period === 'week') { var w = new Date(now); w.setDate(now.getDate()-7); return d >= w; }
-      if (period === 'month') { return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); }
+      if (period === 'week') { var w = new Date(now); w.setDate(now.getDate() - 7); return d >= w; }
+      if (period === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
       return true;
     }
-    meetings = meetings.filter(function(m){ return inPeriod(m.scheduledAt||m.createdAt); });
-    evaluations = evaluations.filter(function(e){ return inPeriod(e.createdAt); });
-
-    // Agrupa por closer
+    meetings = meetings.filter(function(m) { return inPeriod(m.scheduledAt || m.createdAt); });
+    evaluations = evaluations.filter(function(e) { return inPeriod(e.createdAt); });
     var byCloser = {};
-    closers.forEach(function(c) {
-      byCloser[c.name] = { name: c.name, meetings: 0, evaluated: 0, scores: [], botJoined: 0 };
-    });
+    closers.forEach(function(c) { byCloser[c.name] = { name: c.name, meetings: 0, evaluated: 0, scores: [] }; });
     meetings.forEach(function(m) {
-      if (!byCloser[m.closer]) byCloser[m.closer] = { name: m.closer, meetings: 0, evaluated: 0, scores: [], botJoined: 0 };
+      if (!byCloser[m.closer]) byCloser[m.closer] = { name: m.closer, meetings: 0, evaluated: 0, scores: [] };
       byCloser[m.closer].meetings++;
-      if (m.status === 'bot_joined' || m.status === 'evaluated') byCloser[m.closer].botJoined++;
     });
     evaluations.forEach(function(e) {
-      if (!byCloser[e.closer]) byCloser[e.closer] = { name: e.closer, meetings: 0, evaluated: 0, scores: [], botJoined: 0 };
+      if (!byCloser[e.closer]) byCloser[e.closer] = { name: e.closer, meetings: 0, evaluated: 0, scores: [] };
       byCloser[e.closer].evaluated++;
       if (e.evaluation && e.evaluation.score) byCloser[e.closer].scores.push(e.evaluation.score);
     });
-
-    var closerData = Object.values(byCloser).sort(function(a,b){ return b.meetings - a.meetings; });
-    var totalMeetings = meetings.length;
-    var totalEvaluated = evaluations.length;
-    var allScores = evaluations.map(function(e){ return e.evaluation && e.evaluation.score; }).filter(Boolean);
-    var avgScore = allScores.length ? Math.round(allScores.reduce(function(a,b){return a+b;},0)/allScores.length) : 0;
-    var topCloser = closerData.length ? closerData.reduce(function(a,b){ return (b.scores.length ? b.scores.reduce(function(x,y){return x+y;},0)/b.scores.length : 0) > (a.scores.length ? a.scores.reduce(function(x,y){return x+y;},0)/a.scores.length : 0) ? b : a; }, closerData[0]) : null;
-
-    // Cards de resumo
+    var closerData = Object.values(byCloser).sort(function(a, b) { return b.meetings - a.meetings; });
+    var allScores = evaluations.map(function(e) { return e.evaluation && e.evaluation.score; }).filter(Boolean);
+    var avgScore = allScores.length ? Math.round(allScores.reduce(function(a, b) { return a + b; }, 0) / allScores.length) : 0;
     summaryEl.innerHTML =
-      '<div class="metric-card"><div class="metric-label">Reuniões no período</div><div class="metric-val">'+totalMeetings+'</div></div>'+
-      '<div class="metric-card"><div class="metric-label">Avaliadas pela IA</div><div class="metric-val">'+totalEvaluated+'</div></div>'+
-      '<div class="metric-card"><div class="metric-label">Score médio do time</div><div class="metric-val" style="color:'+scoreColor(avgScore)+'">'+( avgScore || '—')+(avgScore?'%':'')+'</div></div>'+
-      '<div class="metric-card"><div class="metric-label">Closers ativos</div><div class="metric-val">'+closerData.filter(function(c){return c.meetings>0;}).length+'</div></div>';
-
-    if (!closerData.length) {
-      listEl.innerHTML = '<div class="empty">Nenhum dado ainda. Adicione closers e agende reuniões.</div>';
-      return;
+      '<div class="metric-card"><div class="metric-label">Reuniões no período</div><div class="metric-val">' + meetings.length + '</div></div>' +
+      '<div class="metric-card"><div class="metric-label">Avaliadas pela IA</div><div class="metric-val">' + evaluations.length + '</div></div>' +
+      '<div class="metric-card"><div class="metric-label">Score médio do time</div><div class="metric-val" style="color:' + scoreColor(avgScore || 50) + '">' + (avgScore || '—') + (avgScore ? '%' : '') + '</div></div>' +
+      '<div class="metric-card"><div class="metric-label">Closers ativos</div><div class="metric-val">' + closerData.filter(function(c) { return c.meetings > 0; }).length + '</div></div>';
+    if (!closerData.length) { listEl.innerHTML = '<div class="empty">Adicione closers e agende reuniões para ver a performance.</div>'; return; }
+    var maxMeetings = Math.max.apply(null, closerData.map(function(c) { return c.meetings; })) || 1;
+    var html = '';
+    for (var i = 0; i < closerData.length; i++) {
+      var c = closerData[i];
+      var avgS = c.scores.length ? Math.round(c.scores.reduce(function(a, b) { return a + b; }, 0) / c.scores.length) : 0;
+      var meetPct = Math.round((c.meetings / maxMeetings) * 100);
+      var scoreBg = avgS >= 75 ? '#EAF3DE' : avgS >= 60 ? '#FAEEDA' : avgS ? '#FCEBEB' : '#f5f4f0';
+      var scoreC = avgS >= 75 ? '#27500A' : avgS >= 60 ? '#633806' : avgS ? '#791F1F' : '#aaa';
+      var dotColor = c.meetings === 0 ? '#ddd' : avgS >= 75 ? '#639922' : avgS >= 60 ? '#BA7517' : avgS ? '#E24B4A' : '#bbb';
+      html += '<div class="closer-perf-card" data-closer-name="' + c.name + '" onclick="openCloserReport(this)">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+      html += '<div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:36px;height:36px;font-size:12px">' + initials(c.name) + '</div>';
+      html += '<div><div style="font-size:14px;font-weight:600;color:#1a1a1a"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + dotColor + ';margin-right:6px"></span>' + c.name + '</div>';
+      html += '<div style="font-size:11px;color:#aaa;margin-top:1px">' + c.meetings + ' reunião' + (c.meetings !== 1 ? 'ões' : '') + ' · ' + c.evaluated + ' avaliada' + (c.evaluated !== 1 ? 's' : '') + '</div></div></div>';
+      html += '<div style="display:flex;gap:8px;align-items:center">';
+      html += (avgS ? '<div style="background:' + scoreBg + ';color:' + scoreC + ';font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px">' + avgS + '%</div>' : '<div style="font-size:12px;color:#bbb;padding:4px 10px">sem score</div>');
+      html += '<div style="font-size:11px;color:#888;background:#f5f4f0;padding:4px 10px;border-radius:20px">' + (c.meetings > 0 ? Math.round((c.evaluated / c.meetings) * 100) : 0) + '% aval.</div>';
+      html += '</div></div>';
+      html += '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Reuniões</div><div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden"><div style="height:100%;width:' + meetPct + '%;background:' + barColor(avgS || 50) + ';border-radius:4px;transition:width .6s"></div></div><div style="font-size:11px;font-weight:600;color:#1a1a1a;width:20px;text-align:right">' + c.meetings + '</div></div>';
+      if (avgS) html += '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Score IA</div><div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden"><div style="height:100%;width:' + avgS + '%;background:' + barColor(avgS) + ';border-radius:4px;transition:width .6s"></div></div><div style="font-size:11px;font-weight:600;color:' + scoreColor(avgS) + ';width:34px;text-align:right">' + avgS + '%</div></div>';
+      html += '</div>';
     }
-
-    var maxMeetings = Math.max.apply(null, closerData.map(function(c){return c.meetings;})) || 1;
-
-    listEl.innerHTML = closerData.map(function(c) {
-      var avgS = c.scores.length ? Math.round(c.scores.reduce(function(a,b){return a+b;},0)/c.scores.length) : 0;
-      var convRate = c.meetings > 0 ? Math.round((c.evaluated/c.meetings)*100) : 0;
-      var meetPct = Math.round((c.meetings/maxMeetings)*100);
-      var scoreBg = avgS>=75?'#EAF3DE':avgS>=60?'#FAEEDA':'#FCEBEB';
-      var scoreC = avgS>=75?'#27500A':avgS>=60?'#633806':'#791F1F';
-      var statusDot = c.meetings===0?'<span style="width:8px;height:8px;border-radius:50%;background:#ddd;display:inline-block;margin-right:6px"></span>':
-                      avgS>=75?'<span style="width:8px;height:8px;border-radius:50%;background:#639922;display:inline-block;margin-right:6px"></span>':
-                      avgS>=60?'<span style="width:8px;height:8px;border-radius:50%;background:#BA7517;display:inline-block;margin-right:6px"></span>':
-                      '<span style="width:8px;height:8px;border-radius:50%;background:#E24B4A;display:inline-block;margin-right:6px"></span>';
-      return '<div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:box-shadow 0.15s" onclick="openCloserReport(this.dataset.name)" data-name='"+c.name+"' onmouseover="this.style.boxShadow=\'0 4px 16px rgba(83,74,183,0.12)\'" onmouseout="this.style.boxShadow=\'none\'">'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
-          '<div style="display:flex;align-items:center;gap:10px">'+
-            '<div class="avatar" style="width:36px;height:36px;font-size:12px">'+initials(c.name)+'</div>'+
-            '<div>'+
-              '<div style="font-size:14px;font-weight:600;color:#1a1a1a">'+statusDot+c.name+'</div>'+
-              '<div style="font-size:11px;color:#aaa;margin-top:1px">'+c.meetings+' reunião'+(c.meetings!==1?'s':'')+' · '+c.evaluated+' avaliada'+(c.evaluated!==1?'s':'')+'</div>'+
-            '</div>'+
-          '</div>'+
-          '<div style="display:flex;gap:8px;align-items:center">'+
-            (avgS ? '<div style="background:'+scoreBg+';color:'+scoreC+';font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px">'+avgS+'%</div>' : '<div style="font-size:12px;color:#bbb;padding:4px 10px">sem score</div>')+
-            '<div style="font-size:11px;color:#888;background:#f5f4f0;padding:4px 10px;border-radius:20px">'+convRate+'% avaliado</div>'+
-          '</div>'+
-        '</div>'+
-        '<div style="display:flex;align-items:center;gap:10px">'+
-          '<div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Reuniões</div>'+
-          '<div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden">'+
-            '<div style="height:100%;width:'+meetPct+'%;background:'+barColor(avgS||50)+';border-radius:4px;transition:width 0.6s ease"></div>'+
-          '</div>'+
-          '<div style="font-size:11px;font-weight:600;color:#1a1a1a;width:20px;text-align:right">'+c.meetings+'</div>'+
-        '</div>'+
-        (avgS ? '<div style="display:flex;align-items:center;gap:10px;margin-top:6px">'+
-          '<div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Score IA</div>'+
-          '<div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden">'+
-            '<div style="height:100%;width:'+avgS+'%;background:'+barColor(avgS)+';border-radius:4px;transition:width 0.6s ease"></div>'+
-          '</div>'+
-          '<div style="font-size:11px;font-weight:600;color:'+scoreC+';width:34px;text-align:right">'+avgS+'%</div>'+
-        '</div>' : '')+
-      '</div>';
-    }).join('');
-  }).catch(function() {
-    listEl.innerHTML = '<div class="empty">Erro ao carregar dados</div>';
-  });
+    listEl.innerHTML = html;
+  }).catch(function() { listEl.innerHTML = '<div class="empty">Erro ao carregar dados</div>'; });
 }
 
 function openCloserReport(el) {
-  var closerName = typeof el === "string" ? el : el.dataset.name;
-  // Pega avaliações do mês deste closer
+  var closerName = el.getAttribute('data-closer-name');
   var now = new Date();
   var evals = _allEvaluations.filter(function(e) {
     if (e.closer !== closerName) return false;
     var d = new Date(e.createdAt);
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   });
-
-  // Se não tiver avaliações do mês, pega todas
-  if (!evals.length) {
-    evals = _allEvaluations.filter(function(e){ return e.closer === closerName; });
-  }
-
-  var ini = initials(closerName);
-  document.getElementById('cr-avatar').textContent = ini;
+  if (!evals.length) evals = _allEvaluations.filter(function(e) { return e.closer === closerName; });
+  document.getElementById('cr-avatar').textContent = initials(closerName);
   document.getElementById('cr-name').textContent = closerName;
-  document.getElementById('cr-subtitle').textContent = evals.length + ' avaliação' + (evals.length !== 1 ? 'ões' : '') + ' — ' + (evals.length ? 'este mês' : 'geral');
-
+  document.getElementById('cr-subtitle').textContent = evals.length + ' avaliação' + (evals.length !== 1 ? 'ões' : '') + (evals.length ? ' — este mês' : ' — geral');
   if (!evals.length) {
     document.getElementById('cr-score-big').textContent = '—';
     document.getElementById('cr-trend').innerHTML = '';
-    document.getElementById('cr-sections').innerHTML = '<div class="empty" style="padding:1.5rem">Nenhuma avaliação disponível para este closer ainda.</div>';
+    document.getElementById('cr-sections').innerHTML = '<div class="empty" style="padding:1.5rem">Nenhuma avaliação disponível ainda.</div>';
     document.getElementById('modal-closer-report').style.display = 'flex';
     return;
   }
-
-  // Calcula score médio
-  var scores = evals.map(function(e){ return (e.evaluation && e.evaluation.score) || 0; });
-  var avgScore = Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length);
+  var scores = evals.map(function(e) { return (e.evaluation && e.evaluation.score) || 0; });
+  var avgScore = Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / scores.length);
   var scoreEl = document.getElementById('cr-score-big');
   scoreEl.textContent = avgScore + '%';
   scoreEl.style.color = scoreColor(avgScore);
-
-  // Tendência (compara primeira metade com segunda metade das avaliações)
   var trendHtml = '';
   if (evals.length >= 2) {
     var half = Math.floor(evals.length / 2);
-    var firstHalf = evals.slice(0, half).map(function(e){ return (e.evaluation && e.evaluation.score)||0; });
-    var secondHalf = evals.slice(half).map(function(e){ return (e.evaluation && e.evaluation.score)||0; });
-    var avgFirst = Math.round(firstHalf.reduce(function(a,b){return a+b;},0)/firstHalf.length);
-    var avgSecond = Math.round(secondHalf.reduce(function(a,b){return a+b;},0)/secondHalf.length);
-    var diff = avgSecond - avgFirst;
-    var trendIcon = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
-    var trendColor = diff > 0 ? '#27500A' : diff < 0 ? '#791F1F' : '#666';
-    var trendBg = diff > 0 ? '#EAF3DE' : diff < 0 ? '#FCEBEB' : '#f5f4f0';
-    var trendText = diff > 0 ? 'Evoluindo +' + diff + '% em relação ao início do período' : diff < 0 ? 'Queda de ' + Math.abs(diff) + '% em relação ao início do período' : 'Score estável ao longo do período';
-    trendHtml = '<div style="background:'+trendBg+';border-radius:8px;padding:10px 14px;font-size:12px;color:'+trendColor+';margin-bottom:1rem">'+trendIcon+' <strong>Tendência:</strong> '+trendText+'</div>';
+    var f = evals.slice(0, half).map(function(e) { return (e.evaluation && e.evaluation.score) || 0; });
+    var s = evals.slice(half).map(function(e) { return (e.evaluation && e.evaluation.score) || 0; });
+    var af = Math.round(f.reduce(function(a, b) { return a + b; }, 0) / f.length);
+    var as2 = Math.round(s.reduce(function(a, b) { return a + b; }, 0) / s.length);
+    var diff = as2 - af;
+    var tBg = diff > 0 ? '#EAF3DE' : diff < 0 ? '#FCEBEB' : '#f5f4f0';
+    var tColor = diff > 0 ? '#27500A' : diff < 0 ? '#791F1F' : '#666';
+    var tIcon = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
+    var tText = diff > 0 ? 'Evoluindo +' + diff + '% em relação ao início do período' : diff < 0 ? 'Queda de ' + Math.abs(diff) + '% em relação ao início' : 'Score estável no período';
+    trendHtml = '<div style="background:' + tBg + ';border-radius:8px;padding:10px 14px;font-size:12px;color:' + tColor + '">' + tIcon + ' <strong>Tendência:</strong> ' + tText + '</div>';
   }
   document.getElementById('cr-trend').innerHTML = trendHtml;
-
-  // Agrega critérios de todas as avaliações
-  var allCriteria = {};
-  var allHighlights = [];
-  var allImprovements = [];
-  var allOportunidades = [];
-  var allEtapasCriticas = [];
-  var allMelhoresEtapas = [];
-
+  var allCriteria = {}, allHighlights = [], allImprovements = [], allEtapasCriticas = [], allMelhoresEtapas = [], allOportunidades = [];
   evals.forEach(function(e) {
-    var ev = e.evaluation || {};
-    // Critérios
-    var cs = ev.criteria_scores || {};
-    Object.keys(cs).forEach(function(k) {
-      if (!allCriteria[k]) allCriteria[k] = [];
-      allCriteria[k].push(cs[k]);
-    });
-    // Destaques e melhorias
-    (ev.highlights || []).forEach(function(h){ if (allHighlights.indexOf(h) < 0) allHighlights.push(h); });
-    (ev.improvements || []).forEach(function(i){ if (allImprovements.indexOf(i) < 0) allImprovements.push(i); });
-    // Análise do closer
-    var ca = ev.closer_analysis || {};
-    if (ca.oportunidades_perdidas) (ca.oportunidades_perdidas||[]).forEach(function(o){ if (allOportunidades.indexOf(o) < 0) allOportunidades.push(o); });
+    var ev = e.evaluation || {}, cs = ev.criteria_scores || {}, ca = ev.closer_analysis || {};
+    Object.keys(cs).forEach(function(k) { if (!allCriteria[k]) allCriteria[k] = []; allCriteria[k].push(cs[k]); });
+    (ev.highlights || []).forEach(function(h) { if (allHighlights.indexOf(h) < 0) allHighlights.push(h); });
+    (ev.improvements || []).forEach(function(i) { if (allImprovements.indexOf(i) < 0) allImprovements.push(i); });
     if (ca.etapa_critica && allEtapasCriticas.indexOf(ca.etapa_critica) < 0) allEtapasCriticas.push(ca.etapa_critica);
     if (ca.melhor_etapa && allMelhoresEtapas.indexOf(ca.melhor_etapa) < 0) allMelhoresEtapas.push(ca.melhor_etapa);
+    (ca.oportunidades_perdidas || []).forEach(function(o) { if (allOportunidades.indexOf(o) < 0) allOportunidades.push(o); });
   });
-
-  // Médias dos critérios
-  var criteriaBars = Object.keys(allCriteria).map(function(k) {
-    var vals = allCriteria[k];
-    var avg = Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
-    return { label: k, avg: avg };
-  }).sort(function(a,b){ return a.avg - b.avg; }); // ordena do pior para o melhor
-
-  var barsHtml = criteriaBars.map(function(c) {
-    return '<div class="score-bar-container">'+
-      '<div class="score-label" style="font-size:11px">'+c.label+'</div>'+
-      '<div class="score-track"><div class="score-fill" style="width:'+c.avg+'%;background:'+barColor(c.avg)+'"></div></div>'+
-      '<div class="score-num" style="font-size:11px;color:'+scoreColor(c.avg)+'">'+c.avg+'%</div>'+
-    '</div>';
-  }).join('');
-
-  // Monta seções
-  var sectionsHtml = '';
-
-  // Score por critério
-  if (barsHtml) {
-    sectionsHtml += '<div style="margin-bottom:1.25rem">'+
-      '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">📊 Score médio por critério</div>'+
-      barsHtml +
-    '</div>';
-  }
-
-  // O que está indo bem
-  var positivos = criteriaBars.filter(function(c){ return c.avg >= 75; });
-  var negativos = criteriaBars.filter(function(c){ return c.avg < 60; });
-  var medios = criteriaBars.filter(function(c){ return c.avg >= 60 && c.avg < 75; });
-
+  var criteriaBars = Object.keys(allCriteria).map(function(k) { var vals = allCriteria[k]; return { label: k, avg: Math.round(vals.reduce(function(a, b) { return a + b; }, 0) / vals.length) }; }).sort(function(a, b) { return a.avg - b.avg; });
+  var barsHtml = criteriaBars.map(function(c) { return '<div class="score-bar-container"><div class="score-label" style="font-size:11px">' + c.label + '</div><div class="score-track"><div class="score-fill" style="width:' + c.avg + '%;background:' + barColor(c.avg) + '"></div></div><div class="score-num" style="font-size:11px;color:' + scoreColor(c.avg) + '">' + c.avg + '%</div></div>'; }).join('');
+  var positivos = criteriaBars.filter(function(c) { return c.avg >= 75; });
+  var medios = criteriaBars.filter(function(c) { return c.avg >= 60 && c.avg < 75; });
+  var negativos = criteriaBars.filter(function(c) { return c.avg < 60; });
+  var sectionsHtml = barsHtml ? '<div style="margin-bottom:1.25rem"><div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📊 Score médio por critério</div>' + barsHtml + '</div>' : '';
   if (allMelhoresEtapas.length || positivos.length || allHighlights.length) {
-    var items = [];
-    positivos.forEach(function(c){ items.push(c.label + ' (' + c.avg + '%)'); });
-    allHighlights.slice(0,3).forEach(function(h){ if (items.indexOf(h)<0) items.push(h); });
-    allMelhoresEtapas.slice(0,2).forEach(function(m){ if (items.indexOf(m)<0) items.push(m); });
-    sectionsHtml += '<div style="background:#EAF3DE;border-radius:10px;padding:12px 14px;margin-bottom:10px">'+
-      '<div style="font-size:12px;font-weight:600;color:#27500A;margin-bottom:8px">✅ O que está indo bem</div>'+
-      '<ul style="margin:0 0 0 16px;font-size:12px;color:#3a5c1a;line-height:1.9">'+
-        items.slice(0,5).map(function(i){ return '<li>'+i+'</li>'; }).join('')+
-      '</ul></div>';
+    var items = []; positivos.forEach(function(c) { items.push(c.label + ' (' + c.avg + '%)'); }); allHighlights.slice(0, 3).forEach(function(h) { if (items.indexOf(h) < 0) items.push(h); }); allMelhoresEtapas.slice(0, 2).forEach(function(m) { if (items.indexOf(m) < 0) items.push(m); });
+    sectionsHtml += '<div style="background:#EAF3DE;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#27500A;margin-bottom:8px">✅ O que está indo bem</div><ul style="margin:0 0 0 16px;font-size:12px;color:#3a5c1a;line-height:1.9">' + items.slice(0, 5).map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
   }
-
-  // O que precisa evoluir (médio)
   if (medios.length || allImprovements.length) {
-    var items2 = [];
-    medios.forEach(function(c){ items2.push(c.label + ' — média de ' + c.avg + '%, pode chegar a 80%+'); });
-    allImprovements.slice(0,3).forEach(function(i){ if (items2.indexOf(i)<0) items2.push(i); });
-    sectionsHtml += '<div style="background:#FAEEDA;border-radius:10px;padding:12px 14px;margin-bottom:10px">'+
-      '<div style="font-size:12px;font-weight:600;color:#633806;margin-bottom:8px">⚠️ Precisa evoluir</div>'+
-      '<ul style="margin:0 0 0 16px;font-size:12px;color:#7a4a1a;line-height:1.9">'+
-        items2.slice(0,5).map(function(i){ return '<li>'+i+'</li>'; }).join('')+
-      '</ul></div>';
+    var items2 = []; medios.forEach(function(c) { items2.push(c.label + ' — média ' + c.avg + '%, pode chegar a 80%+'); }); allImprovements.slice(0, 3).forEach(function(i) { if (items2.indexOf(i) < 0) items2.push(i); });
+    sectionsHtml += '<div style="background:#FAEEDA;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#633806;margin-bottom:8px">⚠️ Precisa evoluir</div><ul style="margin:0 0 0 16px;font-size:12px;color:#7a4a1a;line-height:1.9">' + items2.slice(0, 5).map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
   }
-
-  // O que errou / pontos críticos
   if (negativos.length || allEtapasCriticas.length || allOportunidades.length) {
-    var items3 = [];
-    negativos.forEach(function(c){ items3.push(c.label + ' — score crítico de ' + c.avg + '%, foco urgente'); });
-    allEtapasCriticas.slice(0,2).forEach(function(e){ if (items3.indexOf(e)<0) items3.push(e); });
-    allOportunidades.slice(0,2).forEach(function(o){ if (items3.indexOf(o)<0) items3.push(o); });
-    sectionsHtml += '<div style="background:#FCEBEB;border-radius:10px;padding:12px 14px;margin-bottom:10px">'+
-      '<div style="font-size:12px;font-weight:600;color:#791F1F;margin-bottom:8px">🎯 O que errou / pontos críticos</div>'+
-      '<ul style="margin:0 0 0 16px;font-size:12px;color:#8a2a2a;line-height:1.9">'+
-        items3.slice(0,5).map(function(i){ return '<li>'+i+'</li>'; }).join('')+
-      '</ul></div>';
+    var items3 = []; negativos.forEach(function(c) { items3.push(c.label + ' — score crítico ' + c.avg + '%, foco urgente'); }); allEtapasCriticas.slice(0, 2).forEach(function(e) { if (items3.indexOf(e) < 0) items3.push(e); }); allOportunidades.slice(0, 2).forEach(function(o) { if (items3.indexOf(o) < 0) items3.push(o); });
+    sectionsHtml += '<div style="background:#FCEBEB;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#791F1F;margin-bottom:8px">🎯 O que errou / pontos críticos</div><ul style="margin:0 0 0 16px;font-size:12px;color:#8a2a2a;line-height:1.9">' + items3.slice(0, 5).map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
   }
-
-  // Recomendação final
-  var rec = avgScore >= 80 ? 'Excelente performance! Manter consistência e focar em fechar mais negócios.' :
-            avgScore >= 70 ? 'Boa base, mas há espaço claro de crescimento. Priorizar os critérios abaixo de 70%.' :
-            avgScore >= 60 ? 'Performance mediana. Recomenda-se revisão dos módulos críticos antes das próximas reuniões.' :
-            'Atenção: performance abaixo do esperado. Sugerir acompanhamento individualizado e treinamento focado.';
+  var rec = avgScore >= 80 ? 'Excelente! Manter consistência e focar em fechar mais negócios.' : avgScore >= 70 ? 'Boa base. Priorizar os critérios abaixo de 70%.' : avgScore >= 60 ? 'Performance mediana. Revisão dos módulos críticos antes das próximas reuniões.' : 'Atenção: performance abaixo do esperado. Sugerir acompanhamento individualizado.';
   var recBg = avgScore >= 80 ? '#EEEDFE' : avgScore >= 70 ? '#E6F1FB' : avgScore >= 60 ? '#FAEEDA' : '#FCEBEB';
   var recColor = avgScore >= 80 ? '#3C3489' : avgScore >= 70 ? '#0C447C' : avgScore >= 60 ? '#633806' : '#791F1F';
-  sectionsHtml += '<div style="background:'+recBg+';border-radius:10px;padding:12px 14px">'+
-    '<div style="font-size:12px;font-weight:600;color:'+recColor+';margin-bottom:4px">💡 Recomendação</div>'+
-    '<div style="font-size:12px;color:'+recColor+';line-height:1.6">'+rec+'</div>'+
-  '</div>';
-
+  sectionsHtml += '<div style="background:' + recBg + ';border-radius:10px;padding:12px 14px"><div style="font-size:12px;font-weight:600;color:' + recColor + ';margin-bottom:4px">💡 Recomendação</div><div style="font-size:12px;color:' + recColor + ';line-height:1.6">' + rec + '</div></div>';
   document.getElementById('cr-sections').innerHTML = sectionsHtml;
   document.getElementById('modal-closer-report').style.display = 'flex';
 }
 
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+// DASHBOARD
+function loadDashboard() {
+  document.getElementById('dash-closers').textContent = closers.length;
+  Promise.all([fetch('/api/meetings').then(function(r) { return r.json(); }), fetch('/api/evaluations').then(function(r) { return r.json(); })]).then(function(results) {
+    var meetings = results[0].meetings || [];
+    var evaluations = results[1].evaluations || [];
+    document.getElementById('dash-meetings').textContent = meetings.length;
+    document.getElementById('dash-evals').textContent = evaluations.length;
+    var scores = evaluations.map(function(e) { return e.evaluation && e.evaluation.score; }).filter(Boolean);
+    document.getElementById('dash-score').textContent = scores.length ? Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / scores.length) + '%' : '—';
+    var tb = document.getElementById('dash-evals-table');
+    if (!evaluations.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma avaliação ainda</td></tr>'; return; }
+    var html = '';
+    for (var i = 0; i < Math.min(5, evaluations.length); i++) {
+      var a = evaluations[i], score = (a.evaluation && a.evaluation.score) || 0;
+      var badge = score >= 75 ? 'badge-green' : score >= 60 ? 'badge-amber' : 'badge-red';
+      var label = score >= 75 ? 'Aprovado' : score >= 60 ? 'Precisa melhorar' : 'Crítico';
+      html += '<tr><td><div class="closer-row"><div class="avatar">' + initials(a.closer || '?') + '</div>' + (a.closer || '') + '</div></td><td>' + (a.scriptName || '') + '</td><td><span style="font-weight:600;color:' + scoreColor(score) + '">' + score + '%</span></td><td style="font-size:12px;color:#aaa">' + fmtDate(a.createdAt) + '</td><td><span class="badge ' + badge + '">' + label + '</span></td></tr>';
+    }
+    tb.innerHTML = html;
+  }).catch(function() {});
+}
 
 // Init
 loadDashboard();
@@ -1075,4 +854,3 @@ setInterval(loadDashboard, 30000);
 </script>
 </body>
 </html>
-// Performance v2 - Tue May  5 12:28:25 UTC 2026
