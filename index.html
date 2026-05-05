@@ -275,6 +275,35 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 </div>
 
 
+<!-- MODAL RELATÓRIO MENSAL DO CLOSER -->
+<div class="overlay" id="modal-closer-report" style="display:none" onclick="if(event.target===this)closeModal('modal-closer-report')">
+  <div class="modal" style="width:520px;max-width:95vw">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="avatar" style="width:44px;height:44px;font-size:14px" id="cr-avatar">--</div>
+        <div>
+          <div style="font-size:16px;font-weight:600;color:#1a1a1a" id="cr-name">Closer</div>
+          <div style="font-size:12px;color:#aaa" id="cr-subtitle">Análise do mês</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:26px;font-weight:700" id="cr-score-big">—</div>
+        <div style="font-size:11px;color:#aaa">score médio</div>
+      </div>
+    </div>
+
+    <!-- Progresso do mês -->
+    <div id="cr-trend" style="margin-bottom:1rem"></div>
+
+    <!-- Seções -->
+    <div id="cr-sections"></div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid #f0efeb">
+      <button class="btn" onclick="closeModal('modal-closer-report')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL CONFIRMAR EXCLUSÃO -->
 <div class="overlay" id="modal-delete" style="display:none" onclick="if(event.target===this)closeModal('modal-delete')">
   <div class="modal" style="max-width:360px">
@@ -780,7 +809,7 @@ function loadPerformance() {
                       avgS>=75?'<span style="width:8px;height:8px;border-radius:50%;background:#639922;display:inline-block;margin-right:6px"></span>':
                       avgS>=60?'<span style="width:8px;height:8px;border-radius:50%;background:#BA7517;display:inline-block;margin-right:6px"></span>':
                       '<span style="width:8px;height:8px;border-radius:50%;background:#E24B4A;display:inline-block;margin-right:6px"></span>';
-      return '<div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px">'+
+      return '<div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:box-shadow 0.15s" onclick="openCloserReport(\''+c.name+'\')" onmouseover="this.style.boxShadow=\'0 4px 16px rgba(83,74,183,0.12)\'" onmouseout="this.style.boxShadow=\'none\'">'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
           '<div style="display:flex;align-items:center;gap:10px">'+
             '<div class="avatar" style="width:36px;height:36px;font-size:12px">'+initials(c.name)+'</div>'+
@@ -813,6 +842,167 @@ function loadPerformance() {
   }).catch(function() {
     listEl.innerHTML = '<div class="empty">Erro ao carregar dados</div>';
   });
+}
+
+function openCloserReport(closerName) {
+  // Pega avaliações do mês deste closer
+  var now = new Date();
+  var evals = _allEvaluations.filter(function(e) {
+    if (e.closer !== closerName) return false;
+    var d = new Date(e.createdAt);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+
+  // Se não tiver avaliações do mês, pega todas
+  if (!evals.length) {
+    evals = _allEvaluations.filter(function(e){ return e.closer === closerName; });
+  }
+
+  var ini = initials(closerName);
+  document.getElementById('cr-avatar').textContent = ini;
+  document.getElementById('cr-name').textContent = closerName;
+  document.getElementById('cr-subtitle').textContent = evals.length + ' avaliação' + (evals.length !== 1 ? 'ões' : '') + ' — ' + (evals.length ? 'este mês' : 'geral');
+
+  if (!evals.length) {
+    document.getElementById('cr-score-big').textContent = '—';
+    document.getElementById('cr-trend').innerHTML = '';
+    document.getElementById('cr-sections').innerHTML = '<div class="empty" style="padding:1.5rem">Nenhuma avaliação disponível para este closer ainda.</div>';
+    document.getElementById('modal-closer-report').style.display = 'flex';
+    return;
+  }
+
+  // Calcula score médio
+  var scores = evals.map(function(e){ return (e.evaluation && e.evaluation.score) || 0; });
+  var avgScore = Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length);
+  var scoreEl = document.getElementById('cr-score-big');
+  scoreEl.textContent = avgScore + '%';
+  scoreEl.style.color = scoreColor(avgScore);
+
+  // Tendência (compara primeira metade com segunda metade das avaliações)
+  var trendHtml = '';
+  if (evals.length >= 2) {
+    var half = Math.floor(evals.length / 2);
+    var firstHalf = evals.slice(0, half).map(function(e){ return (e.evaluation && e.evaluation.score)||0; });
+    var secondHalf = evals.slice(half).map(function(e){ return (e.evaluation && e.evaluation.score)||0; });
+    var avgFirst = Math.round(firstHalf.reduce(function(a,b){return a+b;},0)/firstHalf.length);
+    var avgSecond = Math.round(secondHalf.reduce(function(a,b){return a+b;},0)/secondHalf.length);
+    var diff = avgSecond - avgFirst;
+    var trendIcon = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
+    var trendColor = diff > 0 ? '#27500A' : diff < 0 ? '#791F1F' : '#666';
+    var trendBg = diff > 0 ? '#EAF3DE' : diff < 0 ? '#FCEBEB' : '#f5f4f0';
+    var trendText = diff > 0 ? 'Evoluindo +' + diff + '% em relação ao início do período' : diff < 0 ? 'Queda de ' + Math.abs(diff) + '% em relação ao início do período' : 'Score estável ao longo do período';
+    trendHtml = '<div style="background:'+trendBg+';border-radius:8px;padding:10px 14px;font-size:12px;color:'+trendColor+';margin-bottom:1rem">'+trendIcon+' <strong>Tendência:</strong> '+trendText+'</div>';
+  }
+  document.getElementById('cr-trend').innerHTML = trendHtml;
+
+  // Agrega critérios de todas as avaliações
+  var allCriteria = {};
+  var allHighlights = [];
+  var allImprovements = [];
+  var allOportunidades = [];
+  var allEtapasCriticas = [];
+  var allMelhoresEtapas = [];
+
+  evals.forEach(function(e) {
+    var ev = e.evaluation || {};
+    // Critérios
+    var cs = ev.criteria_scores || {};
+    Object.keys(cs).forEach(function(k) {
+      if (!allCriteria[k]) allCriteria[k] = [];
+      allCriteria[k].push(cs[k]);
+    });
+    // Destaques e melhorias
+    (ev.highlights || []).forEach(function(h){ if (allHighlights.indexOf(h) < 0) allHighlights.push(h); });
+    (ev.improvements || []).forEach(function(i){ if (allImprovements.indexOf(i) < 0) allImprovements.push(i); });
+    // Análise do closer
+    var ca = ev.closer_analysis || {};
+    if (ca.oportunidades_perdidas) (ca.oportunidades_perdidas||[]).forEach(function(o){ if (allOportunidades.indexOf(o) < 0) allOportunidades.push(o); });
+    if (ca.etapa_critica && allEtapasCriticas.indexOf(ca.etapa_critica) < 0) allEtapasCriticas.push(ca.etapa_critica);
+    if (ca.melhor_etapa && allMelhoresEtapas.indexOf(ca.melhor_etapa) < 0) allMelhoresEtapas.push(ca.melhor_etapa);
+  });
+
+  // Médias dos critérios
+  var criteriaBars = Object.keys(allCriteria).map(function(k) {
+    var vals = allCriteria[k];
+    var avg = Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
+    return { label: k, avg: avg };
+  }).sort(function(a,b){ return a.avg - b.avg; }); // ordena do pior para o melhor
+
+  var barsHtml = criteriaBars.map(function(c) {
+    return '<div class="score-bar-container">'+
+      '<div class="score-label" style="font-size:11px">'+c.label+'</div>'+
+      '<div class="score-track"><div class="score-fill" style="width:'+c.avg+'%;background:'+barColor(c.avg)+'"></div></div>'+
+      '<div class="score-num" style="font-size:11px;color:'+scoreColor(c.avg)+'">'+c.avg+'%</div>'+
+    '</div>';
+  }).join('');
+
+  // Monta seções
+  var sectionsHtml = '';
+
+  // Score por critério
+  if (barsHtml) {
+    sectionsHtml += '<div style="margin-bottom:1.25rem">'+
+      '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px">📊 Score médio por critério</div>'+
+      barsHtml +
+    '</div>';
+  }
+
+  // O que está indo bem
+  var positivos = criteriaBars.filter(function(c){ return c.avg >= 75; });
+  var negativos = criteriaBars.filter(function(c){ return c.avg < 60; });
+  var medios = criteriaBars.filter(function(c){ return c.avg >= 60 && c.avg < 75; });
+
+  if (allMelhoresEtapas.length || positivos.length || allHighlights.length) {
+    var items = [];
+    positivos.forEach(function(c){ items.push(c.label + ' (' + c.avg + '%)'); });
+    allHighlights.slice(0,3).forEach(function(h){ if (items.indexOf(h)<0) items.push(h); });
+    allMelhoresEtapas.slice(0,2).forEach(function(m){ if (items.indexOf(m)<0) items.push(m); });
+    sectionsHtml += '<div style="background:#EAF3DE;border-radius:10px;padding:12px 14px;margin-bottom:10px">'+
+      '<div style="font-size:12px;font-weight:600;color:#27500A;margin-bottom:8px">✅ O que está indo bem</div>'+
+      '<ul style="margin:0 0 0 16px;font-size:12px;color:#3a5c1a;line-height:1.9">'+
+        items.slice(0,5).map(function(i){ return '<li>'+i+'</li>'; }).join('')+
+      '</ul></div>';
+  }
+
+  // O que precisa evoluir (médio)
+  if (medios.length || allImprovements.length) {
+    var items2 = [];
+    medios.forEach(function(c){ items2.push(c.label + ' — média de ' + c.avg + '%, pode chegar a 80%+'); });
+    allImprovements.slice(0,3).forEach(function(i){ if (items2.indexOf(i)<0) items2.push(i); });
+    sectionsHtml += '<div style="background:#FAEEDA;border-radius:10px;padding:12px 14px;margin-bottom:10px">'+
+      '<div style="font-size:12px;font-weight:600;color:#633806;margin-bottom:8px">⚠️ Precisa evoluir</div>'+
+      '<ul style="margin:0 0 0 16px;font-size:12px;color:#7a4a1a;line-height:1.9">'+
+        items2.slice(0,5).map(function(i){ return '<li>'+i+'</li>'; }).join('')+
+      '</ul></div>';
+  }
+
+  // O que errou / pontos críticos
+  if (negativos.length || allEtapasCriticas.length || allOportunidades.length) {
+    var items3 = [];
+    negativos.forEach(function(c){ items3.push(c.label + ' — score crítico de ' + c.avg + '%, foco urgente'); });
+    allEtapasCriticas.slice(0,2).forEach(function(e){ if (items3.indexOf(e)<0) items3.push(e); });
+    allOportunidades.slice(0,2).forEach(function(o){ if (items3.indexOf(o)<0) items3.push(o); });
+    sectionsHtml += '<div style="background:#FCEBEB;border-radius:10px;padding:12px 14px;margin-bottom:10px">'+
+      '<div style="font-size:12px;font-weight:600;color:#791F1F;margin-bottom:8px">🎯 O que errou / pontos críticos</div>'+
+      '<ul style="margin:0 0 0 16px;font-size:12px;color:#8a2a2a;line-height:1.9">'+
+        items3.slice(0,5).map(function(i){ return '<li>'+i+'</li>'; }).join('')+
+      '</ul></div>';
+  }
+
+  // Recomendação final
+  var rec = avgScore >= 80 ? 'Excelente performance! Manter consistência e focar em fechar mais negócios.' :
+            avgScore >= 70 ? 'Boa base, mas há espaço claro de crescimento. Priorizar os critérios abaixo de 70%.' :
+            avgScore >= 60 ? 'Performance mediana. Recomenda-se revisão dos módulos críticos antes das próximas reuniões.' :
+            'Atenção: performance abaixo do esperado. Sugerir acompanhamento individualizado e treinamento focado.';
+  var recBg = avgScore >= 80 ? '#EEEDFE' : avgScore >= 70 ? '#E6F1FB' : avgScore >= 60 ? '#FAEEDA' : '#FCEBEB';
+  var recColor = avgScore >= 80 ? '#3C3489' : avgScore >= 70 ? '#0C447C' : avgScore >= 60 ? '#633806' : '#791F1F';
+  sectionsHtml += '<div style="background:'+recBg+';border-radius:10px;padding:12px 14px">'+
+    '<div style="font-size:12px;font-weight:600;color:'+recColor+';margin-bottom:4px">💡 Recomendação</div>'+
+    '<div style="font-size:12px;color:'+recColor+';line-height:1.6">'+rec+'</div>'+
+  '</div>';
+
+  document.getElementById('cr-sections').innerHTML = sectionsHtml;
+  document.getElementById('modal-closer-report').style.display = 'flex';
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
