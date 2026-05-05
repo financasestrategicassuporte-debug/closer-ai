@@ -101,6 +101,8 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
     <div class="nav-item" onclick="navigate('closers')">◉ Closers</div>
     <div class="nav-section">Configuração</div>
     <div class="nav-item" onclick="navigate('scripts')">☰ Scripts</div>
+    <div class="nav-section">Time</div>
+    <div class="nav-item" onclick="navigate('performance')">📈 Performance</div>
     <div class="nav-section">Reuniões</div>
     <div class="nav-item" onclick="navigate('reunioes')">◈ Reuniões</div>
     <div class="nav-item" onclick="navigate('avaliacoes')">★ Avaliações da IA</div>
@@ -163,6 +165,24 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
           <tbody id="reunioes-table"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div class="page" id="page-performance">
+      <div class="page-header">
+        <div><div class="page-title">Performance do Time</div><div class="page-subtitle">Monitoramento em tempo real por closer</div></div>
+        <div style="display:flex;gap:8px">
+          <select id="perf-period" onchange="loadPerformance()" style="font-size:12px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a">
+            <option value="all">Todo período</option>
+            <option value="month">Este mês</option>
+            <option value="week">Esta semana</option>
+          </select>
+        </div>
+      </div>
+      <!-- Cards de resumo rápido -->
+      <div class="cards-grid" id="perf-summary-cards" style="margin-bottom:1.5rem"></div>
+      <!-- Lista de closers com barras -->
+      <div id="perf-closers-list"></div>
     </div>
 
     <!-- AVALIAÇÕES -->
@@ -294,7 +314,7 @@ function navigate(page) {
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
   document.getElementById('page-' + page).classList.add('active');
-  var labels = {dashboard:'Dashboard',closers:'Closers',scripts:'Scripts',reunioes:'Reuniões',avaliacoes:'Avaliações'};
+  var labels = {dashboard:'Dashboard',closers:'Closers',scripts:'Scripts',reunioes:'Reuniões',avaliacoes:'Avaliações',performance:'Performance'};
   document.querySelectorAll('.nav-item').forEach(function(n){
     if (labels[page] && n.textContent.indexOf(labels[page].slice(0,5)) >= 0) n.classList.add('active');
   });
@@ -302,6 +322,7 @@ function navigate(page) {
   if (page === 'scripts') renderScripts();
   if (page === 'reunioes') loadMeetings();
   if (page === 'avaliacoes') loadAvaliacoes();
+  if (page === 'performance') loadPerformance();
   if (page === 'dashboard') loadDashboard();
 }
 
@@ -684,6 +705,114 @@ function loadDashboard() {
       return '<tr><td><div class="closer-row"><div class="avatar">'+initials(a.closer||'?')+'</div>'+a.closer+'</div></td><td>'+a.scriptName+'</td><td><span style="font-weight:600;color:'+scoreColor(score)+'">'+score+'%</span></td><td style="font-size:12px;color:#aaa">'+fmtDate(a.createdAt)+'</td><td><span class="badge '+badge+'">'+label+'</span></td></tr>';
     }).join('');
   }).catch(function(){});
+}
+
+function loadPerformance() {
+  var period = document.getElementById('perf-period') ? document.getElementById('perf-period').value : 'all';
+  var summaryEl = document.getElementById('perf-summary-cards');
+  var listEl = document.getElementById('perf-closers-list');
+  if (!summaryEl || !listEl) return;
+  listEl.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando...</div>';
+
+  Promise.all([
+    fetch('/api/meetings').then(function(r){ return r.json(); }),
+    fetch('/api/evaluations').then(function(r){ return r.json(); })
+  ]).then(function(results) {
+    var meetings = results[0].meetings || [];
+    var evaluations = results[1].evaluations || [];
+
+    // Filtra por período
+    var now = new Date();
+    function inPeriod(iso) {
+      if (period === 'all') return true;
+      var d = new Date(iso);
+      if (period === 'week') { var w = new Date(now); w.setDate(now.getDate()-7); return d >= w; }
+      if (period === 'month') { return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear(); }
+      return true;
+    }
+    meetings = meetings.filter(function(m){ return inPeriod(m.scheduledAt||m.createdAt); });
+    evaluations = evaluations.filter(function(e){ return inPeriod(e.createdAt); });
+
+    // Agrupa por closer
+    var byCloser = {};
+    closers.forEach(function(c) {
+      byCloser[c.name] = { name: c.name, meetings: 0, evaluated: 0, scores: [], botJoined: 0 };
+    });
+    meetings.forEach(function(m) {
+      if (!byCloser[m.closer]) byCloser[m.closer] = { name: m.closer, meetings: 0, evaluated: 0, scores: [], botJoined: 0 };
+      byCloser[m.closer].meetings++;
+      if (m.status === 'bot_joined' || m.status === 'evaluated') byCloser[m.closer].botJoined++;
+    });
+    evaluations.forEach(function(e) {
+      if (!byCloser[e.closer]) byCloser[e.closer] = { name: e.closer, meetings: 0, evaluated: 0, scores: [], botJoined: 0 };
+      byCloser[e.closer].evaluated++;
+      if (e.evaluation && e.evaluation.score) byCloser[e.closer].scores.push(e.evaluation.score);
+    });
+
+    var closerData = Object.values(byCloser).sort(function(a,b){ return b.meetings - a.meetings; });
+    var totalMeetings = meetings.length;
+    var totalEvaluated = evaluations.length;
+    var allScores = evaluations.map(function(e){ return e.evaluation && e.evaluation.score; }).filter(Boolean);
+    var avgScore = allScores.length ? Math.round(allScores.reduce(function(a,b){return a+b;},0)/allScores.length) : 0;
+    var topCloser = closerData.length ? closerData.reduce(function(a,b){ return (b.scores.length ? b.scores.reduce(function(x,y){return x+y;},0)/b.scores.length : 0) > (a.scores.length ? a.scores.reduce(function(x,y){return x+y;},0)/a.scores.length : 0) ? b : a; }, closerData[0]) : null;
+
+    // Cards de resumo
+    summaryEl.innerHTML =
+      '<div class="metric-card"><div class="metric-label">Reuniões no período</div><div class="metric-val">'+totalMeetings+'</div></div>'+
+      '<div class="metric-card"><div class="metric-label">Avaliadas pela IA</div><div class="metric-val">'+totalEvaluated+'</div></div>'+
+      '<div class="metric-card"><div class="metric-label">Score médio do time</div><div class="metric-val" style="color:'+scoreColor(avgScore)+'">'+( avgScore || '—')+(avgScore?'%':'')+'</div></div>'+
+      '<div class="metric-card"><div class="metric-label">Closers ativos</div><div class="metric-val">'+closerData.filter(function(c){return c.meetings>0;}).length+'</div></div>';
+
+    if (!closerData.length) {
+      listEl.innerHTML = '<div class="empty">Nenhum dado ainda. Adicione closers e agende reuniões.</div>';
+      return;
+    }
+
+    var maxMeetings = Math.max.apply(null, closerData.map(function(c){return c.meetings;})) || 1;
+
+    listEl.innerHTML = closerData.map(function(c) {
+      var avgS = c.scores.length ? Math.round(c.scores.reduce(function(a,b){return a+b;},0)/c.scores.length) : 0;
+      var convRate = c.meetings > 0 ? Math.round((c.evaluated/c.meetings)*100) : 0;
+      var meetPct = Math.round((c.meetings/maxMeetings)*100);
+      var scoreBg = avgS>=75?'#EAF3DE':avgS>=60?'#FAEEDA':'#FCEBEB';
+      var scoreC = avgS>=75?'#27500A':avgS>=60?'#633806':'#791F1F';
+      var statusDot = c.meetings===0?'<span style="width:8px;height:8px;border-radius:50%;background:#ddd;display:inline-block;margin-right:6px"></span>':
+                      avgS>=75?'<span style="width:8px;height:8px;border-radius:50%;background:#639922;display:inline-block;margin-right:6px"></span>':
+                      avgS>=60?'<span style="width:8px;height:8px;border-radius:50%;background:#BA7517;display:inline-block;margin-right:6px"></span>':
+                      '<span style="width:8px;height:8px;border-radius:50%;background:#E24B4A;display:inline-block;margin-right:6px"></span>';
+      return '<div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
+          '<div style="display:flex;align-items:center;gap:10px">'+
+            '<div class="avatar" style="width:36px;height:36px;font-size:12px">'+initials(c.name)+'</div>'+
+            '<div>'+
+              '<div style="font-size:14px;font-weight:600;color:#1a1a1a">'+statusDot+c.name+'</div>'+
+              '<div style="font-size:11px;color:#aaa;margin-top:1px">'+c.meetings+' reunião'+(c.meetings!==1?'s':'')+' · '+c.evaluated+' avaliada'+(c.evaluated!==1?'s':'')+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div style="display:flex;gap:8px;align-items:center">'+
+            (avgS ? '<div style="background:'+scoreBg+';color:'+scoreC+';font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px">'+avgS+'%</div>' : '<div style="font-size:12px;color:#bbb;padding:4px 10px">sem score</div>')+
+            '<div style="font-size:11px;color:#888;background:#f5f4f0;padding:4px 10px;border-radius:20px">'+convRate+'% avaliado</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:10px">'+
+          '<div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Reuniões</div>'+
+          '<div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden">'+
+            '<div style="height:100%;width:'+meetPct+'%;background:'+barColor(avgS||50)+';border-radius:4px;transition:width 0.6s ease"></div>'+
+          '</div>'+
+          '<div style="font-size:11px;font-weight:600;color:#1a1a1a;width:20px;text-align:right">'+c.meetings+'</div>'+
+        '</div>'+
+        (avgS ? '<div style="display:flex;align-items:center;gap:10px;margin-top:6px">'+
+          '<div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Score IA</div>'+
+          '<div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden">'+
+            '<div style="height:100%;width:'+avgS+'%;background:'+barColor(avgS)+';border-radius:4px;transition:width 0.6s ease"></div>'+
+          '</div>'+
+          '<div style="font-size:11px;font-weight:600;color:'+scoreC+';width:34px;text-align:right">'+avgS+'%</div>'+
+        '</div>' : '')+
+      '</div>';
+    }).join('');
+  }).catch(function() {
+    listEl.innerHTML = '<div class="empty">Erro ao carregar dados</div>';
+  });
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
