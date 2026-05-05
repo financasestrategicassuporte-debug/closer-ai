@@ -113,7 +113,6 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
   <div class="main">
 
-    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="page-header">
         <div><div class="page-title">Dashboard</div><div class="page-subtitle">Visão geral da sua equipe de closers</div></div>
@@ -134,7 +133,6 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       </div>
     </div>
 
-    <!-- CLOSERS -->
     <div class="page" id="page-closers">
       <div class="page-header">
         <div><div class="page-title">Closers</div><div class="page-subtitle">Gerencie sua equipe de vendas</div></div>
@@ -142,14 +140,13 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       </div>
       <div class="card">
         <table class="table"><thead><tr><th>Closer</th><th>Reuniões</th><th>Score médio</th><th>Ações</th></tr></thead>
-        <tbody id="closers-table"><tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr></tbody></table>
+        <tbody id="closers-table"><tr><td colspan="4" class="empty"><span class="spinner"></span></td></tr></tbody></table>
       </div>
     </div>
 
-    <!-- PERFORMANCE -->
     <div class="page" id="page-performance">
       <div class="page-header">
-        <div><div class="page-title">Performance do Time</div><div class="page-subtitle">Monitoramento em tempo real — clique no card para ver o relatório</div></div>
+        <div><div class="page-title">Performance do Time</div><div class="page-subtitle">Clique no card para ver o relatório mensal</div></div>
         <select id="perf-period" onchange="loadPerformance()" style="font-size:12px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a">
           <option value="all">Todo período</option>
           <option value="month">Este mês</option>
@@ -160,16 +157,14 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <div id="perf-closers-list"></div>
     </div>
 
-    <!-- SCRIPTS -->
     <div class="page" id="page-scripts">
       <div class="page-header">
-        <div><div class="page-title">Scripts de Reunião</div><div class="page-subtitle">Defina as etapas e critérios de avaliação da IA</div></div>
+        <div><div class="page-title">Scripts de Reunião</div><div class="page-subtitle">Defina as etapas e critérios de avaliação</div></div>
         <button class="btn btn-primary" onclick="openScriptModal()">+ Novo script</button>
       </div>
-      <div id="scripts-list"><div class="empty">Nenhum script criado</div></div>
+      <div id="scripts-list"><div class="empty"><span class="spinner"></span></div></div>
     </div>
 
-    <!-- REUNIÕES -->
     <div class="page" id="page-reunioes">
       <div class="page-header">
         <div><div class="page-title">Reuniões</div><div class="page-subtitle">O bot CloserAI entra automaticamente no Google Meet</div></div>
@@ -177,11 +172,10 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       </div>
       <div class="card">
         <table class="table"><thead><tr><th>Closer</th><th>Script</th><th>Google Meet</th><th>Bot IA</th><th>Data</th><th>Ações</th></tr></thead>
-        <tbody id="reunioes-table"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody></table>
+        <tbody id="reunioes-table"><tr><td colspan="6" class="empty"><span class="spinner"></span></td></tr></tbody></table>
       </div>
     </div>
 
-    <!-- AVALIAÇÕES -->
     <div class="page" id="page-avaliacoes">
       <div class="page-header">
         <div><div class="page-title">Avaliações da IA</div><div class="page-subtitle">Análise detalhada de cada reunião pelo Claude</div></div>
@@ -217,13 +211,13 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
           <button onclick="clearFilters()" style="font-size:11px;color:#aaa;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseover="this.style.background='#f5f4f0'" onmouseout="this.style.background='none'">✕ Limpar</button>
         </div>
       </div>
-      <div id="avaliacoes-list"><div class="empty">Carregando...</div></div>
+      <div id="avaliacoes-list"><div class="empty"><span class="spinner"></span></div></div>
     </div>
 
   </div>
 </div>
 
-<!-- MODAL CLOSER -->
+<!-- MODAIS -->
 <div class="overlay" id="modal-closer" style="display:none" onclick="if(event.target===this)closeModal('modal-closer')">
   <div class="modal">
     <div class="modal-title">Adicionar closer</div>
@@ -235,7 +229,6 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
-<!-- MODAL SCRIPT -->
 <div class="overlay" id="modal-script" style="display:none" onclick="if(event.target===this)closeModal('modal-script')">
   <div class="modal">
     <div class="modal-title">Criar script de reunião</div>
@@ -254,7 +247,6 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
-<!-- MODAL REUNIÃO -->
 <div class="overlay" id="modal-meeting" style="display:none" onclick="if(event.target===this)closeModal('modal-meeting')">
   <div class="modal">
     <div class="modal-title">Agendar nova reunião</div>
@@ -283,7 +275,6 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
-<!-- MODAL EXCLUIR REUNIÃO -->
 <div class="overlay" id="modal-delete" style="display:none" onclick="if(event.target===this)closeModal('modal-delete')">
   <div class="modal" style="max-width:360px">
     <div class="modal-title" style="color:#A32D2D">⚠️ Excluir reunião?</div>
@@ -296,45 +287,46 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
-<!-- MODAL RELATÓRIO CLOSER -->
 <div class="overlay" id="modal-closer-report" style="display:none" onclick="if(event.target===this)closeModal('modal-closer-report')">
   <div class="modal" style="width:520px;max-width:95vw">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
       <div style="display:flex;align-items:center;gap:12px">
         <div class="avatar" style="width:44px;height:44px;font-size:14px" id="cr-avatar">--</div>
-        <div>
-          <div style="font-size:16px;font-weight:600;color:#1a1a1a" id="cr-name">Closer</div>
-          <div style="font-size:12px;color:#aaa" id="cr-subtitle">Análise do mês</div>
-        </div>
+        <div><div style="font-size:16px;font-weight:600;color:#1a1a1a" id="cr-name">Closer</div><div style="font-size:12px;color:#aaa" id="cr-subtitle">Análise do mês</div></div>
       </div>
-      <div style="text-align:right">
-        <div style="font-size:26px;font-weight:700" id="cr-score-big">—</div>
-        <div style="font-size:11px;color:#aaa">score médio</div>
-      </div>
+      <div style="text-align:right"><div style="font-size:26px;font-weight:700" id="cr-score-big">—</div><div style="font-size:11px;color:#aaa">score médio</div></div>
     </div>
     <div id="cr-trend" style="margin-bottom:1rem"></div>
     <div id="cr-sections"></div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('modal-closer-report')">Fechar</button>
-    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-closer-report')">Fechar</button></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// Estado local
-var closers = JSON.parse(localStorage.getItem('closers') || '[]');
-var scripts = JSON.parse(localStorage.getItem('scripts') || '[]');
+// Estado global (agora vem do servidor)
+var closers = [];
+var scripts = [];
 var _allEvaluations = [];
 var _deleteId = null;
 var _filterCloser = '';
 var _filterDate = '';
 var _filterScore = '';
 
-function saveLocal() {
-  localStorage.setItem('closers', JSON.stringify(closers));
-  localStorage.setItem('scripts', JSON.stringify(scripts));
+// Init — carrega closers e scripts do servidor
+async function init() {
+  try {
+    var r1 = await fetch('/api/closers');
+    var d1 = await r1.json();
+    closers = d1.closers || [];
+  } catch(e) { closers = []; }
+  try {
+    var r2 = await fetch('/api/scripts');
+    var d2 = await r2.json();
+    scripts = d2.scripts || [];
+  } catch(e) { scripts = []; }
+  loadDashboard();
 }
 
 function toast(msg, type) {
@@ -345,19 +337,17 @@ function toast(msg, type) {
   setTimeout(function() { el.classList.remove('show'); }, 4000);
 }
 
-function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
-}
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
 function navigate(page) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
   var el = document.getElementById('page-' + page);
   if (el) el.classList.add('active');
-  var labels = { dashboard: 'Dashboard', closers: 'Closers', performance: 'Performance', scripts: 'Scripts', reunioes: 'Reuniões', avaliacoes: 'Avaliações' };
+  var labels = { dashboard:'Dashboard', closers:'Closers', performance:'Performance', scripts:'Scripts', reunioes:'Reuniões', avaliacoes:'Avaliações' };
   var label = labels[page] || '';
   document.querySelectorAll('.nav-item').forEach(function(n) {
-    if (label && n.textContent.indexOf(label.slice(0, 5)) >= 0) n.classList.add('active');
+    if (label && n.textContent.indexOf(label.slice(0,5)) >= 0) n.classList.add('active');
   });
   if (page === 'closers') renderClosers();
   if (page === 'scripts') renderScripts();
@@ -369,21 +359,21 @@ function navigate(page) {
 
 function scoreColor(s) { return s >= 75 ? '#27500A' : s >= 60 ? '#633806' : '#791F1F'; }
 function barColor(s) { return s >= 75 ? '#639922' : s >= 60 ? '#BA7517' : '#E24B4A'; }
-function initials(name) { return (name || '?').split(' ').map(function(w) { return w[0]; }).join('').slice(0, 2).toUpperCase(); }
+function initials(name) { return (name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase(); }
 function fmtDate(iso) {
-  try { return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
-  catch(e) { return iso || ''; }
+  try { return new Date(iso).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+  catch(e) { return iso||''; }
 }
 
 // CLOSERS
 function renderClosers() {
   var tb = document.getElementById('closers-table');
-  if (!closers.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr>'; return; }
+  if (!closers.length) { tb.innerHTML='<tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr>'; return; }
   var html = '';
   for (var i = 0; i < closers.length; i++) {
     var c = closers[i];
-    html += '<tr><td><div class="closer-row"><div class="avatar">' + initials(c.name) + '</div>' + c.name + '</div></td><td>—</td><td>—</td>';
-    html += '<td><button class="btn btn-sm btn-danger" data-closer-id="' + c.id + '" onclick="removeCloser(this)">Remover</button></td></tr>';
+    html += '<tr><td><div class="closer-row"><div class="avatar">'+initials(c.name)+'</div>'+c.name+'</div></td><td>—</td><td>—</td>';
+    html += '<td><button class="btn btn-sm btn-danger" data-closer-id="'+c.id+'" onclick="removeCloser(this)">Remover</button></td></tr>';
   }
   tb.innerHTML = html;
 }
@@ -392,35 +382,41 @@ function openCloserModal() {
   document.getElementById('closer-name').value = '';
   document.getElementById('modal-closer').style.display = 'flex';
 }
-function addCloser() {
+async function addCloser() {
   var name = document.getElementById('closer-name').value.trim();
-  if (!name) { toast('Informe o nome do closer', 'error'); return; }
-  closers.push({ id: Date.now().toString(), name: name });
-  saveLocal();
-  closeModal('modal-closer');
-  renderClosers();
-  toast('Closer adicionado!', 'success');
+  if (!name) { toast('Informe o nome do closer','error'); return; }
+  try {
+    var r = await fetch('/api/closers', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:name}) });
+    var d = await r.json();
+    closers = d.closers || [];
+    closeModal('modal-closer');
+    renderClosers();
+    toast('Closer adicionado!','success');
+  } catch(e) { toast('Erro ao salvar','error'); }
 }
-function removeCloser(btn) {
+async function removeCloser(btn) {
   var id = btn.getAttribute('data-closer-id');
-  closers = closers.filter(function(c) { return c.id !== id; });
-  saveLocal();
-  renderClosers();
+  try {
+    var r = await fetch('/api/closers', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id}) });
+    var d = await r.json();
+    closers = d.closers || [];
+    renderClosers();
+  } catch(e) { toast('Erro ao remover','error'); }
 }
 
 // SCRIPTS
 function renderScripts() {
   var el = document.getElementById('scripts-list');
-  if (!scripts.length) { el.innerHTML = '<div class="empty">Nenhum script criado</div>'; return; }
+  if (!scripts.length) { el.innerHTML='<div class="empty">Nenhum script criado</div>'; return; }
   var html = '';
   for (var i = 0; i < scripts.length; i++) {
     var s = scripts[i];
-    var steps = s.steps.split('\n').length;
+    var steps = s.steps ? s.steps.split('\n').length : 0;
     html += '<div class="script-card"><div style="display:flex;justify-content:space-between;align-items:flex-start">';
-    html += '<div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px">' + s.name + '</div>';
-    html += '<span class="badge badge-purple">' + steps + ' etapas</span></div>';
-    html += '<button class="btn btn-sm btn-danger" data-script-id="' + s.id + '" onclick="removeScript(this)">Remover</button>';
-    html += '</div><div class="script-steps">' + s.steps + '</div></div>';
+    html += '<div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px">'+s.name+'</div>';
+    html += '<span class="badge badge-purple">'+steps+' etapas</span></div>';
+    html += '<button class="btn btn-sm btn-danger" data-script-id="'+s.id+'" onclick="removeScript(this)">Remover</button>';
+    html += '</div><div class="script-steps">'+s.steps+'</div></div>';
   }
   el.innerHTML = html;
 }
@@ -431,425 +427,279 @@ function openScriptModal() {
   document.getElementById('script-criteria').value = '';
   document.getElementById('modal-script').style.display = 'flex';
 }
-function addScript() {
+async function addScript() {
   var name = document.getElementById('script-name').value.trim();
   var steps = document.getElementById('script-content').value.trim();
-  if (!name || !steps) { toast('Preencha nome e etapas', 'error'); return; }
+  if (!name || !steps) { toast('Preencha nome e etapas','error'); return; }
   var criteria = document.getElementById('script-criteria').value.trim();
-  scripts.push({ id: Date.now().toString(), name: name, steps: steps, criteria: criteria });
-  saveLocal();
-  closeModal('modal-script');
-  renderScripts();
-  toast('Script salvo!', 'success');
+  try {
+    var r = await fetch('/api/scripts', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:name,steps:steps,criteria:criteria}) });
+    var d = await r.json();
+    scripts = d.scripts || [];
+    closeModal('modal-script');
+    renderScripts();
+    toast('Script salvo!','success');
+  } catch(e) { toast('Erro ao salvar','error'); }
 }
-function removeScript(btn) {
+async function removeScript(btn) {
   var id = btn.getAttribute('data-script-id');
-  scripts = scripts.filter(function(s) { return s.id !== id; });
-  saveLocal();
-  renderScripts();
+  try {
+    var r = await fetch('/api/scripts', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id}) });
+    var d = await r.json();
+    scripts = d.scripts || [];
+    renderScripts();
+  } catch(e) { toast('Erro ao remover','error'); }
 }
 
 // REUNIÕES
 function loadMeetings() {
   var tb = document.getElementById('reunioes-table');
-  tb.innerHTML = '<tr><td colspan="6" class="empty"><span class="spinner"></span> Carregando...</td></tr>';
-  fetch('/api/meetings').then(function(r) { return r.json(); }).then(function(data) {
+  tb.innerHTML = '<tr><td colspan="6" class="empty"><span class="spinner"></span></td></tr>';
+  fetch('/api/meetings').then(function(r){return r.json();}).then(function(data){
     var meetings = data.meetings || [];
-    if (!meetings.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">Nenhuma reunião ainda</td></tr>'; return; }
+    if (!meetings.length) { tb.innerHTML='<tr><td colspan="6" class="empty">Nenhuma reunião ainda</td></tr>'; return; }
     var html = '';
     for (var i = 0; i < meetings.length; i++) {
       var m = meetings[i];
       var s = m.status;
-      var badge = s === 'evaluated' ? 'badge-green' : s === 'bot_joined' ? 'badge-amber' : s === 'scheduled' ? 'badge-blue' : 'badge-gray';
-      var dot = s === 'evaluated' ? 'dot-green' : s === 'bot_joined' ? 'dot-purple' : s === 'scheduled' ? 'dot-blue' : 'dot-gray';
-      var label = s === 'evaluated' ? 'Avaliado' : s === 'bot_joined' ? 'Bot na call' : s === 'scheduled' ? 'Agendado' : '—';
-      var av = initials(m.closer || '?');
-      var lnk = (m.meetLink || '').replace('https://', '');
-      html += '<tr>';
-      html += '<td><div class="closer-row"><div class="avatar">' + av + '</div>' + (m.closer || '') + '</div></td>';
-      html += '<td><span class="tag">' + (m.scriptName || '') + '</span></td>';
-      html += '<td><span class="meet-link">' + lnk + '</span></td>';
-      html += '<td><span class="badge ' + badge + '"><span class="status-dot ' + dot + '"></span>' + label + '</span></td>';
-      html += '<td style="color:#888;font-size:12px">' + fmtDate(m.scheduledAt) + '</td>';
-      html += '<td><button class="btn btn-sm btn-danger" data-meeting-id="' + m.id + '" data-meeting-closer="' + (m.closer||'') + '" data-meeting-script="' + (m.scriptName||'') + '" data-meeting-date="' + fmtDate(m.scheduledAt) + '" onclick="deleteMeeting(this)">Excluir</button></td>';
-      html += '</tr>';
+      var badge = s==='evaluated'?'badge-green':s==='bot_joined'?'badge-amber':s==='scheduled'?'badge-blue':'badge-gray';
+      var dot = s==='evaluated'?'dot-green':s==='bot_joined'?'dot-purple':s==='scheduled'?'dot-blue':'dot-gray';
+      var label = s==='evaluated'?'Avaliado':s==='bot_joined'?'Bot na call':s==='scheduled'?'Agendado':'—';
+      html += '<tr><td><div class="closer-row"><div class="avatar">'+initials(m.closer||'?')+'</div>'+(m.closer||'')+'</div></td>';
+      html += '<td><span class="tag">'+(m.scriptName||'')+'</span></td>';
+      html += '<td><span class="meet-link">'+((m.meetLink||'').replace('https://',''))+'</span></td>';
+      html += '<td><span class="badge '+badge+'"><span class="status-dot '+dot+'"></span>'+label+'</span></td>';
+      html += '<td style="color:#888;font-size:12px">'+fmtDate(m.scheduledAt)+'</td>';
+      html += '<td><button class="btn btn-sm btn-danger" data-meeting-id="'+m.id+'" data-meeting-closer="'+(m.closer||'')+'" data-meeting-script="'+(m.scriptName||'')+'" data-meeting-date="'+fmtDate(m.scheduledAt)+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
     }
     tb.innerHTML = html;
-  }).catch(function() {
-    tb.innerHTML = '<tr><td colspan="6" class="empty">Erro ao carregar reuniões</td></tr>';
-  });
+  }).catch(function(){ tb.innerHTML='<tr><td colspan="6" class="empty">Erro ao carregar</td></tr>'; });
 }
 
 function deleteMeeting(btn) {
   _deleteId = btn.getAttribute('data-meeting-id');
-  var closer = btn.getAttribute('data-meeting-closer');
-  var script = btn.getAttribute('data-meeting-script');
-  var date = btn.getAttribute('data-meeting-date');
-  document.getElementById('delete-meeting-info').innerHTML = '<strong>Closer:</strong> ' + closer + ' &nbsp;|&nbsp; <strong>Script:</strong> ' + script + '<br><strong>Data:</strong> ' + date;
+  document.getElementById('delete-meeting-info').innerHTML = '<strong>Closer:</strong> '+btn.getAttribute('data-meeting-closer')+' &nbsp;|&nbsp; <strong>Script:</strong> '+btn.getAttribute('data-meeting-script')+'<br><strong>Data:</strong> '+btn.getAttribute('data-meeting-date');
   document.getElementById('modal-delete').style.display = 'flex';
 }
 function confirmDelete() {
   if (!_deleteId) return;
   var btn = document.getElementById('btn-confirm-delete');
-  btn.disabled = true;
-  btn.textContent = 'Excluindo...';
-  fetch('/api/delete-meeting', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: _deleteId }) })
-    .then(function() { closeModal('modal-delete'); loadMeetings(); toast('Reunião excluída!', 'success'); btn.disabled = false; btn.textContent = 'Sim, excluir'; _deleteId = null; })
-    .catch(function() { toast('Erro ao excluir', 'error'); btn.disabled = false; btn.textContent = 'Sim, excluir'; });
+  btn.disabled = true; btn.textContent = 'Excluindo...';
+  fetch('/api/delete-meeting',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:_deleteId})})
+    .then(function(){ closeModal('modal-delete'); loadMeetings(); toast('Reunião excluída!','success'); btn.disabled=false; btn.textContent='Sim, excluir'; _deleteId=null; })
+    .catch(function(){ toast('Erro ao excluir','error'); btn.disabled=false; btn.textContent='Sim, excluir'; });
 }
 
 function openNewMeeting() {
   var cs = document.getElementById('meet-closer');
   var ss = document.getElementById('meet-script');
   cs.innerHTML = '<option value="">Selecione</option>';
-  for (var i = 0; i < closers.length; i++) cs.innerHTML += '<option value="' + closers[i].id + '">' + closers[i].name + '</option>';
+  for (var i = 0; i < closers.length; i++) cs.innerHTML += '<option value="'+closers[i].id+'">'+closers[i].name+'</option>';
   ss.innerHTML = '<option value="">Selecione</option>';
-  for (var j = 0; j < scripts.length; j++) ss.innerHTML += '<option value="' + scripts[j].id + '">' + scripts[j].name + '</option>';
+  for (var j = 0; j < scripts.length; j++) ss.innerHTML += '<option value="'+scripts[j].id+'">'+scripts[j].name+'</option>';
   document.getElementById('meet-link').value = '';
   document.getElementById('meet-datetime').value = '';
   document.getElementById('meeting-result').style.display = 'none';
   var btn = document.getElementById('btn-create-meeting');
-  btn.disabled = false;
-  btn.textContent = 'Criar reunião + enviar bot';
-  btn.onclick = addMeeting;
+  btn.disabled = false; btn.textContent = 'Criar reunião + enviar bot'; btn.onclick = addMeeting;
   document.getElementById('modal-meeting').style.display = 'flex';
 }
 function generateMeetLink() {
-  var chars = 'abcdefghijklmnopqrstuvwxyz';
-  function seg(n) { var s = ''; for (var i = 0; i < n; i++) s += chars[Math.floor(Math.random() * chars.length)]; return s; }
-  document.getElementById('meet-link').value = 'https://meet.google.com/' + seg(3) + '-' + seg(4) + '-' + seg(3);
+  var chars='abcdefghijklmnopqrstuvwxyz';
+  function seg(n){var s='';for(var i=0;i<n;i++)s+=chars[Math.floor(Math.random()*chars.length)];return s;}
+  document.getElementById('meet-link').value='https://meet.google.com/'+seg(3)+'-'+seg(4)+'-'+seg(3);
 }
-function addMeeting() {
+async function addMeeting() {
   var closerId = document.getElementById('meet-closer').value;
   var scriptId = document.getElementById('meet-script').value;
   var meetLink = document.getElementById('meet-link').value.trim();
   var dt = document.getElementById('meet-datetime').value;
-  if (!closerId || !scriptId || !meetLink) { toast('Preencha closer, script e link', 'error'); return; }
+  if (!closerId || !scriptId || !meetLink) { toast('Preencha closer, script e link','error'); return; }
   var closer = null, script = null;
   for (var i = 0; i < closers.length; i++) if (closers[i].id === closerId) { closer = closers[i]; break; }
   for (var j = 0; j < scripts.length; j++) if (scripts[j].id === scriptId) { script = scripts[j]; break; }
-  if (!closer || !script) { toast('Closer ou script inválido', 'error'); return; }
+  if (!closer || !script) { toast('Closer ou script inválido','error'); return; }
   var btn = document.getElementById('btn-create-meeting');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Enviando bot...';
-  fetch('/api/join-meeting', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ closer: closer.name, closerId: closer.id, scriptId: script.id, scriptName: script.name, scriptSteps: script.steps, scriptCriteria: script.criteria, meetLink: meetLink, scheduledAt: dt ? new Date(dt).toISOString() : new Date().toISOString() })
-  }).then(function(r) { return r.json(); }).then(function(data) {
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Enviando bot...';
+  try {
+    var r = await fetch('/api/join-meeting',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({closer:closer.name,closerId:closer.id,scriptId:script.id,scriptName:script.name,scriptSteps:script.steps,scriptCriteria:script.criteria,meetLink:meetLink,scheduledAt:dt?new Date(dt).toISOString():new Date().toISOString()})});
+    var data = await r.json();
     var resultEl = document.getElementById('meeting-result');
     if (data.success && data.meeting && data.meeting.firefliesMeetingId) {
-      resultEl.innerHTML = '<div class="info-box info-box-green">✅ <strong>Bot entrou na reunião!</strong> Admita o participante "Fireflies" no Google Meet.</div>';
-      toast('Bot CloserAI enviado!', 'success');
+      resultEl.innerHTML = '<div class="info-box info-box-green">✅ <strong>Bot entrou na reunião!</strong> Admita "Fireflies" no Google Meet. A avaliação será gerada ao final.</div>';
+      toast('Bot enviado!','success');
     } else {
-      var err = (data.meeting && data.meeting.botError) || 'Verifique se a reunião está ativa';
-      resultEl.innerHTML = '<div class="info-box info-box-amber">⚠️ Reunião salva, mas o bot não entrou: ' + err + '</div>';
+      var err = (data.meeting&&data.meeting.botError)||'Verifique se a reunião está ativa';
+      resultEl.innerHTML = '<div class="info-box info-box-amber">⚠️ Reunião salva, mas o bot não entrou: '+err+'</div>';
     }
     resultEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Fechar';
-    btn.onclick = function() { closeModal('modal-meeting'); loadMeetings(); };
-  }).catch(function() { toast('Erro ao criar reunião', 'error'); btn.disabled = false; btn.textContent = 'Criar reunião + enviar bot'; btn.onclick = addMeeting; });
+    btn.disabled = false; btn.textContent = 'Fechar';
+    btn.onclick = function(){ closeModal('modal-meeting'); loadMeetings(); };
+  } catch(e) { toast('Erro ao criar reunião','error'); btn.disabled=false; btn.textContent='Criar reunião + enviar bot'; btn.onclick=addMeeting; }
 }
 
 // AVALIAÇÕES
-function setChipCloser(el) { setChip(el, "closer"); }
 function setChip(el, group) {
   var val = el.getAttribute('data-val');
-  if (group === 'closer') {
-    document.querySelectorAll('#filter-closer-chips .fchip').forEach(function(c) { c.classList.remove('fchip-active'); });
-    _filterCloser = val;
-  } else if (group === 'date') {
-    document.querySelectorAll('[data-group="date"]').forEach(function(c) { c.classList.remove('fchip-active'); });
-    _filterDate = val;
-  } else if (group === 'score') {
-    document.querySelectorAll('[data-group="score"]').forEach(function(c) { c.classList.remove('fchip-active'); });
-    _filterScore = val;
-  }
+  if (group==='closer') { document.querySelectorAll('#filter-closer-chips .fchip').forEach(function(c){c.classList.remove('fchip-active');}); _filterCloser=val; }
+  else if (group==='date') { document.querySelectorAll('[data-group="date"]').forEach(function(c){c.classList.remove('fchip-active');}); _filterDate=val; }
+  else if (group==='score') { document.querySelectorAll('[data-group="score"]').forEach(function(c){c.classList.remove('fchip-active');}); _filterScore=val; }
   el.classList.add('fchip-active');
   applyFilters();
 }
 function applyFilters() {
   var filtered = _allEvaluations.filter(function(a) {
-    if (_filterCloser && a.closer !== _filterCloser) return false;
+    if (_filterCloser && a.closer!==_filterCloser) return false;
     if (_filterDate) {
-      var d = new Date(a.createdAt), now = new Date();
-      if (_filterDate === 'today' && d.toDateString() !== now.toDateString()) return false;
-      if (_filterDate === 'week') { var w = new Date(now); w.setDate(now.getDate() - 7); if (d < w) return false; }
-      if (_filterDate === 'month' && (d.getMonth() !== now.getMonth() || d.getFullYear() !== now.getFullYear())) return false;
+      var d=new Date(a.createdAt), now=new Date();
+      if (_filterDate==='today' && d.toDateString()!==now.toDateString()) return false;
+      if (_filterDate==='week') { var w=new Date(now); w.setDate(now.getDate()-7); if(d<w) return false; }
+      if (_filterDate==='month' && (d.getMonth()!==now.getMonth()||d.getFullYear()!==now.getFullYear())) return false;
     }
     if (_filterScore) {
-      var s = (a.evaluation && a.evaluation.score) || 0;
-      if (_filterScore === 'approved' && s < 75) return false;
-      if (_filterScore === 'improve' && (s < 60 || s >= 75)) return false;
-      if (_filterScore === 'critical' && s >= 60) return false;
+      var s=(a.evaluation&&a.evaluation.score)||0;
+      if (_filterScore==='approved'&&s<75) return false;
+      if (_filterScore==='improve'&&(s<60||s>=75)) return false;
+      if (_filterScore==='critical'&&s>=60) return false;
     }
     return true;
   });
   var el = document.getElementById('avaliacoes-list');
-  el.innerHTML = filtered.length ? renderEvalCards(filtered) : '<div class="empty">Nenhuma avaliação encontrada com esses filtros</div>';
+  el.innerHTML = filtered.length ? renderEvalCards(filtered) : '<div class="empty">Nenhuma avaliação com esses filtros</div>';
 }
 function clearFilters() {
-  _filterCloser = ''; _filterDate = ''; _filterScore = '';
-  document.querySelectorAll('.fchip').forEach(function(c) { c.classList.remove('fchip-active'); });
-  document.querySelectorAll('.fchip[data-val=""]').forEach(function(c) { c.classList.add('fchip-active'); });
+  _filterCloser=''; _filterDate=''; _filterScore='';
+  document.querySelectorAll('.fchip').forEach(function(c){c.classList.remove('fchip-active');});
+  document.querySelectorAll('.fchip[data-val=""]').forEach(function(c){c.classList.add('fchip-active');});
   var el = document.getElementById('avaliacoes-list');
   el.innerHTML = _allEvaluations.length ? renderEvalCards(_allEvaluations) : '<div class="empty">Nenhuma avaliação ainda</div>';
 }
 function loadAvaliacoes() {
   var el = document.getElementById('avaliacoes-list');
-  el.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando avaliações...</div>';
-  fetch('/api/evaluations').then(function(r) { return r.json(); }).then(function(data) {
+  el.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando...</div>';
+  fetch('/api/evaluations').then(function(r){return r.json();}).then(function(data){
     var evaluations = data.evaluations || [];
     _allEvaluations = evaluations;
-    // Popula chips de closers
-    var unique = [];
-    for (var i = 0; i < evaluations.length; i++) { if (evaluations[i].closer && unique.indexOf(evaluations[i].closer) < 0) unique.push(evaluations[i].closer); }
-    var chips = '<button class="fchip' + (_filterCloser === '' ? ' fchip-active' : '') + '" data-val="" data-closer-chip onclick="setChipCloser(this)">Todos</button>';
-    for (var j = 0; j < unique.length; j++) chips += '<button class="fchip' + (_filterCloser === unique[j] ? ' fchip-active' : '') + '" data-val="' + unique[j] + '" data-closer-chip onclick="setChipCloser(this)">' + unique[j] + '</button>';
-    var cc = document.getElementById('filter-closer-chips');
-    if (cc) cc.innerHTML = chips;
-    if (!evaluations.length) {
-      // Demo
-      var fake = [{ closer: 'Ives Silva', scriptName: 'Script (Validado) até 40 mil', createdAt: new Date().toISOString(), evaluation: { score: 82, feedback: 'O closer conduziu a reunião com boa energia e seguiu as etapas do script de forma consistente. A apresentação da proposta foi clara e objetiva. Ponto de atenção: a etapa de diagnóstico poderia ter sido mais aprofundada.', criteria_scores: { 'Seguiu as etapas do script': 88, 'Diagnóstico do cliente': 70, 'Apresentação de valor': 85, 'Quebra de objeções': 78, 'Condução do fechamento': 90 }, highlights: ['Boa energia e rapport com o cliente', 'Fechamento conduzido com segurança'], improvements: ['Aprofundar mais o diagnóstico'], closer_analysis: { melhor_etapa: 'Fechamento — direto e seguro ao apresentar o investimento.', etapa_critica: 'Diagnóstico — apenas 4 min dos 10 recomendados. Não explorou dores mencionadas.', tecnicas_usadas: ['Rapport', 'Prova social', 'Ancoragem de preço'], oportunidades_perdidas: ['Não explorou a dor de retenção', 'Não perguntou sobre tentativas anteriores'], postura_geral: 'Confiante e profissional. Poderia ser mais consultivo no diagnóstico.' }, lead_info: { segmento: 'Academia de musculação — 2 unidades', situacao_atual: 'Faturamento de R$35k/mês, meta R$60k', principais_dores: ['Alta taxa de cancelamento', 'Vendedores sem script'], objecoes_levantadas: ['Preço acima do esperado', 'Quer consultar o sócio'], nivel_interesse: 'Alto — fez perguntas e pediu referências', detalhes_negocio: '2 unidades, ~400 alunos, 3 vendedores', proximo_passo: 'Ligação quinta-feira 14h com sócio presente' } } }];
-      el.innerHTML = '<div class="info-box info-box-amber">📋 <strong>Demonstração:</strong> avaliação de exemplo. As reais aparecem automaticamente após cada reunião.</div>' + renderEvalCards(fake);
+    var unique=[];
+    for(var i=0;i<evaluations.length;i++){if(evaluations[i].closer&&unique.indexOf(evaluations[i].closer)<0)unique.push(evaluations[i].closer);}
+    var chips='<button class="fchip'+(_filterCloser===''?' fchip-active':'')+'" data-val="" onclick="setChip(this,\'closer\')">Todos</button>';
+    for(var j=0;j<unique.length;j++) chips+='<button class="fchip'+(_filterCloser===unique[j]?' fchip-active':'')+'" data-val="'+unique[j]+'" onclick="setChip(this,\'closer\')">'+unique[j]+'</button>';
+    var cc=document.getElementById('filter-closer-chips'); if(cc) cc.innerHTML=chips;
+    if(!evaluations.length){
+      var fake=[{closer:'Ives Silva',scriptName:'Script (Validado) até 40 mil',createdAt:new Date().toISOString(),evaluation:{score:82,feedback:'O closer conduziu a reunião com boa energia e seguiu as etapas do script de forma consistente. A apresentação da proposta foi clara e objetiva. Ponto de atenção: a etapa de diagnóstico poderia ter sido mais aprofundada.',criteria_scores:{'Seguiu as etapas do script':88,'Diagnóstico do cliente':70,'Apresentação de valor':85,'Quebra de objeções':78,'Condução do fechamento':90},highlights:['Boa energia e rapport','Fechamento seguro'],improvements:['Aprofundar diagnóstico'],closer_analysis:{melhor_etapa:'Fechamento — direto e seguro.',etapa_critica:'Diagnóstico — apenas 4 min dos 10 recomendados.',tecnicas_usadas:['Rapport','Prova social'],oportunidades_perdidas:['Não explorou dor de retenção'],postura_geral:'Confiante e profissional.'},lead_info:{segmento:'Academia — 2 unidades',situacao_atual:'Faturamento R$35k/mês, meta R$60k',principais_dores:['Churn alto','Vendedores sem script'],objecoes_levantadas:['Preço','Consultar sócio'],nivel_interesse:'Alto',detalhes_negocio:'2 unidades, 400 alunos',proximo_passo:'Ligação quinta 14h com sócio'}}}];
+      el.innerHTML='<div class="info-box info-box-amber">📋 <strong>Demonstração:</strong> avaliação de exemplo. As reais aparecem após cada reunião.</div>'+renderEvalCards(fake);
       return;
     }
-    el.innerHTML = renderEvalCards(evaluations);
-  }).catch(function() { el.innerHTML = '<div class="empty">Erro ao carregar avaliações</div>'; });
+    el.innerHTML=renderEvalCards(evaluations);
+  }).catch(function(){el.innerHTML='<div class="empty">Erro ao carregar avaliações</div>';});
 }
 
 function renderEvalCards(evaluations) {
-  var html = '';
-  for (var i = 0; i < evaluations.length; i++) {
-    var a = evaluations[i];
-    var ev = a.evaluation || {};
-    var score = ev.score || 0;
-    var cs = ev.criteria_scores || {};
-    var highlights = ev.highlights || [];
-    var improvements = ev.improvements || [];
-    var ca = ev.closer_analysis || {};
-    var li = ev.lead_info || {};
-    var badge = score >= 75 ? 'badge-green' : score >= 60 ? 'badge-amber' : 'badge-red';
-    var label = score >= 75 ? 'Aprovado' : score >= 60 ? 'Precisa melhorar' : 'Crítico';
-    var bars = '';
-    var keys = Object.keys(cs);
-    for (var k = 0; k < keys.length; k++) {
-      var kk = keys[k], vv = cs[kk];
-      bars += '<div class="score-bar-container"><div class="score-label">' + kk + '</div><div class="score-track"><div class="score-fill" style="width:' + vv + '%;background:' + barColor(vv) + '"></div></div><div class="score-num">' + vv + '%</div></div>';
+  var html='';
+  for(var i=0;i<evaluations.length;i++){
+    var a=evaluations[i], ev=a.evaluation||{}, score=ev.score||0;
+    var cs=ev.criteria_scores||{}, ca=ev.closer_analysis||{}, li=ev.lead_info||{};
+    var badge=score>=75?'badge-green':score>=60?'badge-amber':'badge-red';
+    var lbl=score>=75?'Aprovado':score>=60?'Precisa melhorar':'Crítico';
+    var bars='';
+    var keys=Object.keys(cs);
+    for(var k=0;k<keys.length;k++){var kk=keys[k],vv=cs[kk]; bars+='<div class="score-bar-container"><div class="score-label">'+kk+'</div><div class="score-track"><div class="score-fill" style="width:'+vv+'%;background:'+barColor(vv)+'"></div></div><div class="score-num">'+vv+'%</div></div>';}
+    var hi=(ev.highlights||[]).length?'<div style="margin-top:8px;font-size:12px;color:#27500A"><strong>✅ Destaques:</strong> '+ev.highlights.join(' · ')+'</div>':'';
+    var im=(ev.improvements||[]).length?'<div style="margin-top:4px;font-size:12px;color:#633806"><strong>⚠️ Melhorias:</strong> '+ev.improvements.join(' · ')+'</div>':'';
+    var cAnal='';
+    if(ca.melhor_etapa||ca.etapa_critica){
+      cAnal='<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px"><div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📊 Análise do Closer</div>'+(ca.postura_geral?'<div style="font-size:12px;color:#555;margin-bottom:8px;line-height:1.6"><strong>Postura:</strong> '+ca.postura_geral+'</div>':'')+(ca.melhor_etapa?'<div style="background:#EAF3DE;border-radius:6px;padding:8px 10px;font-size:12px;color:#27500A;margin-bottom:6px"><strong>✅ Melhor etapa:</strong> '+ca.melhor_etapa+'</div>':'')+(ca.etapa_critica?'<div style="background:#FCEBEB;border-radius:6px;padding:8px 10px;font-size:12px;color:#791F1F;margin-bottom:6px"><strong>🎯 Etapa crítica:</strong> '+ca.etapa_critica+'</div>':'')+'</div>';
     }
-    var hi = highlights.length ? '<div style="margin-top:8px;font-size:12px;color:#27500A"><strong>✅ Destaques:</strong> ' + highlights.join(' · ') + '</div>' : '';
-    var im = improvements.length ? '<div style="margin-top:4px;font-size:12px;color:#633806"><strong>⚠️ Melhorias:</strong> ' + improvements.join(' · ') + '</div>' : '';
-    var closerAnalysis = '';
-    if (ca.melhor_etapa || ca.etapa_critica || ca.postura_geral) {
-      closerAnalysis = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">' +
-        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📊 Análise do Closer</div>' +
-        (ca.postura_geral ? '<div style="font-size:12px;color:#555;margin-bottom:8px;line-height:1.6"><strong>Postura geral:</strong> ' + ca.postura_geral + '</div>' : '') +
-        (ca.melhor_etapa ? '<div style="background:#EAF3DE;border-radius:6px;padding:8px 10px;font-size:12px;color:#27500A;margin-bottom:6px"><strong>✅ Melhor etapa:</strong> ' + ca.melhor_etapa + '</div>' : '') +
-        (ca.etapa_critica ? '<div style="background:#FCEBEB;border-radius:6px;padding:8px 10px;font-size:12px;color:#791F1F;margin-bottom:6px"><strong>🎯 Etapa crítica:</strong> ' + ca.etapa_critica + '</div>' : '') +
-        ((ca.tecnicas_usadas && ca.tecnicas_usadas.length) ? '<div style="margin-top:4px;font-size:12px;color:#555"><strong>Técnicas:</strong> ' + ca.tecnicas_usadas.join(', ') + '</div>' : '') +
-        ((ca.oportunidades_perdidas && ca.oportunidades_perdidas.length) ? '<div style="margin-top:4px;font-size:12px;color:#791F1F"><strong>⚡ Oportunidades perdidas:</strong> ' + ca.oportunidades_perdidas.join(' · ') + '</div>' : '') +
-        '</div>';
+    var lInfo='';
+    if(li.situacao_atual||li.principais_dores){
+      var dores=(li.principais_dores||[]).length?'<div style="margin-top:6px"><strong style="font-size:12px;color:#633806">🔥 Dores:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">'+li.principais_dores.map(function(d){return '<li>'+d+'</li>';}).join('')+'</ul></div>':'';
+      var obj=(li.objecoes_levantadas||[]).length?'<div style="margin-top:6px"><strong style="font-size:12px;color:#791F1F">❌ Objeções:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">'+li.objecoes_levantadas.map(function(o){return '<li>'+o+'</li>';}).join('')+'</ul></div>':'';
+      lInfo='<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px"><div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">👤 Informações do Lead</div>'+(li.segmento?'<div style="font-size:12px;color:#555;margin-bottom:4px"><strong>Segmento:</strong> '+li.segmento+'</div>':'')+(li.situacao_atual?'<div style="font-size:12px;color:#555;margin-bottom:4px;line-height:1.6"><strong>Situação:</strong> '+li.situacao_atual+'</div>':'')+(li.nivel_interesse?'<div style="font-size:12px;color:#555;margin-bottom:6px"><strong>Interesse:</strong> '+li.nivel_interesse+'</div>':'')+dores+obj+(li.proximo_passo?'<div style="margin-top:8px;background:#EEEDFE;border-radius:6px;padding:8px 10px;font-size:12px;color:#3C3489"><strong>📅 Próximo passo:</strong> '+li.proximo_passo+'</div>':'')+'</div>';
     }
-    var leadInfo = '';
-    if (li.situacao_atual || li.principais_dores || li.segmento) {
-      var dores = (li.principais_dores && li.principais_dores.length) ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#633806">🔥 Dores:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">' + li.principais_dores.map(function(d) { return '<li>' + d + '</li>'; }).join('') + '</ul></div>' : '';
-      var objecoes = (li.objecoes_levantadas && li.objecoes_levantadas.length) ? '<div style="margin-top:6px"><strong style="font-size:12px;color:#791F1F">❌ Objeções:</strong><ul style="margin:4px 0 0 16px;font-size:12px;color:#555;line-height:1.8">' + li.objecoes_levantadas.map(function(o) { return '<li>' + o + '</li>'; }).join('') + '</ul></div>' : '';
-      var niBg = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto') >= 0 ? '#EAF3DE' : '#FAEEDA';
-      var niColor = li.nivel_interesse && li.nivel_interesse.toLowerCase().indexOf('alto') >= 0 ? '#27500A' : '#633806';
-      leadInfo = '<div style="margin-top:14px;border-top:1px solid #f0efeb;padding-top:12px">' +
-        '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">👤 Informações do Lead</div>' +
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">' +
-        (li.segmento ? '<div style="background:#f5f4f0;border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Segmento</div><div style="font-size:12px;color:#1a1a1a">' + li.segmento + '</div></div>' : '') +
-        (li.nivel_interesse ? '<div style="background:' + niBg + ';border-radius:6px;padding:8px 10px"><div style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;margin-bottom:3px">Interesse</div><div style="font-size:12px;color:' + niColor + '">' + li.nivel_interesse + '</div></div>' : '') +
-        '</div>' +
-        (li.situacao_atual ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Situação:</strong> ' + li.situacao_atual + '</div>' : '') +
-        (li.detalhes_negocio ? '<div style="font-size:12px;color:#555;margin-bottom:6px;line-height:1.6"><strong>Negócio:</strong> ' + li.detalhes_negocio + '</div>' : '') +
-        dores + objecoes +
-        (li.proximo_passo ? '<div style="margin-top:8px;background:#EEEDFE;border-radius:6px;padding:8px 10px;font-size:12px;color:#3C3489"><strong>📅 Próximo passo:</strong> ' + li.proximo_passo + '</div>' : '') +
-        '</div>';
-    }
-    html += '<div class="eval-card">' +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">' +
-      '<div class="closer-row"><div class="avatar" style="width:40px;height:40px;font-size:13px">' + initials(a.closer || '?') + '</div>' +
-      '<div><div style="font-size:14px;font-weight:600;color:#1a1a1a">' + (a.closer || '') + '</div>' +
-      '<div style="font-size:12px;color:#aaa;margin-top:1px">' + fmtDate(a.createdAt) + '</div>' +
-      '<div style="margin-top:4px"><span class="badge badge-purple">☰ ' + (a.scriptName || '') + '</span></div></div></div>' +
-      '<div style="text-align:right"><div style="font-size:28px;font-weight:700;color:' + scoreColor(score) + '">' + score + '%</div><span class="badge ' + badge + '" style="font-size:10px">' + label + '</span></div>' +
-      '</div>' +
-      '<div style="border-top:1px solid #f0efeb;padding-top:12px">' + bars + '</div>' +
-      (ev.feedback ? '<div class="feedback-box"><strong>Feedback da IA:</strong> ' + ev.feedback + '</div>' : '') +
-      hi + im + closerAnalysis + leadInfo +
-      '</div>';
+    html+='<div class="eval-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div class="closer-row"><div class="avatar" style="width:40px;height:40px;font-size:13px">'+initials(a.closer||'?')+'</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a">'+(a.closer||'')+'</div><div style="font-size:12px;color:#aaa;margin-top:1px">'+fmtDate(a.createdAt)+'</div><div style="margin-top:4px"><span class="badge badge-purple">☰ '+(a.scriptName||'')+'</span></div></div></div><div style="text-align:right"><div style="font-size:28px;font-weight:700;color:'+scoreColor(score)+'">'+score+'%</div><span class="badge '+badge+'" style="font-size:10px">'+lbl+'</span></div></div><div style="border-top:1px solid #f0efeb;padding-top:12px">'+bars+'</div>'+(ev.feedback?'<div class="feedback-box"><strong>Feedback da IA:</strong> '+ev.feedback+'</div>':'')+hi+im+cAnal+lInfo+'</div>';
   }
   return html;
 }
 
 // PERFORMANCE
 function loadPerformance() {
-  var period = document.getElementById('perf-period') ? document.getElementById('perf-period').value : 'all';
-  var summaryEl = document.getElementById('perf-summary-cards');
-  var listEl = document.getElementById('perf-closers-list');
-  if (!summaryEl || !listEl) return;
-  listEl.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando...</div>';
-  Promise.all([fetch('/api/meetings').then(function(r) { return r.json(); }), fetch('/api/evaluations').then(function(r) { return r.json(); })]).then(function(results) {
-    var meetings = results[0].meetings || [];
-    var evaluations = results[1].evaluations || [];
-    var now = new Date();
-    function inPeriod(iso) {
-      if (period === 'all') return true;
-      var d = new Date(iso);
-      if (period === 'week') { var w = new Date(now); w.setDate(now.getDate() - 7); return d >= w; }
-      if (period === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      return true;
+  var period=document.getElementById('perf-period')?document.getElementById('perf-period').value:'all';
+  var sEl=document.getElementById('perf-summary-cards'), lEl=document.getElementById('perf-closers-list');
+  if(!sEl||!lEl) return;
+  lEl.innerHTML='<div class="empty"><span class="spinner"></span></div>';
+  Promise.all([fetch('/api/meetings').then(function(r){return r.json();}),fetch('/api/evaluations').then(function(r){return r.json();})]).then(function(results){
+    var meetings=results[0].meetings||[], evaluations=results[1].evaluations||[], now=new Date();
+    function inP(iso){if(period==='all')return true;var d=new Date(iso);if(period==='week'){var w=new Date(now);w.setDate(now.getDate()-7);return d>=w;}if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();return true;}
+    meetings=meetings.filter(function(m){return inP(m.scheduledAt||m.createdAt);});
+    evaluations=evaluations.filter(function(e){return inP(e.createdAt);});
+    var byC={};
+    closers.forEach(function(c){byC[c.name]={name:c.name,meetings:0,evaluated:0,scores:[]};});
+    meetings.forEach(function(m){if(!byC[m.closer])byC[m.closer]={name:m.closer,meetings:0,evaluated:0,scores:[]};byC[m.closer].meetings++;});
+    evaluations.forEach(function(e){if(!byC[e.closer])byC[e.closer]={name:e.closer,meetings:0,evaluated:0,scores:[]};byC[e.closer].evaluated++;if(e.evaluation&&e.evaluation.score)byC[e.closer].scores.push(e.evaluation.score);});
+    var cData=Object.values(byC).sort(function(a,b){return b.meetings-a.meetings;});
+    var allS=evaluations.map(function(e){return e.evaluation&&e.evaluation.score;}).filter(Boolean);
+    var avg=allS.length?Math.round(allS.reduce(function(a,b){return a+b;},0)/allS.length):0;
+    sEl.innerHTML='<div class="metric-card"><div class="metric-label">Reuniões no período</div><div class="metric-val">'+meetings.length+'</div></div><div class="metric-card"><div class="metric-label">Avaliadas pela IA</div><div class="metric-val">'+evaluations.length+'</div></div><div class="metric-card"><div class="metric-label">Score médio do time</div><div class="metric-val" style="color:'+scoreColor(avg||50)+'">'+(avg||'—')+(avg?'%':'')+'</div></div><div class="metric-card"><div class="metric-label">Closers ativos</div><div class="metric-val">'+cData.filter(function(c){return c.meetings>0;}).length+'</div></div>';
+    if(!cData.length){lEl.innerHTML='<div class="empty">Adicione closers e agende reuniões.</div>';return;}
+    var maxM=Math.max.apply(null,cData.map(function(c){return c.meetings;}))||1, html='';
+    for(var i=0;i<cData.length;i++){
+      var c=cData[i], avgS=c.scores.length?Math.round(c.scores.reduce(function(a,b){return a+b;},0)/c.scores.length):0;
+      var mPct=Math.round((c.meetings/maxM)*100), sB=avgS>=75?'#EAF3DE':avgS>=60?'#FAEEDA':avgS?'#FCEBEB':'#f5f4f0', sC=avgS>=75?'#27500A':avgS>=60?'#633806':avgS?'#791F1F':'#aaa';
+      var dC=c.meetings===0?'#ddd':avgS>=75?'#639922':avgS>=60?'#BA7517':avgS?'#E24B4A':'#bbb';
+      html+='<div class="closer-perf-card" data-closer-name="'+c.name+'" onclick="openCloserReport(this)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:36px;height:36px;font-size:12px">'+initials(c.name)+'</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+dC+';margin-right:6px"></span>'+c.name+'</div><div style="font-size:11px;color:#aaa;margin-top:1px">'+c.meetings+' reunião'+(c.meetings!==1?'ões':'')+' · '+c.evaluated+' avaliada'+(c.evaluated!==1?'s':'')+'</div></div></div><div style="display:flex;gap:8px;align-items:center">'+(avgS?'<div style="background:'+sB+';color:'+sC+';font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px">'+avgS+'%</div>':'<div style="font-size:12px;color:#bbb;padding:4px 10px">sem score</div>')+'<div style="font-size:11px;color:#888;background:#f5f4f0;padding:4px 10px;border-radius:20px">'+(c.meetings>0?Math.round((c.evaluated/c.meetings)*100):0)+'% aval.</div></div></div><div style="display:flex;align-items:center;gap:10px"><div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Reuniões</div><div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+mPct+'%;background:'+barColor(avgS||50)+';border-radius:4px;transition:width .6s"></div></div><div style="font-size:11px;font-weight:600;color:#1a1a1a;width:20px;text-align:right">'+c.meetings+'</div></div>'+(avgS?'<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Score IA</div><div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+avgS+'%;background:'+barColor(avgS)+';border-radius:4px;transition:width .6s"></div></div><div style="font-size:11px;font-weight:600;color:'+scoreColor(avgS)+';width:34px;text-align:right">'+avgS+'%</div></div>':'')+'</div>';
     }
-    meetings = meetings.filter(function(m) { return inPeriod(m.scheduledAt || m.createdAt); });
-    evaluations = evaluations.filter(function(e) { return inPeriod(e.createdAt); });
-    var byCloser = {};
-    closers.forEach(function(c) { byCloser[c.name] = { name: c.name, meetings: 0, evaluated: 0, scores: [] }; });
-    meetings.forEach(function(m) {
-      if (!byCloser[m.closer]) byCloser[m.closer] = { name: m.closer, meetings: 0, evaluated: 0, scores: [] };
-      byCloser[m.closer].meetings++;
-    });
-    evaluations.forEach(function(e) {
-      if (!byCloser[e.closer]) byCloser[e.closer] = { name: e.closer, meetings: 0, evaluated: 0, scores: [] };
-      byCloser[e.closer].evaluated++;
-      if (e.evaluation && e.evaluation.score) byCloser[e.closer].scores.push(e.evaluation.score);
-    });
-    var closerData = Object.values(byCloser).sort(function(a, b) { return b.meetings - a.meetings; });
-    var allScores = evaluations.map(function(e) { return e.evaluation && e.evaluation.score; }).filter(Boolean);
-    var avgScore = allScores.length ? Math.round(allScores.reduce(function(a, b) { return a + b; }, 0) / allScores.length) : 0;
-    summaryEl.innerHTML =
-      '<div class="metric-card"><div class="metric-label">Reuniões no período</div><div class="metric-val">' + meetings.length + '</div></div>' +
-      '<div class="metric-card"><div class="metric-label">Avaliadas pela IA</div><div class="metric-val">' + evaluations.length + '</div></div>' +
-      '<div class="metric-card"><div class="metric-label">Score médio do time</div><div class="metric-val" style="color:' + scoreColor(avgScore || 50) + '">' + (avgScore || '—') + (avgScore ? '%' : '') + '</div></div>' +
-      '<div class="metric-card"><div class="metric-label">Closers ativos</div><div class="metric-val">' + closerData.filter(function(c) { return c.meetings > 0; }).length + '</div></div>';
-    if (!closerData.length) { listEl.innerHTML = '<div class="empty">Adicione closers e agende reuniões para ver a performance.</div>'; return; }
-    var maxMeetings = Math.max.apply(null, closerData.map(function(c) { return c.meetings; })) || 1;
-    var html = '';
-    for (var i = 0; i < closerData.length; i++) {
-      var c = closerData[i];
-      var avgS = c.scores.length ? Math.round(c.scores.reduce(function(a, b) { return a + b; }, 0) / c.scores.length) : 0;
-      var meetPct = Math.round((c.meetings / maxMeetings) * 100);
-      var scoreBg = avgS >= 75 ? '#EAF3DE' : avgS >= 60 ? '#FAEEDA' : avgS ? '#FCEBEB' : '#f5f4f0';
-      var scoreC = avgS >= 75 ? '#27500A' : avgS >= 60 ? '#633806' : avgS ? '#791F1F' : '#aaa';
-      var dotColor = c.meetings === 0 ? '#ddd' : avgS >= 75 ? '#639922' : avgS >= 60 ? '#BA7517' : avgS ? '#E24B4A' : '#bbb';
-      html += '<div class="closer-perf-card" data-closer-name="' + c.name + '" onclick="openCloserReport(this)">';
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-      html += '<div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:36px;height:36px;font-size:12px">' + initials(c.name) + '</div>';
-      html += '<div><div style="font-size:14px;font-weight:600;color:#1a1a1a"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + dotColor + ';margin-right:6px"></span>' + c.name + '</div>';
-      html += '<div style="font-size:11px;color:#aaa;margin-top:1px">' + c.meetings + ' reunião' + (c.meetings !== 1 ? 'ões' : '') + ' · ' + c.evaluated + ' avaliada' + (c.evaluated !== 1 ? 's' : '') + '</div></div></div>';
-      html += '<div style="display:flex;gap:8px;align-items:center">';
-      html += (avgS ? '<div style="background:' + scoreBg + ';color:' + scoreC + ';font-size:13px;font-weight:700;padding:4px 12px;border-radius:20px">' + avgS + '%</div>' : '<div style="font-size:12px;color:#bbb;padding:4px 10px">sem score</div>');
-      html += '<div style="font-size:11px;color:#888;background:#f5f4f0;padding:4px 10px;border-radius:20px">' + (c.meetings > 0 ? Math.round((c.evaluated / c.meetings) * 100) : 0) + '% aval.</div>';
-      html += '</div></div>';
-      html += '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Reuniões</div><div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden"><div style="height:100%;width:' + meetPct + '%;background:' + barColor(avgS || 50) + ';border-radius:4px;transition:width .6s"></div></div><div style="font-size:11px;font-weight:600;color:#1a1a1a;width:20px;text-align:right">' + c.meetings + '</div></div>';
-      if (avgS) html += '<div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div style="font-size:10px;color:#bbb;width:60px;flex-shrink:0">Score IA</div><div style="flex:1;height:8px;background:#f0efeb;border-radius:4px;overflow:hidden"><div style="height:100%;width:' + avgS + '%;background:' + barColor(avgS) + ';border-radius:4px;transition:width .6s"></div></div><div style="font-size:11px;font-weight:600;color:' + scoreColor(avgS) + ';width:34px;text-align:right">' + avgS + '%</div></div>';
-      html += '</div>';
-    }
-    listEl.innerHTML = html;
-  }).catch(function() { listEl.innerHTML = '<div class="empty">Erro ao carregar dados</div>'; });
+    lEl.innerHTML=html;
+  }).catch(function(){lEl.innerHTML='<div class="empty">Erro ao carregar dados</div>';});
 }
 
 function openCloserReport(el) {
-  var closerName = el.getAttribute('data-closer-name');
-  var now = new Date();
-  var evals = _allEvaluations.filter(function(e) {
-    if (e.closer !== closerName) return false;
-    var d = new Date(e.createdAt);
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  });
-  if (!evals.length) evals = _allEvaluations.filter(function(e) { return e.closer === closerName; });
-  document.getElementById('cr-avatar').textContent = initials(closerName);
-  document.getElementById('cr-name').textContent = closerName;
-  document.getElementById('cr-subtitle').textContent = evals.length + ' avaliação' + (evals.length !== 1 ? 'ões' : '') + (evals.length ? ' — este mês' : ' — geral');
-  if (!evals.length) {
-    document.getElementById('cr-score-big').textContent = '—';
-    document.getElementById('cr-trend').innerHTML = '';
-    document.getElementById('cr-sections').innerHTML = '<div class="empty" style="padding:1.5rem">Nenhuma avaliação disponível ainda.</div>';
-    document.getElementById('modal-closer-report').style.display = 'flex';
-    return;
-  }
-  var scores = evals.map(function(e) { return (e.evaluation && e.evaluation.score) || 0; });
-  var avgScore = Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / scores.length);
-  var scoreEl = document.getElementById('cr-score-big');
-  scoreEl.textContent = avgScore + '%';
-  scoreEl.style.color = scoreColor(avgScore);
-  var trendHtml = '';
-  if (evals.length >= 2) {
-    var half = Math.floor(evals.length / 2);
-    var f = evals.slice(0, half).map(function(e) { return (e.evaluation && e.evaluation.score) || 0; });
-    var s = evals.slice(half).map(function(e) { return (e.evaluation && e.evaluation.score) || 0; });
-    var af = Math.round(f.reduce(function(a, b) { return a + b; }, 0) / f.length);
-    var as2 = Math.round(s.reduce(function(a, b) { return a + b; }, 0) / s.length);
-    var diff = as2 - af;
-    var tBg = diff > 0 ? '#EAF3DE' : diff < 0 ? '#FCEBEB' : '#f5f4f0';
-    var tColor = diff > 0 ? '#27500A' : diff < 0 ? '#791F1F' : '#666';
-    var tIcon = diff > 0 ? '📈' : diff < 0 ? '📉' : '➡️';
-    var tText = diff > 0 ? 'Evoluindo +' + diff + '% em relação ao início do período' : diff < 0 ? 'Queda de ' + Math.abs(diff) + '% em relação ao início' : 'Score estável no período';
-    trendHtml = '<div style="background:' + tBg + ';border-radius:8px;padding:10px 14px;font-size:12px;color:' + tColor + '">' + tIcon + ' <strong>Tendência:</strong> ' + tText + '</div>';
-  }
-  document.getElementById('cr-trend').innerHTML = trendHtml;
-  var allCriteria = {}, allHighlights = [], allImprovements = [], allEtapasCriticas = [], allMelhoresEtapas = [], allOportunidades = [];
-  evals.forEach(function(e) {
-    var ev = e.evaluation || {}, cs = ev.criteria_scores || {}, ca = ev.closer_analysis || {};
-    Object.keys(cs).forEach(function(k) { if (!allCriteria[k]) allCriteria[k] = []; allCriteria[k].push(cs[k]); });
-    (ev.highlights || []).forEach(function(h) { if (allHighlights.indexOf(h) < 0) allHighlights.push(h); });
-    (ev.improvements || []).forEach(function(i) { if (allImprovements.indexOf(i) < 0) allImprovements.push(i); });
-    if (ca.etapa_critica && allEtapasCriticas.indexOf(ca.etapa_critica) < 0) allEtapasCriticas.push(ca.etapa_critica);
-    if (ca.melhor_etapa && allMelhoresEtapas.indexOf(ca.melhor_etapa) < 0) allMelhoresEtapas.push(ca.melhor_etapa);
-    (ca.oportunidades_perdidas || []).forEach(function(o) { if (allOportunidades.indexOf(o) < 0) allOportunidades.push(o); });
-  });
-  var criteriaBars = Object.keys(allCriteria).map(function(k) { var vals = allCriteria[k]; return { label: k, avg: Math.round(vals.reduce(function(a, b) { return a + b; }, 0) / vals.length) }; }).sort(function(a, b) { return a.avg - b.avg; });
-  var barsHtml = criteriaBars.map(function(c) { return '<div class="score-bar-container"><div class="score-label" style="font-size:11px">' + c.label + '</div><div class="score-track"><div class="score-fill" style="width:' + c.avg + '%;background:' + barColor(c.avg) + '"></div></div><div class="score-num" style="font-size:11px;color:' + scoreColor(c.avg) + '">' + c.avg + '%</div></div>'; }).join('');
-  var positivos = criteriaBars.filter(function(c) { return c.avg >= 75; });
-  var medios = criteriaBars.filter(function(c) { return c.avg >= 60 && c.avg < 75; });
-  var negativos = criteriaBars.filter(function(c) { return c.avg < 60; });
-  var sectionsHtml = barsHtml ? '<div style="margin-bottom:1.25rem"><div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📊 Score médio por critério</div>' + barsHtml + '</div>' : '';
-  if (allMelhoresEtapas.length || positivos.length || allHighlights.length) {
-    var items = []; positivos.forEach(function(c) { items.push(c.label + ' (' + c.avg + '%)'); }); allHighlights.slice(0, 3).forEach(function(h) { if (items.indexOf(h) < 0) items.push(h); }); allMelhoresEtapas.slice(0, 2).forEach(function(m) { if (items.indexOf(m) < 0) items.push(m); });
-    sectionsHtml += '<div style="background:#EAF3DE;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#27500A;margin-bottom:8px">✅ O que está indo bem</div><ul style="margin:0 0 0 16px;font-size:12px;color:#3a5c1a;line-height:1.9">' + items.slice(0, 5).map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
-  }
-  if (medios.length || allImprovements.length) {
-    var items2 = []; medios.forEach(function(c) { items2.push(c.label + ' — média ' + c.avg + '%, pode chegar a 80%+'); }); allImprovements.slice(0, 3).forEach(function(i) { if (items2.indexOf(i) < 0) items2.push(i); });
-    sectionsHtml += '<div style="background:#FAEEDA;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#633806;margin-bottom:8px">⚠️ Precisa evoluir</div><ul style="margin:0 0 0 16px;font-size:12px;color:#7a4a1a;line-height:1.9">' + items2.slice(0, 5).map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
-  }
-  if (negativos.length || allEtapasCriticas.length || allOportunidades.length) {
-    var items3 = []; negativos.forEach(function(c) { items3.push(c.label + ' — score crítico ' + c.avg + '%, foco urgente'); }); allEtapasCriticas.slice(0, 2).forEach(function(e) { if (items3.indexOf(e) < 0) items3.push(e); }); allOportunidades.slice(0, 2).forEach(function(o) { if (items3.indexOf(o) < 0) items3.push(o); });
-    sectionsHtml += '<div style="background:#FCEBEB;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#791F1F;margin-bottom:8px">🎯 O que errou / pontos críticos</div><ul style="margin:0 0 0 16px;font-size:12px;color:#8a2a2a;line-height:1.9">' + items3.slice(0, 5).map(function(i) { return '<li>' + i + '</li>'; }).join('') + '</ul></div>';
-  }
-  var rec = avgScore >= 80 ? 'Excelente! Manter consistência e focar em fechar mais negócios.' : avgScore >= 70 ? 'Boa base. Priorizar os critérios abaixo de 70%.' : avgScore >= 60 ? 'Performance mediana. Revisão dos módulos críticos antes das próximas reuniões.' : 'Atenção: performance abaixo do esperado. Sugerir acompanhamento individualizado.';
-  var recBg = avgScore >= 80 ? '#EEEDFE' : avgScore >= 70 ? '#E6F1FB' : avgScore >= 60 ? '#FAEEDA' : '#FCEBEB';
-  var recColor = avgScore >= 80 ? '#3C3489' : avgScore >= 70 ? '#0C447C' : avgScore >= 60 ? '#633806' : '#791F1F';
-  sectionsHtml += '<div style="background:' + recBg + ';border-radius:10px;padding:12px 14px"><div style="font-size:12px;font-weight:600;color:' + recColor + ';margin-bottom:4px">💡 Recomendação</div><div style="font-size:12px;color:' + recColor + ';line-height:1.6">' + rec + '</div></div>';
-  document.getElementById('cr-sections').innerHTML = sectionsHtml;
-  document.getElementById('modal-closer-report').style.display = 'flex';
+  var closerName=el.getAttribute('data-closer-name'), now=new Date();
+  var evals=_allEvaluations.filter(function(e){if(e.closer!==closerName)return false;var d=new Date(e.createdAt);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
+  if(!evals.length) evals=_allEvaluations.filter(function(e){return e.closer===closerName;});
+  document.getElementById('cr-avatar').textContent=initials(closerName);
+  document.getElementById('cr-name').textContent=closerName;
+  document.getElementById('cr-subtitle').textContent=evals.length+' avaliação'+(evals.length!==1?'ões':'')+(evals.length?' — este mês':' — geral');
+  if(!evals.length){document.getElementById('cr-score-big').textContent='—';document.getElementById('cr-trend').innerHTML='';document.getElementById('cr-sections').innerHTML='<div class="empty" style="padding:1.5rem">Nenhuma avaliação disponível ainda.</div>';document.getElementById('modal-closer-report').style.display='flex';return;}
+  var scores=evals.map(function(e){return(e.evaluation&&e.evaluation.score)||0;}), avgScore=Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length);
+  var sEl=document.getElementById('cr-score-big'); sEl.textContent=avgScore+'%'; sEl.style.color=scoreColor(avgScore);
+  var trendHtml='';
+  if(evals.length>=2){var half=Math.floor(evals.length/2),f=evals.slice(0,half).map(function(e){return(e.evaluation&&e.evaluation.score)||0;}),s=evals.slice(half).map(function(e){return(e.evaluation&&e.evaluation.score)||0;}),af=Math.round(f.reduce(function(a,b){return a+b;},0)/f.length),as2=Math.round(s.reduce(function(a,b){return a+b;},0)/s.length),diff=as2-af;var tBg=diff>0?'#EAF3DE':diff<0?'#FCEBEB':'#f5f4f0',tColor=diff>0?'#27500A':diff<0?'#791F1F':'#666',tIcon=diff>0?'📈':diff<0?'📉':'➡️';trendHtml='<div style="background:'+tBg+';border-radius:8px;padding:10px 14px;font-size:12px;color:'+tColor+'">'+tIcon+' <strong>Tendência:</strong> '+(diff>0?'Evoluindo +'+diff+'% em relação ao início':diff<0?'Queda de '+Math.abs(diff)+'% em relação ao início':'Score estável')+'</div>';}
+  document.getElementById('cr-trend').innerHTML=trendHtml;
+  var allCrit={},allHi=[],allIm=[],allEC=[],allME=[],allOP=[];
+  evals.forEach(function(e){var ev=e.evaluation||{},cs=ev.criteria_scores||{},ca=ev.closer_analysis||{};Object.keys(cs).forEach(function(k){if(!allCrit[k])allCrit[k]=[];allCrit[k].push(cs[k]);});(ev.highlights||[]).forEach(function(h){if(allHi.indexOf(h)<0)allHi.push(h);});(ev.improvements||[]).forEach(function(i){if(allIm.indexOf(i)<0)allIm.push(i);});if(ca.etapa_critica&&allEC.indexOf(ca.etapa_critica)<0)allEC.push(ca.etapa_critica);if(ca.melhor_etapa&&allME.indexOf(ca.melhor_etapa)<0)allME.push(ca.melhor_etapa);(ca.oportunidades_perdidas||[]).forEach(function(o){if(allOP.indexOf(o)<0)allOP.push(o);});});
+  var cBars=Object.keys(allCrit).map(function(k){var vals=allCrit[k];return{label:k,avg:Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length)};}).sort(function(a,b){return a.avg-b.avg;});
+  var bH=cBars.map(function(c){return'<div class="score-bar-container"><div class="score-label" style="font-size:11px">'+c.label+'</div><div class="score-track"><div class="score-fill" style="width:'+c.avg+'%;background:'+barColor(c.avg)+'"></div></div><div class="score-num" style="font-size:11px;color:'+scoreColor(c.avg)+'">'+c.avg+'%</div></div>';}).join('');
+  var pos=cBars.filter(function(c){return c.avg>=75;}), med=cBars.filter(function(c){return c.avg>=60&&c.avg<75;}), neg=cBars.filter(function(c){return c.avg<60;});
+  var sec=bH?'<div style="margin-bottom:1.25rem"><div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">📊 Score médio por critério</div>'+bH+'</div>':'';
+  if(allME.length||pos.length||allHi.length){var it=[];pos.forEach(function(c){it.push(c.label+' ('+c.avg+'%)');});allHi.slice(0,3).forEach(function(h){if(it.indexOf(h)<0)it.push(h);});allME.slice(0,2).forEach(function(m){if(it.indexOf(m)<0)it.push(m);});sec+='<div style="background:#EAF3DE;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#27500A;margin-bottom:8px">✅ O que está indo bem</div><ul style="margin:0 0 0 16px;font-size:12px;color:#3a5c1a;line-height:1.9">'+it.slice(0,5).map(function(i){return'<li>'+i+'</li>';}).join('')+'</ul></div>';}
+  if(med.length||allIm.length){var it2=[];med.forEach(function(c){it2.push(c.label+' — média '+c.avg+'%, pode chegar a 80%+');});allIm.slice(0,3).forEach(function(i){if(it2.indexOf(i)<0)it2.push(i);});sec+='<div style="background:#FAEEDA;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#633806;margin-bottom:8px">⚠️ Precisa evoluir</div><ul style="margin:0 0 0 16px;font-size:12px;color:#7a4a1a;line-height:1.9">'+it2.slice(0,5).map(function(i){return'<li>'+i+'</li>';}).join('')+'</ul></div>';}
+  if(neg.length||allEC.length||allOP.length){var it3=[];neg.forEach(function(c){it3.push(c.label+' — score crítico '+c.avg+'%');});allEC.slice(0,2).forEach(function(e){if(it3.indexOf(e)<0)it3.push(e);});allOP.slice(0,2).forEach(function(o){if(it3.indexOf(o)<0)it3.push(o);});sec+='<div style="background:#FCEBEB;border-radius:10px;padding:12px 14px;margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:#791F1F;margin-bottom:8px">🎯 O que errou / pontos críticos</div><ul style="margin:0 0 0 16px;font-size:12px;color:#8a2a2a;line-height:1.9">'+it3.slice(0,5).map(function(i){return'<li>'+i+'</li>';}).join('')+'</ul></div>';}
+  var rec=avgScore>=80?'Excelente! Manter consistência e focar em fechar mais negócios.':avgScore>=70?'Boa base. Priorizar os critérios abaixo de 70%.':avgScore>=60?'Performance mediana. Revisão dos módulos críticos recomendada.':'Atenção: performance abaixo do esperado. Sugerir acompanhamento individualizado.';
+  var rBg=avgScore>=80?'#EEEDFE':avgScore>=70?'#E6F1FB':avgScore>=60?'#FAEEDA':'#FCEBEB', rC=avgScore>=80?'#3C3489':avgScore>=70?'#0C447C':avgScore>=60?'#633806':'#791F1F';
+  sec+='<div style="background:'+rBg+';border-radius:10px;padding:12px 14px"><div style="font-size:12px;font-weight:600;color:'+rC+';margin-bottom:4px">💡 Recomendação</div><div style="font-size:12px;color:'+rC+';line-height:1.6">'+rec+'</div></div>';
+  document.getElementById('cr-sections').innerHTML=sec;
+  document.getElementById('modal-closer-report').style.display='flex';
 }
 
 // DASHBOARD
 function loadDashboard() {
-  document.getElementById('dash-closers').textContent = closers.length;
-  Promise.all([fetch('/api/meetings').then(function(r) { return r.json(); }), fetch('/api/evaluations').then(function(r) { return r.json(); })]).then(function(results) {
-    var meetings = results[0].meetings || [];
-    var evaluations = results[1].evaluations || [];
-    document.getElementById('dash-meetings').textContent = meetings.length;
-    document.getElementById('dash-evals').textContent = evaluations.length;
-    var scores = evaluations.map(function(e) { return e.evaluation && e.evaluation.score; }).filter(Boolean);
-    document.getElementById('dash-score').textContent = scores.length ? Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / scores.length) + '%' : '—';
-    var tb = document.getElementById('dash-evals-table');
-    if (!evaluations.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma avaliação ainda</td></tr>'; return; }
-    var html = '';
-    for (var i = 0; i < Math.min(5, evaluations.length); i++) {
-      var a = evaluations[i], score = (a.evaluation && a.evaluation.score) || 0;
-      var badge = score >= 75 ? 'badge-green' : score >= 60 ? 'badge-amber' : 'badge-red';
-      var label = score >= 75 ? 'Aprovado' : score >= 60 ? 'Precisa melhorar' : 'Crítico';
-      html += '<tr><td><div class="closer-row"><div class="avatar">' + initials(a.closer || '?') + '</div>' + (a.closer || '') + '</div></td><td>' + (a.scriptName || '') + '</td><td><span style="font-weight:600;color:' + scoreColor(score) + '">' + score + '%</span></td><td style="font-size:12px;color:#aaa">' + fmtDate(a.createdAt) + '</td><td><span class="badge ' + badge + '">' + label + '</span></td></tr>';
-    }
-    tb.innerHTML = html;
-  }).catch(function() {});
+  document.getElementById('dash-closers').textContent=closers.length;
+  Promise.all([fetch('/api/meetings').then(function(r){return r.json();}),fetch('/api/evaluations').then(function(r){return r.json();})]).then(function(results){
+    var meetings=results[0].meetings||[], evaluations=results[1].evaluations||[];
+    document.getElementById('dash-meetings').textContent=meetings.length;
+    document.getElementById('dash-evals').textContent=evaluations.length;
+    var scores=evaluations.map(function(e){return e.evaluation&&e.evaluation.score;}).filter(Boolean);
+    document.getElementById('dash-score').textContent=scores.length?Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length)+'%':'—';
+    var tb=document.getElementById('dash-evals-table');
+    if(!evaluations.length){tb.innerHTML='<tr><td colspan="5" class="empty">Nenhuma avaliação ainda</td></tr>';return;}
+    var html='';
+    for(var i=0;i<Math.min(5,evaluations.length);i++){var a=evaluations[i],s=(a.evaluation&&a.evaluation.score)||0;var badge=s>=75?'badge-green':s>=60?'badge-amber':'badge-red';var lbl=s>=75?'Aprovado':s>=60?'Precisa melhorar':'Crítico';html+='<tr><td><div class="closer-row"><div class="avatar">'+initials(a.closer||'?')+'</div>'+(a.closer||'')+'</div></td><td>'+(a.scriptName||'')+'</td><td><span style="font-weight:600;color:'+scoreColor(s)+'">'+s+'%</span></td><td style="font-size:12px;color:#aaa">'+fmtDate(a.createdAt)+'</td><td><span class="badge '+badge+'">'+lbl+'</span></td></tr>';}
+    tb.innerHTML=html;
+  }).catch(function(){});
 }
 
-// Init
-loadDashboard();
+// START
+init();
 setInterval(loadDashboard, 30000);
 </script>
 </body>
