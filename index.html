@@ -403,7 +403,7 @@ function renderClosers() {
   var tb = document.getElementById('closers-table');
   if (!closers.length) { tb.innerHTML='<tr><td colspan="4" class="empty">Nenhum closer cadastrado</td></tr>'; return; }
   tb.innerHTML = closers.map(function(c){
-    return '<tr><td><div class="closer-row"><div class="avatar">'+initials(c.name)+'</div>'+c.name+'</div></td><td>—</td><td>—</td><td><button class="btn btn-sm btn-danger" onclick="removeCloser(\''+c.id+'\')">Remover</button></td></tr>';
+    return '<tr><td><div class="closer-row"><div class="avatar">'+initials(c.name)+'</div>'+c.name+'</div></td><td>—</td><td>—</td><td><button class="btn btn-sm btn-danger" onclick=\"removeCloser(''"+c.id+"'')\"">Remover</button></td></tr>';
   }).join('');
 }
 
@@ -420,7 +420,8 @@ function addCloser() {
   renderClosers();
   toast('Closer adicionado!', 'success');
 }
-function removeCloser(id) {
+function removeCloser(el) {
+  var id = el.dataset.id;
   closers = closers.filter(function(c){ return c.id !== id; });
   saveLocal();
   renderClosers();
@@ -431,7 +432,7 @@ function renderScripts() {
   var el = document.getElementById('scripts-list');
   if (!scripts.length) { el.innerHTML='<div class="empty">Nenhum script criado</div>'; return; }
   el.innerHTML = scripts.map(function(s){
-    return '<div class="script-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px">'+s.name+'</div><span class="badge badge-purple">'+s.steps.split('\n').length+' etapas</span></div><button class="btn btn-sm btn-danger" onclick="removeScript(\''+s.id+'\')">Remover</button></div><div class="script-steps">'+s.steps+'</div></div>';
+    return '<div class="script-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:6px">'+s.name+'</div><span class="badge badge-purple">'+s.steps.split('\n').length+' etapas</span></div><button class="btn btn-sm btn-danger" data-id="'+s.id+'" onclick="removeScript(this)">Remover</button></div><div class="script-steps">'+s.steps+'</div></div>';
   }).join('');
 }
 
@@ -452,7 +453,8 @@ function addScript() {
   renderScripts();
   toast('Script salvo!', 'success');
 }
-function removeScript(id) {
+function removeScript(el) {
+  var id = el.dataset.id;
   scripts = scripts.filter(function(s){ return s.id !== id; });
   saveLocal();
   renderScripts();
@@ -472,7 +474,7 @@ function loadMeetings() {
       var label = s==='evaluated'?'Avaliado':s==='bot_joined'?'Bot na call':s==='scheduled'?'Agendado':'—';
       var av = initials(m.closer||'?');
       var lnk = (m.meetLink||'').replace('https://','');
-      return '<tr><td><div class="closer-row"><div class="avatar">'+av+'</div>'+m.closer+'</div></td><td><span class="tag">'+m.scriptName+'</span></td><td><span class="meet-link">'+lnk+'</span></td><td><span class="badge '+badge+'"><span class="status-dot '+dot+'"></span>'+label+'</span></td><td style="color:#888;font-size:12px">'+fmtDate(m.scheduledAt)+'</td><td><button class="btn btn-sm btn-danger" onclick="deleteMeeting(\''+m.id+'\')">Excluir</button></td></tr>';
+      return '<tr><td><div class="closer-row"><div class="avatar">'+av+'</div>'+m.closer+'</div></td><td><span class="tag">'+m.scriptName+'</span></td><td><span class="meet-link">'+lnk+'</span></td><td><span class="badge '+badge+'"><span class="status-dot '+dot+'"></span>'+label+'</span></td><td style="color:#888;font-size:12px">'+fmtDate(m.scheduledAt)+'</td><td><button class="btn btn-sm btn-danger" data-id="'+m.id+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
     }).join('');
   }).catch(function(){
     tb.innerHTML = '<tr><td colspan="6" class="empty">Erro ao carregar reuniões</td></tr>';
@@ -868,7 +870,7 @@ function loadPerformance() {
                       avgS>=75?'<span style="width:8px;height:8px;border-radius:50%;background:#639922;display:inline-block;margin-right:6px"></span>':
                       avgS>=60?'<span style="width:8px;height:8px;border-radius:50%;background:#BA7517;display:inline-block;margin-right:6px"></span>':
                       '<span style="width:8px;height:8px;border-radius:50%;background:#E24B4A;display:inline-block;margin-right:6px"></span>';
-      return '<div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:box-shadow 0.15s" onclick="openCloserReport(\''+c.name+'\')" onmouseover="this.style.boxShadow=\'0 4px 16px rgba(83,74,183,0.12)\'" onmouseout="this.style.boxShadow=\'none\'">'+
+      return '<div style="background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:box-shadow 0.15s" onclick="openCloserReport(this.dataset.name)" data-name='"+c.name+"' onmouseover="this.style.boxShadow=\'0 4px 16px rgba(83,74,183,0.12)\'" onmouseout="this.style.boxShadow=\'none\'">'+
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
           '<div style="display:flex;align-items:center;gap:10px">'+
             '<div class="avatar" style="width:36px;height:36px;font-size:12px">'+initials(c.name)+'</div>'+
@@ -903,7 +905,8 @@ function loadPerformance() {
   });
 }
 
-function openCloserReport(closerName) {
+function openCloserReport(el) {
+  var closerName = typeof el === "string" ? el : el.dataset.name;
   // Pega avaliações do mês deste closer
   var now = new Date();
   var evals = _allEvaluations.filter(function(e) {
