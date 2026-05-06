@@ -235,6 +235,19 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
+<!-- MODAL EXCLUIR DOC -->
+<div class="overlay" id="modal-delete-doc" style="display:none" onclick="if(event.target===this)closeModal('modal-delete-doc')">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-title" style="color:#A32D2D">⚠️ Excluir script?</div>
+    <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:1rem">Tem certeza que deseja remover este documento? Esta ação não pode ser desfeita.</p>
+    <div id="delete-doc-name" style="background:#FCEBEB;border-radius:8px;padding:10px 14px;font-size:13px;color:#791F1F;margin-bottom:0;font-weight:500"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-delete-doc')">Cancelar</button>
+      <button class="btn btn-danger" id="btn-confirm-delete-doc" onclick="confirmDeleteDoc()">Sim, excluir</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAIS -->
 <div class="overlay" id="modal-docscript" style="display:none" onclick="if(event.target===this)closeModal('modal-docscript')">
   <div class="modal">
@@ -823,13 +836,31 @@ async function addDocScript() {
   } catch(e) { toast('Erro ao salvar', 'error'); }
 }
 
-async function removeDocScript(btn) {
-  var id = btn.getAttribute('data-doc-id');
+var _deleteDocId = null;
+
+function askDeleteDoc(btn) {
+  _deleteDocId = btn.getAttribute('data-doc-id');
+  var name = btn.getAttribute('data-doc-name');
+  document.getElementById('delete-doc-name').textContent = name;
+  document.getElementById('modal-delete-doc').style.display = 'flex';
+}
+
+async function confirmDeleteDoc() {
+  if (!_deleteDocId) return;
+  var btn = document.getElementById('btn-confirm-delete-doc');
+  btn.disabled = true; btn.textContent = 'Excluindo...';
   try {
-    await fetch('/api/doc-scripts', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id}) });
+    await fetch('/api/doc-scripts', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:_deleteDocId}) });
+    closeModal('modal-delete-doc');
     loadDocScripts();
-    toast('Script removido', 'success');
-  } catch(e) { toast('Erro ao remover', 'error'); }
+    toast('Script removido!', 'success');
+    btn.disabled = false; btn.textContent = 'Sim, excluir';
+    _deleteDocId = null;
+  } catch(e) { toast('Erro ao remover', 'error'); btn.disabled = false; btn.textContent = 'Sim, excluir'; }
+}
+
+async function removeDocScript(btn) {
+  askDeleteDoc(btn);
 }
 
 // START
