@@ -84,6 +84,14 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 .fchip-red.fchip-active{background:#791F1F!important;border-color:#791F1F!important}
 .closer-perf-card{background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s}
 .closer-perf-card:hover{box-shadow:0 4px 16px rgba(83,74,183,.12)}
+.doc-card{background:#fff;border:1px solid #e5e4e0;border-radius:14px;padding:1.5rem;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.doc-card:hover{box-shadow:0 6px 24px rgba(83,74,183,.15);border-color:#AFA9EC;transform:translateY(-2px)}
+.doc-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#534AB7,#7B6FD4)}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.doc-emoji{font-size:32px;line-height:1}
+.doc-name{font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.4}
+.doc-desc{font-size:12px;color:#888;line-height:1.5}
+.doc-open{font-size:11px;font-weight:600;color:#534AB7;margin-top:4px;display:flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
@@ -107,6 +115,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
     <div class="nav-item" onclick="navigate('performance')">📈 Performance</div>
     <div class="nav-section">Configuração</div>
     <div class="nav-item" onclick="navigate('scripts')">☰ Treinamento IA analise scpt</div>
+    <div class="nav-item" onclick="navigate('docscripts')">📋 Scripts de Reunião</div>
     <div class="nav-section">Reuniões</div>
     <div class="nav-item" onclick="navigate('reunioes')">◈ Reuniões</div>
     <div class="nav-item" onclick="navigate('avaliacoes')">★ Avaliações da IA</div>
@@ -142,6 +151,14 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <table class="table"><thead><tr><th>Closer</th><th>Reuniões</th><th>Score médio</th><th>Ações</th></tr></thead>
         <tbody id="closers-table"><tr><td colspan="4" class="empty"><span class="spinner"></span></td></tr></tbody></table>
       </div>
+    </div>
+
+    <div class="page" id="page-docscripts">
+      <div class="page-header">
+        <div><div class="page-title">Scripts de Reunião</div><div class="page-subtitle">Documentos de fácil acesso para sua equipe de closers</div></div>
+        <button class="btn btn-primary" onclick="openDocScriptModal()">+ Adicionar script</button>
+      </div>
+      <div id="docscripts-list"><div class="empty"><span class="spinner"></span></div></div>
     </div>
 
     <div class="page" id="page-performance">
@@ -218,6 +235,36 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 </div>
 
 <!-- MODAIS -->
+<div class="overlay" id="modal-docscript" style="display:none" onclick="if(event.target===this)closeModal('modal-docscript')">
+  <div class="modal">
+    <div class="modal-title">📋 Adicionar script de reunião</div>
+    <div class="form-group">
+      <label class="form-label">Emoji / ícone</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="emoji-picker">
+        <button onclick="selectEmoji(this)" data-emoji="📄" style="font-size:22px;padding:6px 10px;border:2px solid #534AB7;border-radius:8px;background:#f0effe;cursor:pointer">📄</button>
+        <button onclick="selectEmoji(this)" data-emoji="📑" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">📑</button>
+        <button onclick="selectEmoji(this)" data-emoji="📝" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">📝</button>
+        <button onclick="selectEmoji(this)" data-emoji="🎯" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">🎯</button>
+        <button onclick="selectEmoji(this)" data-emoji="💼" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">💼</button>
+        <button onclick="selectEmoji(this)" data-emoji="🚀" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">🚀</button>
+        <button onclick="selectEmoji(this)" data-emoji="📊" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">📊</button>
+        <button onclick="selectEmoji(this)" data-emoji="✅" style="font-size:22px;padding:6px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">✅</button>
+      </div>
+      <input type="hidden" id="doc-emoji" value="📄"/>
+    </div>
+    <div class="form-group"><label class="form-label">Nome do documento</label><input type="text" id="doc-name" placeholder="Ex: Script de Vendas SaaS"/></div>
+    <div class="form-group"><label class="form-label">Descrição breve</label><input type="text" id="doc-description" placeholder="Ex: Script completo para vendas de produto SaaS"/></div>
+    <div class="form-group">
+      <label class="form-label">Link do documento</label>
+      <input type="text" id="doc-url" placeholder="https://drive.google.com/... ou qualquer link"/>
+      <div class="form-hint">Cole o link do Google Drive, PDF, Notion ou qualquer outro documento</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-docscript')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addDocScript()">Salvar script</button>
+    </div>
+  </div>
+</div>
 <div class="overlay" id="modal-closer" style="display:none" onclick="if(event.target===this)closeModal('modal-closer')">
   <div class="modal">
     <div class="modal-title">Adicionar closer</div>
@@ -344,12 +391,13 @@ function navigate(page) {
   document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
   var el = document.getElementById('page-' + page);
   if (el) el.classList.add('active');
-  var labels = { dashboard:'Dashboard', closers:'Closers', performance:'Performance', scripts:'Scripts', reunioes:'Reuniões', avaliacoes:'Avaliações' };
+  var labels = { dashboard:'Dashboard', closers:'Closers', performance:'Performance', scripts:'Scripts', docscripts:'Scripts', reunioes:'Reuniões', avaliacoes:'Avaliações' };
   var label = labels[page] || '';
   document.querySelectorAll('.nav-item').forEach(function(n) {
     if (label && n.textContent.indexOf(label.slice(0,5)) >= 0) n.classList.add('active');
   });
   if (page === 'closers') renderClosers();
+  if (page === 'docscripts') loadDocScripts();
   if (page === 'scripts') renderScripts();
   if (page === 'reunioes') loadMeetings();
   if (page === 'avaliacoes') loadAvaliacoes();
@@ -696,6 +744,91 @@ function loadDashboard() {
     for(var i=0;i<Math.min(5,evaluations.length);i++){var a=evaluations[i],s=(a.evaluation&&a.evaluation.score)||0;var badge=s>=75?'badge-green':s>=60?'badge-amber':'badge-red';var lbl=s>=75?'Aprovado':s>=60?'Precisa melhorar':'Crítico';html+='<tr><td><div class="closer-row"><div class="avatar">'+initials(a.closer||'?')+'</div>'+(a.closer||'')+'</div></td><td>'+(a.scriptName||'')+'</td><td><span style="font-weight:600;color:'+scoreColor(s)+'">'+s+'%</span></td><td style="font-size:12px;color:#aaa">'+fmtDate(a.createdAt)+'</td><td><span class="badge '+badge+'">'+lbl+'</span></td></tr>';}
     tb.innerHTML=html;
   }).catch(function(){});
+}
+
+// DOC SCRIPTS
+var _selectedEmoji = '📄';
+
+function selectEmoji(btn) {
+  document.querySelectorAll('#emoji-picker button').forEach(function(b) {
+    b.style.border = '1px solid #ddd';
+    b.style.background = '#fff';
+  });
+  btn.style.border = '2px solid #534AB7';
+  btn.style.background = '#f0effe';
+  _selectedEmoji = btn.getAttribute('data-emoji');
+  document.getElementById('doc-emoji').value = _selectedEmoji;
+}
+
+function openDocScriptModal() {
+  document.getElementById('doc-name').value = '';
+  document.getElementById('doc-description').value = '';
+  document.getElementById('doc-url').value = '';
+  _selectedEmoji = '📄';
+  document.querySelectorAll('#emoji-picker button').forEach(function(b,i) {
+    b.style.border = i===0 ? '2px solid #534AB7' : '1px solid #ddd';
+    b.style.background = i===0 ? '#f0effe' : '#fff';
+  });
+  document.getElementById('modal-docscript').style.display = 'flex';
+}
+
+async function loadDocScripts() {
+  var el = document.getElementById('docscripts-list');
+  el.innerHTML = '<div class="empty"><span class="spinner"></span> Carregando...</div>';
+  try {
+    var r = await fetch('/api/doc-scripts');
+    var d = await r.json();
+    var docs = d.docs || [];
+    if (!docs.length) {
+      el.innerHTML = '<div style="text-align:center;padding:3rem"><div style="font-size:48px;margin-bottom:1rem">📋</div><div style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px">Nenhum script cadastrado ainda</div><div style="font-size:13px;color:#aaa;margin-bottom:1.5rem">Adicione os scripts da sua equipe para acesso rápido durante as reuniões</div><button class="btn btn-primary" onclick="openDocScriptModal()">+ Adicionar primeiro script</button></div>';
+      return;
+    }
+    var html = '<div class="doc-grid">';
+    for (var i = 0; i < docs.length; i++) {
+      var doc = docs[i];
+      html += '<div class="doc-card" onclick="openDoc(\'' + doc.url.replace(/'/g, "\'") + '\')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div class="doc-emoji">' + doc.emoji + '</div>' +
+        '<button class="btn btn-sm btn-danger" data-doc-id="' + doc.id + '" onclick="event.stopPropagation();removeDocScript(this)" style="opacity:0.6">✕</button>' +
+        '</div>' +
+        '<div class="doc-name">' + doc.name + '</div>' +
+        (doc.description ? '<div class="doc-desc">' + doc.description + '</div>' : '') +
+        '<div class="doc-open">↗ Abrir documento</div>' +
+        '</div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div class="empty">Erro ao carregar scripts</div>';
+  }
+}
+
+function openDoc(url) {
+  window.open(url, '_blank');
+}
+
+async function addDocScript() {
+  var name = document.getElementById('doc-name').value.trim();
+  var url = document.getElementById('doc-url').value.trim();
+  var description = document.getElementById('doc-description').value.trim();
+  var emoji = document.getElementById('doc-emoji').value || '📄';
+  if (!name || !url) { toast('Preencha nome e link do documento', 'error'); return; }
+  try {
+    var r = await fetch('/api/doc-scripts', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:name,description:description,url:url,emoji:emoji}) });
+    var d = await r.json();
+    closeModal('modal-docscript');
+    loadDocScripts();
+    toast('Script adicionado!', 'success');
+  } catch(e) { toast('Erro ao salvar', 'error'); }
+}
+
+async function removeDocScript(btn) {
+  var id = btn.getAttribute('data-doc-id');
+  try {
+    await fetch('/api/doc-scripts', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id:id}) });
+    loadDocScripts();
+    toast('Script removido', 'success');
+  } catch(e) { toast('Erro ao remover', 'error'); }
 }
 
 // START
