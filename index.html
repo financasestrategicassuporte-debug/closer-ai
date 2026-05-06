@@ -1,3 +1,22 @@
+<!-- MODAL VINCULAR TRANSCRICAO -->
+<div class="overlay" id="modal-vincula" style="display:none" onclick="if(event.target===this)closeModal('modal-vincula')">
+  <div class="modal" style="width:540px">
+    <div class="modal-title">Vincular reuniao a transcricao</div>
+    <div class="form-group">
+      <label class="form-label">Reuniao pendente</label>
+      <select id="vincula-meeting" style="width:100%;font-size:13px;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-family:inherit"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Transcricoes disponiveis no Fireflies</label>
+      <div id="vincula-list" style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <div id="vincula-msg" style="display:none;margin-top:8px"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-vincula')">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -248,25 +267,6 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('modal-delete-doc')">Cancelar</button>
       <button class="btn btn-danger" id="btn-confirm-delete-doc" onclick="confirmDeleteDoc()">Sim, excluir</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL VINCULAR TRANSCRIÇÃO -->
-<div class="overlay" id="modal-vincula" style="display:none" onclick="if(event.target===this)closeModal('modal-vincula')">
-  <div class="modal" style="width:540px">
-    <div class="modal-title">🎙️ Vincular reunião à transcrição</div>
-    <div class="form-group">
-      <label class="form-label">Reunião pendente</label>
-      <select id="vincula-meeting" style="width:100%;font-family:inherit;font-size:13px;padding:9px 12px;border:1px solid #ddd;border-radius:8px"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Transcrição no Fireflies — clique para usar</label>
-      <div id="vincula-transcripts" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto"></div>
-    </div>
-    <div id="vincula-result" style="display:none;margin-top:10px"></div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal('modal-vincula')">Fechar</button>
     </div>
   </div>
 </div>
@@ -555,8 +555,7 @@ function loadMeetings() {
       html += '<td><span class="meet-link">'+((m.meetLink||'').replace('https://',''))+'</span></td>';
       html += '<td><span class="badge '+badge+'"><span class="status-dot '+dot+'"></span>'+label+'</span></td>';
       html += '<td style="color:#888;font-size:12px">'+fmtDate(m.scheduledAt)+'</td>';
-      var reBtn = s === 'evaluated' ? '<button class="btn btn-sm" data-meeting-id="'+m.id+'" onclick="resetMeeting(this)" style="border-color:#534AB7;color:#534AB7;margin-right:4px">↺ Reavaliar</button>' : '';
-      html += '<td>'+reBtn+'<button class="btn btn-sm btn-danger" data-meeting-id="'+m.id+'" data-meeting-closer="'+(m.closer||'')+'" data-meeting-script="'+(m.scriptName||'')+'" data-meeting-date="'+fmtDate(m.scheduledAt)+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
+      html += '<td><button class="btn btn-sm btn-danger" data-meeting-id="'+m.id+'" data-meeting-closer="'+(m.closer||'')+'" data-meeting-script="'+(m.scriptName||'')+'" data-meeting-date="'+fmtDate(m.scheduledAt)+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
     }
     tb.innerHTML = html;
   }).catch(function(){ tb.innerHTML='<tr><td colspan="6" class="empty">Erro ao carregar</td></tr>'; });
@@ -887,37 +886,8 @@ async function removeDocScript(btn) {
   askDeleteDoc(btn);
 }
 
-// RESET MEETING
-async function resetMeeting(btn) {
-  var meetingId = btn.getAttribute('data-meeting-id');
-  if (!confirm('Isso vai apagar a avaliação atual e marcar a reunião para ser reavaliada. Continuar?')) return;
-  btn.disabled = true;
-  btn.textContent = '...';
-  try {
-    var r = await fetch('/api/reset-meeting', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ meetingId: meetingId })
-    });
-    var d = await r.json();
-    if (d.success) {
-      toast('Avaliação resetada! Clique em ⚡ Gerar avaliações para reavaliar.', 'success');
-      loadMeetings();
-    } else {
-      toast('Erro ao resetar: ' + (d.error || 'desconhecido'), 'error');
-      btn.disabled = false;
-      btn.textContent = '↺ Reavaliar';
-    }
-  } catch(e) {
-    toast('Erro ao conectar', 'error');
-    btn.disabled = false;
-    btn.textContent = '↺ Reavaliar';
-  }
-}
-
 // EVALUATE NOW
-var _pendingMeetings = [];
-var _availableTranscripts = [];
+var _pm = [], _at = [];
 
 async function runEvaluateNow() {
   var btn = document.getElementById('btn-evaluate');
@@ -928,16 +898,29 @@ async function runEvaluateNow() {
   try {
     var r = await fetch('/api/evaluate-now');
     var data = await r.json();
-    _pendingMeetings = data.pending_meetings || [];
-    _availableTranscripts = data.available_transcripts || [];
-    if (!_pendingMeetings.length) {
-      resultEl.innerHTML = '<div class="info-box info-box-green">Nenhuma reunião pendente.</div>';
+    _pm = data.pending_meetings || [];
+    _at = data.available_transcripts || [];
+    if (!_pm.length) {
+      resultEl.innerHTML = '<div class="info-box info-box-green">Nenhuma reuniao pendente.</div>';
       resultEl.style.display = 'block';
-    } else if (!_availableTranscripts.length) {
-      resultEl.innerHTML = '<div class="info-box info-box-amber">Transcrição ainda nao pronta. Aguarde 5-10 min apos a reuniao terminar.</div>';
+    } else if (!_at.length) {
+      resultEl.innerHTML = '<div class="info-box info-box-amber">Transcricao ainda nao pronta. Aguarde 5-10 min e tente novamente.</div>';
       resultEl.style.display = 'block';
     } else {
-      openVinculaModal();
+      var sel = document.getElementById('vincula-meeting');
+      sel.innerHTML = _pm.map(function(m) {
+        return '<option value="' + m.id + '">' + m.closer + ' - ' + fmtDate(m.scheduledAt) + '</option>';
+      }).join('');
+      var list = document.getElementById('vincula-list');
+      list.innerHTML = _at.map(function(t, i) {
+        var d = t.date ? new Date(t.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+        return '<button class="btn" data-i="' + i + '" onclick="usarTranscricao(this)" style="text-align:left;padding:12px;width:100%;border-radius:8px;margin-bottom:6px">' +
+          '<div style="font-size:13px;font-weight:600;color:#1a1a1a">' + t.title + '</div>' +
+          '<div style="font-size:11px;color:#aaa;margin-top:2px">' + d + '</div>' +
+          '<div style="font-size:12px;color:#534AB7;margin-top:4px;font-weight:500">→ Usar esta transcricao</div></button>';
+      }).join('');
+      document.getElementById('vincula-msg').style.display = 'none';
+      document.getElementById('modal-vincula').style.display = 'flex';
     }
   } catch(e) {
     resultEl.innerHTML = '<div class="info-box info-box-red">Erro. Tente novamente.</div>';
@@ -947,149 +930,32 @@ async function runEvaluateNow() {
   btn.innerHTML = 'Gerar avaliacoes';
 }
 
-function openVinculaModal() {
-  var sel = document.getElementById('vincula-meeting');
-  sel.innerHTML = _pendingMeetings.map(function(m) {
-    return '<option value="' + m.id + '">' + m.closer + ' - ' + (m.meetLink||'').replace('https://','').substring(0,25) + ' - ' + fmtDate(m.scheduledAt) + '</option>';
-  }).join('');
-  var list = document.getElementById('vincula-transcripts');
-  list.innerHTML = _availableTranscripts.map(function(t, i) {
-    var d = t.date ? new Date(t.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
-    return '<div id="vtcard' + i + '" data-tid="' + t.id + '" onclick="vincularTranscript(' + i + ')" style="border:1px solid #e5e4e0;border-radius:8px;padding:12px;cursor:pointer;transition:all .12s;margin-bottom:4px" onmouseover="this.style.borderColor=\'#534AB7\';this.style.background=\'#f0effe\'" onmouseout="this.style.borderColor=\'#e5e4e0\';this.style.background=\'#fff\'">' +
-      '<div style="font-size:13px;font-weight:600;color:#1a1a1a">' + t.title + '</div>' +
-      '<div style="font-size:11px;color:#aaa;margin-top:3px">' + d + '</div>' +
-      '<div style="font-size:12px;color:#534AB7;margin-top:6px;font-weight:500">Usar esta transcricao</div>' +
-      '</div>';
-  }).join('');
-  document.getElementById('vincula-result').style.display = 'none';
-  document.getElementById('modal-vincula').style.display = 'flex';
-}
-
-async function vincularTranscript(idx) {
-  var card = document.getElementById('vtcard' + idx);
-  var transcriptId = card ? card.getAttribute('data-tid') : null;
+async function usarTranscricao(btn) {
+  var i = parseInt(btn.getAttribute('data-i'));
+  var t = _at[i];
   var meetingId = document.getElementById('vincula-meeting').value;
-  if (!meetingId || !transcriptId) return;
-  if (card) { card.style.borderColor = '#534AB7'; card.style.background = '#f0effe'; }
-  var resultEl = document.getElementById('vincula-result');
-  resultEl.innerHTML = '<div class="info-box info-box-purple"><span class="spinner"></span> Avaliando...</div>';
-  resultEl.style.display = 'block';
+  if (!meetingId || !t) return;
+  btn.disabled = true;
+  var msg = document.getElementById('vincula-msg');
+  msg.innerHTML = '<div class="info-box info-box-purple"><span class="spinner"></span> Avaliando com Claude...</div>';
+  msg.style.display = 'block';
   try {
     var r = await fetch('/api/evaluate-now', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ meetingId: meetingId, transcriptId: transcriptId })
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({meetingId: meetingId, transcriptId: t.id})
     });
     var data = await r.json();
     if (data.success) {
-      resultEl.innerHTML = '<div class="info-box info-box-green">Avaliado! Score: ' + data.score + '%. Redirecionando...</div>';
+      msg.innerHTML = '<div class="info-box info-box-green">Avaliado! Score: ' + data.score + '%. Abrindo relatorio...</div>';
       loadMeetings();
       setTimeout(function() { closeModal('modal-vincula'); navigate('avaliacoes'); }, 2000);
     } else {
-      resultEl.innerHTML = '<div class="info-box info-box-red">' + (data.error || 'Erro ao avaliar') + '</div>';
-    }
-  } catch(e) {
-    resultEl.innerHTML = '<div class="info-box info-box-red">Erro de conexao.</div>';
-  }
-}
-
-// RESET MEETING
-async function resetMeeting(btn) {
-  var meetingId = btn.getAttribute('data-meeting-id');
-  if (!confirm('Isso vai apagar a avaliação atual e marcar a reunião para ser reavaliada. Continuar?')) return;
-  btn.disabled = true;
-  btn.textContent = '...';
-  try {
-    var r = await fetch('/api/reset-meeting', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ meetingId: meetingId })
-    });
-    var d = await r.json();
-    if (d.success) {
-      toast('Avaliação resetada! Clique em ⚡ Gerar avaliações para reavaliar.', 'success');
-      loadMeetings();
-    } else {
-      toast('Erro ao resetar: ' + (d.error || 'desconhecido'), 'error');
+      msg.innerHTML = '<div class="info-box info-box-red">' + (data.error||'Erro') + '</div>';
       btn.disabled = false;
-      btn.textContent = '↺ Reavaliar';
     }
   } catch(e) {
-    toast('Erro ao conectar', 'error');
+    msg.innerHTML = '<div class="info-box info-box-red">Erro de conexao.</div>';
     btn.disabled = false;
-    btn.textContent = '↺ Reavaliar';
-  }
-}
-
-// EVALUATE NOW
-async function runEvaluateNow() {
-  var btn = document.getElementById('btn-evaluate');
-  var resultEl = document.getElementById('evaluate-result');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Buscando transcrições...';
-  resultEl.style.display = 'none';
-  try {
-    var r = await fetch('/api/evaluate-now');
-    var data = await r.json();
-    var msg = data.message || 'Processado';
-    var isOk = msg.includes('✅');
-    var color = isOk ? 'info-box-green' : 'info-box-amber';
-    resultEl.innerHTML = '<div class="info-box ' + color + '">' + msg + '</div>';
-    resultEl.style.display = 'block';
-    if (isOk) { loadMeetings(); setTimeout(function(){ navigate('avaliacoes'); }, 2000); }
-    // Se precisar de seleção manual, abre o modal
-    if (data.needs_manual && data.needs_manual.length > 0) {
-      setTimeout(function(){ openTranscriptModal(data.needs_manual[0]); }, 500);
-    }
-  } catch(e) {
-    resultEl.innerHTML = '<div class="info-box info-box-red">❌ Erro ao conectar. Tente novamente.</div>';
-    resultEl.style.display = 'block';
-  }
-  btn.disabled = false;
-  btn.innerHTML = '⚡ Gerar avaliações';
-}
-
-function openTranscriptModal(meetingData) {
-  document.getElementById('modal-meeting-info').innerHTML =
-    '<strong>Reunião:</strong> ' + (meetingData.closer || '') + ' — ' + (meetingData.meetLink || '').replace('https://','');
-  var list = document.getElementById('transcript-list');
-  var transcripts = meetingData.available_transcripts || [];
-  if (!transcripts.length) {
-    list.innerHTML = '<div class="empty">Nenhuma transcrição disponível no Fireflies ainda.<br>Aguarde 5-10 min após a reunião terminar.</div>';
-  } else {
-    list.innerHTML = transcripts.map(function(t) {
-      var d = t.date ? new Date(t.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
-      return '<div style="border:1px solid #e5e4e0;border-radius:8px;padding:12px;cursor:pointer;transition:all .12s" onclick="selectTranscript(\'' + meetingData.meetingId + '\',\'' + t.id + '\')" onmouseover="this.style.borderColor=\'#534AB7\';this.style.background=\'#f0effe\'" onmouseout="this.style.borderColor=\'#e5e4e0\';this.style.background=\'#fff\'">' +
-        '<div style="font-size:13px;font-weight:600;color:#1a1a1a">' + (t.title || 'Sem título') + '</div>' +
-        '<div style="font-size:11px;color:#aaa;margin-top:3px">' + d + (t.meeting_link ? ' · ' + t.meeting_link.replace('https://','') : '') + '</div>' +
-        '<div style="font-size:12px;color:#534AB7;margin-top:6px;font-weight:500">→ Usar esta transcrição</div>' +
-        '</div>';
-    }).join('');
-  }
-  document.getElementById('modal-select-transcript').style.display = 'flex';
-}
-
-async function selectTranscript(meetingId, transcriptId) {
-  closeModal('modal-select-transcript');
-  var resultEl = document.getElementById('evaluate-result');
-  resultEl.innerHTML = '<div class="info-box info-box-purple"><span class="spinner"></span> Avaliando com a transcrição selecionada...</div>';
-  resultEl.style.display = 'block';
-  try {
-    var r = await fetch('/api/evaluate-now', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ meetingId: meetingId, transcriptId: transcriptId })
-    });
-    var data = await r.json();
-    if (data.success) {
-      resultEl.innerHTML = '<div class="info-box info-box-green">✅ ' + data.message + ' Redirecionando para Avaliações...</div>';
-      loadMeetings();
-      setTimeout(function(){ navigate('avaliacoes'); }, 2000);
-    } else {
-      resultEl.innerHTML = '<div class="info-box info-box-red">❌ ' + (data.error || 'Erro ao avaliar') + '</div>';
-    }
-  } catch(e) {
-    resultEl.innerHTML = '<div class="info-box info-box-red">❌ Erro ao avaliar. Tente novamente.</div>';
   }
 }
 
