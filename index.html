@@ -252,6 +252,19 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
+<!-- MODAL SELECIONAR TRANSCRIÇÃO -->
+<div class="overlay" id="modal-select-transcript" style="display:none" onclick="if(event.target===this)closeModal('modal-select-transcript')">
+  <div class="modal" style="width:500px">
+    <div class="modal-title">🎙️ Selecionar transcrição manualmente</div>
+    <p style="font-size:13px;color:#555;margin-bottom:1rem;line-height:1.6">O link da reunião não foi encontrado no Fireflies. Selecione abaixo qual transcrição pertence a esta reunião:</p>
+    <div style="font-size:12px;color:#888;margin-bottom:10px" id="modal-meeting-info"></div>
+    <div id="transcript-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-select-transcript')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAIS -->
 <div class="overlay" id="modal-docscript" style="display:none" onclick="if(event.target===this)closeModal('modal-docscript')">
   <div class="modal">
@@ -908,17 +921,64 @@ async function runEvaluateNow() {
     var data = await r.json();
     var msg = data.message || 'Processado';
     var isOk = msg.includes('✅');
-    var isPending = msg.includes('⏳');
-    var color = isOk ? 'info-box-green' : isPending ? 'info-box-amber' : 'info-box-red';
+    var color = isOk ? 'info-box-green' : 'info-box-amber';
     resultEl.innerHTML = '<div class="info-box ' + color + '">' + msg + '</div>';
     resultEl.style.display = 'block';
     if (isOk) { loadMeetings(); setTimeout(function(){ navigate('avaliacoes'); }, 2000); }
+    // Se precisar de seleção manual, abre o modal
+    if (data.needs_manual && data.needs_manual.length > 0) {
+      setTimeout(function(){ openTranscriptModal(data.needs_manual[0]); }, 500);
+    }
   } catch(e) {
     resultEl.innerHTML = '<div class="info-box info-box-red">❌ Erro ao conectar. Tente novamente.</div>';
     resultEl.style.display = 'block';
   }
   btn.disabled = false;
   btn.innerHTML = '⚡ Gerar avaliações';
+}
+
+function openTranscriptModal(meetingData) {
+  document.getElementById('modal-meeting-info').innerHTML =
+    '<strong>Reunião:</strong> ' + (meetingData.closer || '') + ' — ' + (meetingData.meetLink || '').replace('https://','');
+  var list = document.getElementById('transcript-list');
+  var transcripts = meetingData.available_transcripts || [];
+  if (!transcripts.length) {
+    list.innerHTML = '<div class="empty">Nenhuma transcrição disponível no Fireflies ainda.<br>Aguarde 5-10 min após a reunião terminar.</div>';
+  } else {
+    list.innerHTML = transcripts.map(function(t) {
+      var d = t.date ? new Date(t.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+      return '<div style="border:1px solid #e5e4e0;border-radius:8px;padding:12px;cursor:pointer;transition:all .12s" onclick="selectTranscript(\'' + meetingData.meetingId + '\',\'' + t.id + '\')" onmouseover="this.style.borderColor=\'#534AB7\';this.style.background=\'#f0effe\'" onmouseout="this.style.borderColor=\'#e5e4e0\';this.style.background=\'#fff\'">' +
+        '<div style="font-size:13px;font-weight:600;color:#1a1a1a">' + (t.title || 'Sem título') + '</div>' +
+        '<div style="font-size:11px;color:#aaa;margin-top:3px">' + d + (t.meeting_link ? ' · ' + t.meeting_link.replace('https://','') : '') + '</div>' +
+        '<div style="font-size:12px;color:#534AB7;margin-top:6px;font-weight:500">→ Usar esta transcrição</div>' +
+        '</div>';
+    }).join('');
+  }
+  document.getElementById('modal-select-transcript').style.display = 'flex';
+}
+
+async function selectTranscript(meetingId, transcriptId) {
+  closeModal('modal-select-transcript');
+  var resultEl = document.getElementById('evaluate-result');
+  resultEl.innerHTML = '<div class="info-box info-box-purple"><span class="spinner"></span> Avaliando com a transcrição selecionada...</div>';
+  resultEl.style.display = 'block';
+  try {
+    var r = await fetch('/api/evaluate-now', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ meetingId: meetingId, transcriptId: transcriptId })
+    });
+    var data = await r.json();
+    if (data.success) {
+      resultEl.innerHTML = '<div class="info-box info-box-green">✅ ' + data.message + ' Redirecionando para Avaliações...</div>';
+      loadMeetings();
+      setTimeout(function(){ navigate('avaliacoes'); }, 2000);
+    } else {
+      resultEl.innerHTML = '<div class="info-box info-box-red">❌ ' + (data.error || 'Erro ao avaliar') + '</div>';
+    }
+  } catch(e) {
+    resultEl.innerHTML = '<div class="info-box info-box-red">❌ Erro ao avaliar. Tente novamente.</div>';
+  }
 }
 
 // START
