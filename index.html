@@ -536,7 +536,8 @@ function loadMeetings() {
       html += '<td><span class="meet-link">'+((m.meetLink||'').replace('https://',''))+'</span></td>';
       html += '<td><span class="badge '+badge+'"><span class="status-dot '+dot+'"></span>'+label+'</span></td>';
       html += '<td style="color:#888;font-size:12px">'+fmtDate(m.scheduledAt)+'</td>';
-      html += '<td><button class="btn btn-sm btn-danger" data-meeting-id="'+m.id+'" data-meeting-closer="'+(m.closer||'')+'" data-meeting-script="'+(m.scriptName||'')+'" data-meeting-date="'+fmtDate(m.scheduledAt)+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
+      var reBtn = s === 'evaluated' ? '<button class="btn btn-sm" data-meeting-id="'+m.id+'" onclick="resetMeeting(this)" style="border-color:#534AB7;color:#534AB7;margin-right:4px">↺ Reavaliar</button>' : '';
+      html += '<td>'+reBtn+'<button class="btn btn-sm btn-danger" data-meeting-id="'+m.id+'" data-meeting-closer="'+(m.closer||'')+'" data-meeting-script="'+(m.scriptName||'')+'" data-meeting-date="'+fmtDate(m.scheduledAt)+'" onclick="deleteMeeting(this)">Excluir</button></td></tr>';
     }
     tb.innerHTML = html;
   }).catch(function(){ tb.innerHTML='<tr><td colspan="6" class="empty">Erro ao carregar</td></tr>'; });
@@ -865,6 +866,34 @@ async function confirmDeleteDoc() {
 
 async function removeDocScript(btn) {
   askDeleteDoc(btn);
+}
+
+// RESET MEETING
+async function resetMeeting(btn) {
+  var meetingId = btn.getAttribute('data-meeting-id');
+  if (!confirm('Isso vai apagar a avaliação atual e marcar a reunião para ser reavaliada. Continuar?')) return;
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    var r = await fetch('/api/reset-meeting', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ meetingId: meetingId })
+    });
+    var d = await r.json();
+    if (d.success) {
+      toast('Avaliação resetada! Clique em ⚡ Gerar avaliações para reavaliar.', 'success');
+      loadMeetings();
+    } else {
+      toast('Erro ao resetar: ' + (d.error || 'desconhecido'), 'error');
+      btn.disabled = false;
+      btn.textContent = '↺ Reavaliar';
+    }
+  } catch(e) {
+    toast('Erro ao conectar', 'error');
+    btn.disabled = false;
+    btn.textContent = '↺ Reavaliar';
+  }
 }
 
 // EVALUATE NOW
