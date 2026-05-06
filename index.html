@@ -186,8 +186,12 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
     <div class="page" id="page-reunioes">
       <div class="page-header">
         <div><div class="page-title">Reuniões</div><div class="page-subtitle">O bot CloserAI entra automaticamente no Google Meet</div></div>
-        <button class="btn btn-primary" onclick="openNewMeeting()">+ Agendar reunião</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn" id="btn-evaluate" onclick="runEvaluateNow()" style="border-color:#534AB7;color:#534AB7">⚡ Gerar avaliações</button>
+          <button class="btn btn-primary" onclick="openNewMeeting()">+ Agendar reunião</button>
+        </div>
       </div>
+      <div id="evaluate-result" style="display:none;margin-bottom:1rem"></div>
       <div class="card">
         <table class="table"><thead><tr><th>Closer</th><th>Script</th><th>Google Meet</th><th>Bot IA</th><th>Data</th><th>Ações</th></tr></thead>
         <tbody id="reunioes-table"><tr><td colspan="6" class="empty"><span class="spinner"></span></td></tr></tbody></table>
@@ -861,6 +865,31 @@ async function confirmDeleteDoc() {
 
 async function removeDocScript(btn) {
   askDeleteDoc(btn);
+}
+
+// EVALUATE NOW
+async function runEvaluateNow() {
+  var btn = document.getElementById('btn-evaluate');
+  var resultEl = document.getElementById('evaluate-result');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Buscando transcrições...';
+  resultEl.style.display = 'none';
+  try {
+    var r = await fetch('/api/evaluate-now');
+    var data = await r.json();
+    var msg = data.message || 'Processado';
+    var isOk = msg.includes('✅');
+    var isPending = msg.includes('⏳');
+    var color = isOk ? 'info-box-green' : isPending ? 'info-box-amber' : 'info-box-red';
+    resultEl.innerHTML = '<div class="info-box ' + color + '">' + msg + '</div>';
+    resultEl.style.display = 'block';
+    if (isOk) { loadMeetings(); setTimeout(function(){ navigate('avaliacoes'); }, 2000); }
+  } catch(e) {
+    resultEl.innerHTML = '<div class="info-box info-box-red">❌ Erro ao conectar. Tente novamente.</div>';
+    resultEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '⚡ Gerar avaliações';
 }
 
 // START
