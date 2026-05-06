@@ -252,15 +252,21 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
-<!-- MODAL SELECIONAR TRANSCRIÇÃO -->
-<div class="overlay" id="modal-select-transcript" style="display:none" onclick="if(event.target===this)closeModal('modal-select-transcript')">
-  <div class="modal" style="width:500px">
-    <div class="modal-title">🎙️ Selecionar transcrição manualmente</div>
-    <p style="font-size:13px;color:#555;margin-bottom:1rem;line-height:1.6">O link da reunião não foi encontrado no Fireflies. Selecione abaixo qual transcrição pertence a esta reunião:</p>
-    <div style="font-size:12px;color:#888;margin-bottom:10px" id="modal-meeting-info"></div>
-    <div id="transcript-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto"></div>
+<!-- MODAL VINCULAR TRANSCRIÇÃO -->
+<div class="overlay" id="modal-vincula" style="display:none" onclick="if(event.target===this)closeModal('modal-vincula')">
+  <div class="modal" style="width:540px">
+    <div class="modal-title">🎙️ Vincular reunião à transcrição</div>
+    <div class="form-group">
+      <label class="form-label">Reunião pendente</label>
+      <select id="vincula-meeting" style="width:100%;font-family:inherit;font-size:13px;padding:9px 12px;border:1px solid #ddd;border-radius:8px"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Transcrição no Fireflies — clique para usar</label>
+      <div id="vincula-transcripts" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto"></div>
+    </div>
+    <div id="vincula-result" style="display:none;margin-top:10px"></div>
     <div class="modal-footer">
-      <button class="btn" onclick="closeModal('modal-select-transcript')">Cancelar</button>
+      <button class="btn" onclick="closeModal('modal-vincula')">Fechar</button>
     </div>
   </div>
 </div>
@@ -879,6 +885,112 @@ async function confirmDeleteDoc() {
 
 async function removeDocScript(btn) {
   askDeleteDoc(btn);
+}
+
+// RESET MEETING
+async function resetMeeting(btn) {
+  var meetingId = btn.getAttribute('data-meeting-id');
+  if (!confirm('Isso vai apagar a avaliação atual e marcar a reunião para ser reavaliada. Continuar?')) return;
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    var r = await fetch('/api/reset-meeting', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ meetingId: meetingId })
+    });
+    var d = await r.json();
+    if (d.success) {
+      toast('Avaliação resetada! Clique em ⚡ Gerar avaliações para reavaliar.', 'success');
+      loadMeetings();
+    } else {
+      toast('Erro ao resetar: ' + (d.error || 'desconhecido'), 'error');
+      btn.disabled = false;
+      btn.textContent = '↺ Reavaliar';
+    }
+  } catch(e) {
+    toast('Erro ao conectar', 'error');
+    btn.disabled = false;
+    btn.textContent = '↺ Reavaliar';
+  }
+}
+
+// EVALUATE NOW
+var _pendingMeetings = [];
+var _availableTranscripts = [];
+
+async function runEvaluateNow() {
+  var btn = document.getElementById('btn-evaluate');
+  var resultEl = document.getElementById('evaluate-result');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Buscando...';
+  resultEl.style.display = 'none';
+  try {
+    var r = await fetch('/api/evaluate-now');
+    var data = await r.json();
+    _pendingMeetings = data.pending_meetings || [];
+    _availableTranscripts = data.available_transcripts || [];
+    if (!_pendingMeetings.length) {
+      resultEl.innerHTML = '<div class="info-box info-box-green">Nenhuma reunião pendente.</div>';
+      resultEl.style.display = 'block';
+    } else if (!_availableTranscripts.length) {
+      resultEl.innerHTML = '<div class="info-box info-box-amber">Transcrição ainda nao pronta. Aguarde 5-10 min apos a reuniao terminar.</div>';
+      resultEl.style.display = 'block';
+    } else {
+      openVinculaModal();
+    }
+  } catch(e) {
+    resultEl.innerHTML = '<div class="info-box info-box-red">Erro. Tente novamente.</div>';
+    resultEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.innerHTML = 'Gerar avaliacoes';
+}
+
+function openVinculaModal() {
+  var sel = document.getElementById('vincula-meeting');
+  sel.innerHTML = _pendingMeetings.map(function(m) {
+    return '<option value="' + m.id + '">' + m.closer + ' - ' + (m.meetLink||'').replace('https://','').substring(0,25) + ' - ' + fmtDate(m.scheduledAt) + '</option>';
+  }).join('');
+  var list = document.getElementById('vincula-transcripts');
+  list.innerHTML = _availableTranscripts.map(function(t, i) {
+    var d = t.date ? new Date(t.date).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+    return '<div id="vtcard' + i + '" data-tid="' + t.id + '" onclick="vincularTranscript(' + i + ')" style="border:1px solid #e5e4e0;border-radius:8px;padding:12px;cursor:pointer;transition:all .12s;margin-bottom:4px" onmouseover="this.style.borderColor=\'#534AB7\';this.style.background=\'#f0effe\'" onmouseout="this.style.borderColor=\'#e5e4e0\';this.style.background=\'#fff\'">' +
+      '<div style="font-size:13px;font-weight:600;color:#1a1a1a">' + t.title + '</div>' +
+      '<div style="font-size:11px;color:#aaa;margin-top:3px">' + d + '</div>' +
+      '<div style="font-size:12px;color:#534AB7;margin-top:6px;font-weight:500">Usar esta transcricao</div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('vincula-result').style.display = 'none';
+  document.getElementById('modal-vincula').style.display = 'flex';
+}
+
+async function vincularTranscript(idx) {
+  var card = document.getElementById('vtcard' + idx);
+  var transcriptId = card ? card.getAttribute('data-tid') : null;
+  var meetingId = document.getElementById('vincula-meeting').value;
+  if (!meetingId || !transcriptId) return;
+  if (card) { card.style.borderColor = '#534AB7'; card.style.background = '#f0effe'; }
+  var resultEl = document.getElementById('vincula-result');
+  resultEl.innerHTML = '<div class="info-box info-box-purple"><span class="spinner"></span> Avaliando...</div>';
+  resultEl.style.display = 'block';
+  try {
+    var r = await fetch('/api/evaluate-now', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ meetingId: meetingId, transcriptId: transcriptId })
+    });
+    var data = await r.json();
+    if (data.success) {
+      resultEl.innerHTML = '<div class="info-box info-box-green">Avaliado! Score: ' + data.score + '%. Redirecionando...</div>';
+      loadMeetings();
+      setTimeout(function() { closeModal('modal-vincula'); navigate('avaliacoes'); }, 2000);
+    } else {
+      resultEl.innerHTML = '<div class="info-box info-box-red">' + (data.error || 'Erro ao avaliar') + '</div>';
+    }
+  } catch(e) {
+    resultEl.innerHTML = '<div class="info-box info-box-red">Erro de conexao.</div>';
+  }
 }
 
 // RESET MEETING
