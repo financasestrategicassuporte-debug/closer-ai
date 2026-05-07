@@ -1,3 +1,28 @@
+<!-- MODAL AVALIAÇÃO MANUAL -->
+<div class="overlay" id="modal-manual-eval" style="display:none" onclick="if(event.target===this)closeModal('modal-manual-eval')">
+  <div class="modal" style="width:560px">
+    <div class="modal-title">📝 Avaliação manual</div>
+    <div class="form-group">
+      <label class="form-label">Reunião</label>
+      <select id="manual-meeting" style="width:100%;font-size:13px;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-family:inherit"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cole a transcrição aqui</label>
+      <textarea id="manual-transcript" rows="10" placeholder="Cole o texto da transcrição do Fireflies ou qualquer outro texto da reunião...
+      
+Exemplo:
+João: Bom dia, tudo bem?
+Cliente: Sim, obrigado..."></textarea>
+      <div class="form-hint">Vá em app.fireflies.ai → selecione a reunião → copie o texto e cole aqui</div>
+    </div>
+    <div id="manual-result" style="display:none;margin-top:8px"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-manual-eval')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-manual-submit" onclick="submitManualEval()">⚡ Avaliar agora</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL VINCULAR TRANSCRICAO -->
 <div class="overlay" id="modal-vincula" style="display:none" onclick="if(event.target===this)closeModal('modal-vincula')">
   <div class="modal" style="width:540px">
@@ -206,7 +231,8 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <div class="page-header">
         <div><div class="page-title">Reuniões</div><div class="page-subtitle">O bot CloserAI entra automaticamente no Google Meet</div></div>
         <div style="display:flex;gap:8px">
-          <button class="btn" id="btn-evaluate" onclick="runEvaluateNow()" style="border-color:#534AB7;color:#534AB7">⚡ Gerar avaliações</button>
+          <button class="btn" id="btn-evaluate" onclick="runEvaluateNow()" style="border-color:#534AB7;color:#534AB7">⚡ Auto</button>
+          <button class="btn" onclick="openManualEval()" style="border-color:#27500A;color:#27500A">📝 Manual</button>
           <button class="btn btn-primary" onclick="openNewMeeting()">+ Agendar reunião</button>
         </div>
       </div>
